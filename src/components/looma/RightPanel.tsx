@@ -21,9 +21,8 @@ export function LoomaAside() {
               <div className="h-10 w-10 shrink-0 rounded-full bg-avatar" />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-foreground">{s.name}</p>
-                <p className="truncate text-[13px] text-muted-foreground">
-                  {s.handle} · {s.role}
-                </p>
+                <p className="truncate text-[13px] text-muted-foreground">{s.handle}</p>
+                <p className="truncate text-xs text-subtle">{s.role}</p>
               </div>
               <button
                 type="button"
