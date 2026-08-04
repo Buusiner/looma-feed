@@ -39,7 +39,7 @@ export function LoomaFeed() {
   const [text, setText] = useState("");
 
   return (
-    <main className="mx-auto w-full max-w-[600px] border-line lg:border-x">
+    <main className="mx-auto min-h-screen w-full max-w-[600px] border-line lg:border-x">
       <div className="sticky top-0 z-10 flex border-b border-line bg-background/95 backdrop-blur">
         {[
           { id: "foryou", label: "Para você" },
