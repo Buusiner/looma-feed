@@ -10,33 +10,154 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ComunidadeRouteImport } from './routes/comunidade'
+import { Route as ConexoesRouteImport } from './routes/conexoes'
+import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
+import { Route as OportunidadesRouteImport } from './routes/oportunidades'
+import { Route as PropostasRouteImport } from './routes/propostas'
+import { Route as ProtegidaRouteImport } from './routes/protegida'
+import { Route as PublicacoesRouteImport } from './routes/publicacoes'
+import { Route as RelatoriosRouteImport } from './routes/relatorios'
+import { Route as PerfilEditarRouteImport } from './routes/perfil/editar'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComunidadeRoute = ComunidadeRouteImport.update({
+  id: '/comunidade',
+  path: '/comunidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConexoesRoute = ConexoesRouteImport.update({
+  id: '/conexoes',
+  path: '/conexoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OportunidadesRoute = OportunidadesRouteImport.update({
+  id: '/oportunidades',
+  path: '/oportunidades',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PropostasRoute = PropostasRouteImport.update({
+  id: '/propostas',
+  path: '/propostas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtegidaRoute = ProtegidaRouteImport.update({
+  id: '/protegida',
+  path: '/protegida',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicacoesRoute = PublicacoesRouteImport.update({
+  id: '/publicacoes',
+  path: '/publicacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RelatoriosRoute = RelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerfilEditarRoute = PerfilEditarRouteImport.update({
+  id: '/perfil/editar',
+  path: '/perfil/editar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/comunidade': typeof ComunidadeRoute
+  '/conexoes': typeof ConexoesRoute
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/oportunidades': typeof OportunidadesRoute
+  '/propostas': typeof PropostasRoute
+  '/protegida': typeof ProtegidaRoute
+  '/publicacoes': typeof PublicacoesRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/perfil/editar': typeof PerfilEditarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/comunidade': typeof ComunidadeRoute
+  '/conexoes': typeof ConexoesRoute
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/oportunidades': typeof OportunidadesRoute
+  '/propostas': typeof PropostasRoute
+  '/protegida': typeof ProtegidaRoute
+  '/publicacoes': typeof PublicacoesRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/perfil/editar': typeof PerfilEditarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/comunidade': typeof ComunidadeRoute
+  '/conexoes': typeof ConexoesRoute
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/oportunidades': typeof OportunidadesRoute
+  '/propostas': typeof PropostasRoute
+  '/protegida': typeof ProtegidaRoute
+  '/publicacoes': typeof PublicacoesRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/perfil/editar': typeof PerfilEditarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/comunidade'
+    | '/conexoes'
+    | '/configuracoes'
+    | '/oportunidades'
+    | '/propostas'
+    | '/protegida'
+    | '/publicacoes'
+    | '/relatorios'
+    | '/perfil/editar'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/comunidade'
+    | '/conexoes'
+    | '/configuracoes'
+    | '/oportunidades'
+    | '/propostas'
+    | '/protegida'
+    | '/publicacoes'
+    | '/relatorios'
+    | '/perfil/editar'
+  id:
+    | '__root__'
+    | '/'
+    | '/comunidade'
+    | '/conexoes'
+    | '/configuracoes'
+    | '/oportunidades'
+    | '/propostas'
+    | '/protegida'
+    | '/publicacoes'
+    | '/relatorios'
+    | '/perfil/editar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ComunidadeRoute: typeof ComunidadeRoute
+  ConexoesRoute: typeof ConexoesRoute
+  ConfiguracoesRoute: typeof ConfiguracoesRoute
+  OportunidadesRoute: typeof OportunidadesRoute
+  PropostasRoute: typeof PropostasRoute
+  ProtegidaRoute: typeof ProtegidaRoute
+  PublicacoesRoute: typeof PublicacoesRoute
+  RelatoriosRoute: typeof RelatoriosRoute
+  PerfilEditarRoute: typeof PerfilEditarRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +169,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/comunidade': {
+      id: '/comunidade'
+      path: '/comunidade'
+      fullPath: '/comunidade'
+      preLoaderRoute: typeof ComunidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conexoes': {
+      id: '/conexoes'
+      path: '/conexoes'
+      fullPath: '/conexoes'
+      preLoaderRoute: typeof ConexoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/configuracoes': {
+      id: '/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof ConfiguracoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oportunidades': {
+      id: '/oportunidades'
+      path: '/oportunidades'
+      fullPath: '/oportunidades'
+      preLoaderRoute: typeof OportunidadesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/propostas': {
+      id: '/propostas'
+      path: '/propostas'
+      fullPath: '/propostas'
+      preLoaderRoute: typeof PropostasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/protegida': {
+      id: '/protegida'
+      path: '/protegida'
+      fullPath: '/protegida'
+      preLoaderRoute: typeof ProtegidaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publicacoes': {
+      id: '/publicacoes'
+      path: '/publicacoes'
+      fullPath: '/publicacoes'
+      preLoaderRoute: typeof PublicacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/relatorios': {
+      id: '/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof RelatoriosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perfil/editar': {
+      id: '/perfil/editar'
+      path: '/perfil/editar'
+      fullPath: '/perfil/editar'
+      preLoaderRoute: typeof PerfilEditarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ComunidadeRoute: ComunidadeRoute,
+  ConexoesRoute: ConexoesRoute,
+  ConfiguracoesRoute: ConfiguracoesRoute,
+  OportunidadesRoute: OportunidadesRoute,
+  PropostasRoute: PropostasRoute,
+  ProtegidaRoute: ProtegidaRoute,
+  PublicacoesRoute: PublicacoesRoute,
+  RelatoriosRoute: RelatoriosRoute,
+  PerfilEditarRoute: PerfilEditarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
