@@ -1,5 +1,5 @@
 import { createBrowserClient } from "@supabase/ssr";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 let browserClient: SupabaseClient | undefined;
 
@@ -14,7 +14,6 @@ function getBrowserConfig() {
   return { url, key };
 }
 
-/** Reutiliza uma única instância do cliente Supabase no navegador. */
 export function getSupabaseBrowserClient(): SupabaseClient {
   if (!browserClient) {
     const { url, key } = getBrowserConfig();
@@ -22,4 +21,15 @@ export function getSupabaseBrowserClient(): SupabaseClient {
   }
 
   return browserClient;
+}
+
+export function createSupabaseCredentialClient(): SupabaseClient {
+  const { url, key } = getBrowserConfig();
+  return createClient(url, key, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+    },
+  });
 }

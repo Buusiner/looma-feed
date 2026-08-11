@@ -11,7 +11,8 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { SplashProvider, claimInitialSplash } from "../lib/splash-state";
+import { SplashProvider, claimInitialSplash, resetWelcomeSession } from "../lib/splash-state";
+import { getSupabaseBrowserClient } from "../lib/supabase/browser";
 
 function NotFoundComponent() {
   return (
@@ -122,10 +123,18 @@ function RootComponent() {
   const [isSplashActive, setIsSplashActive] = useState(shouldPlaySplash);
   const completeSplash = useCallback(() => setIsSplashActive(false), []);
 
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+    const { data: subscription } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") resetWelcomeSession();
+    });
+
+    return () => subscription.subscription.unsubscribe();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <SplashProvider value={{ shouldPlaySplash: isSplashActive, completeSplash }}>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </SplashProvider>
     </QueryClientProvider>

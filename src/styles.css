@@ -1254,6 +1254,25 @@
   height: clamp(2.9rem, 5vw, 4.35rem);
   transform: translateY(clamp(-0.7rem, -1vw, -0.45rem));
 }
+@keyframes intro-logo-loading {
+  0%,
+  100% {
+    opacity: 0.62;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+.intro-logo-loader {
+  width: clamp(3.5rem, 7vw, 5.25rem);
+  height: clamp(3.5rem, 7vw, 5.25rem);
+  opacity: 0;
+}
+.intro-visible .intro-logo-loader {
+  animation: intro-logo-loading 900ms cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
 .looma-logo-mark {
   display: block;
   background: var(--looma-primary);
@@ -2790,6 +2809,470 @@ body {
   transform: translateY(-1px);
 }
 
+.auth-control-sidebar {
+  display: block;
+}
+
+.auth-login-options {
+  display: grid;
+  width: 100%;
+  gap: 0.55rem;
+}
+
+.auth-login-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 0.65rem;
+}
+
+.auth-login-divider::before,
+.auth-login-divider::after {
+  height: 1px;
+  flex: 1;
+  background: rgba(255, 255, 255, 0.2);
+  content: "";
+}
+
+.auth-control-sidebar .sidebar-email-login {
+  display: flex;
+  width: 100%;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.44);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.auth-control-sidebar .sidebar-email-login:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.auth-email-login {
+  display: inline-flex;
+  min-height: 2.45rem;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 8px;
+}
+
+.auth-email-form {
+  display: grid;
+  width: 100%;
+  gap: 0.55rem;
+}
+
+.auth-email-form label,
+.auth-email-hint {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.auth-email-hint strong {
+  display: block;
+  overflow: hidden;
+  color: #fff;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.auth-email-form input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 2.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 9px;
+  outline: 0;
+  padding: 0 0.72rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font: inherit;
+  font-size: 0.76rem;
+}
+
+.auth-email-form input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.auth-email-form input:focus {
+  border-color: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+}
+
+.auth-email-form .auth-code-input {
+  font-size: 1rem;
+  font-weight: 750;
+  letter-spacing: 0.3em;
+  text-align: center;
+}
+
+.auth-control .auth-email-submit {
+  min-height: 2.65rem;
+  border: 0;
+  border-radius: 9px;
+  background: #fff;
+  color: #1a1a1a;
+  font-weight: 750;
+}
+
+.auth-control .auth-email-submit:hover:not(:disabled) {
+  border-color: transparent;
+  background: #fff1ed;
+}
+
+.auth-control .auth-email-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.auth-control .auth-email-back,
+.auth-control .auth-email-resend {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 1.6rem;
+  align-items: center;
+  gap: 0.3rem;
+  border: 0;
+  border-radius: 6px;
+  padding: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.67rem;
+}
+
+.auth-control .auth-email-back:hover:not(:disabled),
+.auth-control .auth-email-resend:hover:not(:disabled) {
+  border-color: transparent;
+  background: transparent;
+  color: #fff;
+}
+
+.auth-control .auth-email-resend {
+  justify-self: center;
+}
+
+.auth-control .auth-email-error {
+  position: static;
+  display: block;
+  width: auto;
+  margin-top: 0.55rem;
+  color: #fff;
+  font-size: 0.66rem;
+  line-height: 1.4;
+}
+
+.auth-control:not(.auth-control-sidebar) .auth-login-divider {
+  color: #6b6b6b;
+}
+
+.auth-control:not(.auth-control-sidebar) .auth-login-divider::before,
+.auth-control:not(.auth-control-sidebar) .auth-login-divider::after {
+  background: #e8e8e8;
+}
+
+.auth-control:not(.auth-control-sidebar) .auth-email-form label,
+.auth-control:not(.auth-control-sidebar) .auth-email-hint {
+  color: #6b6b6b;
+}
+
+.auth-control:not(.auth-control-sidebar) .auth-email-hint strong {
+  color: #1a1a1a;
+}
+
+.auth-control:not(.auth-control-sidebar) .auth-email-form input {
+  border-color: #e8e8e8;
+  background: #fff;
+  color: #1a1a1a;
+}
+
+.auth-control:not(.auth-control-sidebar) .auth-email-form input::placeholder {
+  color: #a0a0a0;
+}
+
+.auth-control:not(.auth-control-sidebar) .auth-email-form input:focus {
+  border-color: var(--looma-primary);
+  box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.12);
+}
+
+.auth-control:not(.auth-control-sidebar) .auth-email-submit {
+  background: var(--looma-primary);
+  color: #fff;
+}
+
+.auth-control:not(.auth-control-sidebar) .auth-email-back,
+.auth-control:not(.auth-control-sidebar) .auth-email-resend {
+  color: #6b6b6b;
+}
+
+.auth-control:not(.auth-control-sidebar) .auth-email-back:hover:not(:disabled),
+.auth-control:not(.auth-control-sidebar) .auth-email-resend:hover:not(:disabled) {
+  color: var(--looma-primary);
+}
+
+.auth-control:not(.auth-control-sidebar) .auth-email-error {
+  color: #b64734;
+}
+
+@keyframes email-auth-modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes email-auth-welcome-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.email-auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  align-items: start;
+  justify-items: center;
+  overflow-y: auto;
+  padding: clamp(3.5rem, 9vh, 6.5rem) 1rem 2rem;
+  background: rgba(23, 23, 23, 0.56);
+  backdrop-filter: blur(8px);
+}
+
+.email-auth-modal {
+  position: relative;
+  box-sizing: border-box;
+  width: min(100%, 27rem);
+  overflow: hidden;
+  border: 1px solid rgba(255, 107, 74, 0.22);
+  border-radius: 22px;
+  padding: 2rem;
+  background: #fff;
+  box-shadow: 0 30px 80px rgba(26, 26, 26, 0.24);
+  color: #1a1a1a;
+  animation: email-auth-modal-enter 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.email-auth-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid #e8e8e8;
+  border-radius: 50%;
+  background: #fff;
+  color: #6b6b6b;
+  cursor: pointer;
+}
+
+.email-auth-close:hover:not(:disabled) {
+  border-color: rgba(255, 107, 74, 0.45);
+  background: #fff1ed;
+  color: var(--looma-primary);
+}
+
+.email-auth-logo {
+  width: 3.25rem;
+  height: 3.25rem;
+  margin: 0 auto 1.4rem;
+}
+
+.email-auth-heading {
+  text-align: center;
+}
+
+.email-auth-heading h1,
+.email-auth-welcome h1 {
+  margin: 0;
+  font-size: clamp(1.65rem, 5vw, 2rem);
+  letter-spacing: -0.045em;
+}
+
+.email-auth-heading p {
+  margin: 0.55rem auto 0;
+  color: #6b6b6b;
+  font-size: 0.83rem;
+  line-height: 1.55;
+}
+
+.email-auth-heading p strong {
+  display: block;
+  overflow: hidden;
+  margin-top: 0.15rem;
+  color: #1a1a1a;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.email-auth-form {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1.5rem;
+}
+
+.email-auth-form label {
+  margin-top: 0.25rem;
+  color: #454545;
+  font-size: 0.73rem;
+  font-weight: 750;
+}
+
+.email-auth-form input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 3rem;
+  border: 1px solid #e2e2e2;
+  border-radius: 11px;
+  outline: 0;
+  padding: 0 0.85rem;
+  background: #fafafa;
+  color: #1a1a1a;
+  font: inherit;
+  font-size: 0.84rem;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.email-auth-form input:focus {
+  border-color: var(--looma-primary);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.12);
+}
+
+.email-auth-code {
+  font-size: 1.3rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.28em;
+  text-align: center;
+}
+
+.email-auth-submit {
+  min-height: 3rem;
+  margin-top: 0.55rem;
+  border: 0;
+  border-radius: 11px;
+  background: var(--looma-primary);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+
+.email-auth-submit:hover:not(:disabled) {
+  background: #ff8268;
+  transform: translateY(-1px);
+}
+
+.email-auth-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.email-auth-error {
+  margin: 0.25rem 0 0;
+  border-radius: 9px;
+  padding: 0.65rem 0.7rem;
+  background: #fff1ed;
+  color: #a63f2b;
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.email-auth-mode,
+.email-auth-back {
+  border: 0;
+  background: transparent;
+  color: #6b6b6b;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.email-auth-mode {
+  display: block;
+  margin: 1rem auto 0;
+}
+
+.email-auth-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: -0.45rem 0 1.25rem;
+  padding: 0;
+}
+
+.email-auth-mode:hover:not(:disabled),
+.email-auth-back:hover:not(:disabled) {
+  color: var(--looma-primary);
+}
+
+.email-auth-welcome {
+  padding: 1.25rem 0 1rem;
+  text-align: center;
+  animation: email-auth-welcome-enter 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.email-auth-welcome > span {
+  color: #6b6b6b;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.email-auth-welcome h1 {
+  margin-top: 0.35rem;
+  color: var(--looma-primary);
+  font-size: clamp(2.6rem, 9vw, 4rem);
+}
+
+.email-auth-welcome p {
+  margin: 0.8rem 0 0;
+  color: #6b6b6b;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 520px) {
+  .email-auth-overlay {
+    padding: 1rem;
+  }
+
+  .email-auth-modal {
+    align-self: center;
+    padding: 1.6rem 1.25rem;
+    border-radius: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .email-auth-modal,
+  .email-auth-welcome {
+    animation: none;
+  }
+}
+
 /* Keep the selected navigation state above legacy sidebar hover rules. */
 .looma-sidebar .sidebar-nav button.active,
 .looma-sidebar .sidebar-nav button.active:hover {
@@ -2987,8 +3470,13 @@ html.looma-route-leaving .feed-stage {
 @media (prefers-reduced-motion: reduce) {
   .workspace-content > *,
   .feed-ready .feed-column,
-  .feed-ready .feed-aside {
+  .feed-ready .feed-aside,
+  .intro-visible .intro-logo-loader {
     animation: none;
+  }
+
+  .intro-logo-loader {
+    opacity: 1;
   }
 
   .looma-sidebar .sidebar-nav a,

@@ -1,8 +1,8 @@
 import { createContext, useContext } from "react";
+import type { User } from "@supabase/supabase-js";
 
-// This lives only for the lifetime of the browser JavaScript module. A real
-// reload recreates the module and therefore plays the branding splash again.
 let hasShownSplash = false;
+const WELCOME_SESSION_KEY = "looma-welcome-session";
 
 declare global {
   interface Window {
@@ -11,13 +11,30 @@ declare global {
 }
 
 export function claimInitialSplash() {
-  // Keep server and first browser render consistent; the server never mutates
-  // the flag, while the browser claims it once for the active app instance.
   if (typeof window === "undefined") return true;
   if (hasShownSplash || window.__loomaSplashShown) return false;
   hasShownSplash = true;
   window.__loomaSplashShown = true;
   return true;
+}
+
+function getSessionIdentity(user: User) {
+  return `${user.id}:${user.last_sign_in_at ?? user.created_at}`;
+}
+
+export function shouldShowWelcome(user: User) {
+  if (typeof window === "undefined") return false;
+  return window.localStorage.getItem(WELCOME_SESSION_KEY) !== getSessionIdentity(user);
+}
+
+export function markWelcomeShown(user: User) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(WELCOME_SESSION_KEY, getSessionIdentity(user));
+}
+
+export function resetWelcomeSession() {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(WELCOME_SESSION_KEY);
 }
 
 type SplashContextValue = {
