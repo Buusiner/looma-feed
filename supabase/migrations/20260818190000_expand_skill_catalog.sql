@@ -1,0 +1,178 @@
+-- Expanded Looma skill catalogue. These additions are additive and keep the
+-- existing onboarding search and similarity function unchanged.
+
+-- Design, creative and visual production
+insert into public.skill_tags (name) values
+  ('Designer de identidade visual'),
+  ('Designer de embalagens'),
+  ('Designer editorial'),
+  ('Designer de apresentações'),
+  ('Diretor criativo'),
+  ('Designer de interface'),
+  ('Designer de experiência do usuário'),
+  ('Designer de serviços'),
+  ('Designer de interiores'),
+  ('Arquiteto'),
+  ('Paisagista'),
+  ('Desenhista técnico'),
+  ('Artista 3D'),
+  ('Artista de concept art'),
+  ('Artista de storyboard'),
+  ('Artista de quadrinhos'),
+  ('Especialista em lettering'),
+  ('Calígrafo'),
+  ('Tipógrafo'),
+  ('Artista de colagem'),
+  ('Retoquista'),
+  ('Designer de moda')
+on conflict (name) do nothing;
+
+-- Video, photography, animation and audio
+insert into public.skill_tags (name) values
+  ('Videomaker'),
+  ('Diretor de fotografia'),
+  ('Operador de câmera'),
+  ('Editor de reels'),
+  ('Colorista'),
+  ('Assistente de edição'),
+  ('Produtor audiovisual'),
+  ('Diretor de vídeo'),
+  ('Operador de drone'),
+  ('Fotógrafo de produto'),
+  ('Fotógrafo de eventos'),
+  ('Fotógrafo gastronômico'),
+  ('Animador stop motion'),
+  ('Artista de efeitos visuais'),
+  ('Especialista em streaming'),
+  ('Técnico de iluminação'),
+  ('Técnico de som'),
+  ('Mixador'),
+  ('Masterizador'),
+  ('Designer de som para jogos'),
+  ('Editor de podcast'),
+  ('Produtor de áudio'),
+  ('Cantor'),
+  ('Músico instrumentista'),
+  ('Beatmaker'),
+  ('DJ'),
+  ('Professor de música'),
+  ('Criador de trilhas sonoras')
+on conflict (name) do nothing;
+
+-- Writing, language and publishing
+insert into public.skill_tags (name) values
+  ('Jornalista'),
+  ('Editor de texto'),
+  ('Revisor'),
+  ('Redator publicitário'),
+  ('Redator UX'),
+  ('Ghostwriter'),
+  ('Autor'),
+  ('Escritor técnico'),
+  ('Escritor de landing pages'),
+  ('Roteirista de vídeo'),
+  ('Roteirista para podcast'),
+  ('Pesquisador de conteúdo'),
+  ('Tradutor inglês-português'),
+  ('Tradutor espanhol-português'),
+  ('Intérprete'),
+  ('Transcritor'),
+  ('Especialista em documentação'),
+  ('Estrategista editorial'),
+  ('Criador de newsletter'),
+  ('Editor de livros')
+on conflict (name) do nothing;
+
+-- Marketing, growth and communication
+insert into public.skill_tags (name) values
+  ('Analista de marketing'),
+  ('Gerente de marketing'),
+  ('Especialista em inbound marketing'),
+  ('Especialista em outbound marketing'),
+  ('Growth marketer'),
+  ('Gerente de marca'),
+  ('Especialista em mídias sociais'),
+  ('Criador de conteúdo'),
+  ('Influenciador digital'),
+  ('Gestor de comunidade'),
+  ('Analista de CRM'),
+  ('Especialista em marketing de afiliados'),
+  ('Especialista em marketing de produto'),
+  ('Analista de performance'),
+  ('Especialista em Google Ads'),
+  ('Especialista em Meta Ads'),
+  ('Especialista em LinkedIn Ads'),
+  ('Especialista em TikTok Ads'),
+  ('Especialista em YouTube Ads'),
+  ('Especialista em ASO'),
+  ('Especialista em marketing de influência'),
+  ('Especialista em relações públicas'),
+  ('Assessor de imprensa'),
+  ('Pesquisador de mercado'),
+  ('Especialista em funil de vendas')
+on conflict (name) do nothing;
+
+-- Software, data, product and artificial intelligence
+insert into public.skill_tags (name) values
+  ('Desenvolvedor React'),
+  ('Desenvolvedor Vue.js'),
+  ('Desenvolvedor Angular'),
+  ('Desenvolvedor Node.js'),
+  ('Desenvolvedor Python'),
+  ('Desenvolvedor PHP'),
+  ('Desenvolvedor Java'),
+  ('Desenvolvedor C#'),
+  ('Desenvolvedor Ruby on Rails'),
+  ('Desenvolvedor WordPress'),
+  ('Desenvolvedor Shopify'),
+  ('Desenvolvedor Webflow'),
+  ('Desenvolvedor Flutter'),
+  ('Desenvolvedor React Native'),
+  ('Desenvolvedor iOS'),
+  ('Desenvolvedor Android'),
+  ('Analista de qualidade de software'),
+  ('Especialista em automação de testes'),
+  ('Engenheiro de dados'),
+  ('Analista de BI'),
+  ('Engenheiro de machine learning'),
+  ('Especialista em IA generativa'),
+  ('Prompt engineer'),
+  ('Analista de cibersegurança'),
+  ('Especialista em segurança da informação'),
+  ('Administrador de banco de dados'),
+  ('Desenvolvedor blockchain'),
+  ('Desenvolvedor de APIs'),
+  ('Site reliability engineer'),
+  ('Engenheiro de cloud'),
+  ('Arquiteto de soluções'),
+  ('Scrum master'),
+  ('Product owner'),
+  ('Analista de suporte técnico'),
+  ('Especialista em integrações')
+on conflict (name) do nothing;
+
+-- Operations, business, finance and people
+insert into public.skill_tags (name) values
+  ('Consultor de negócios'),
+  ('Consultor financeiro'),
+  ('Contador'),
+  ('Analista financeiro'),
+  ('Planejador financeiro'),
+  ('Especialista em finanças corporativas'),
+  ('Assistente administrativo'),
+  ('Analista de operações'),
+  ('Coordenador de projetos'),
+  ('Especialista em processos'),
+  ('Especialista em atendimento ao cliente'),
+  ('Customer success manager'),
+  ('SDR'),
+  ('Executivo de vendas'),
+  ('Consultor comercial'),
+  ('Recrutador'),
+  ('Analista de RH'),
+  ('Especialista em treinamento'),
+  ('Planejador de eventos'),
+  ('Produtor de eventos')
+on conflict (name) do nothing;
+
+-- Verification: select count(*) from public.skill_tags;
