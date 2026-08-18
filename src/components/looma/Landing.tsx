@@ -18,6 +18,10 @@ type FeedPost = {
 type FeedTab = "for-you" | "following";
 type SearchPhase = "compact" | "opening-space" | "moving" | "expanded";
 type SearchPosition = { left: number; top: number; width: number };
+type PersonRecommendation = Pick<Profile, "avatar_url" | "full_name" | "username"> & {
+  id: string;
+  recommendation_reason: string;
+};
 
 const SEARCH_TRANSITION_MS = 520;
 const LOGO_SPLASH_MS = 1000;
@@ -41,7 +45,7 @@ export function LoomaLanding({ showSplash, onSplashComplete }: { showSplash: boo
   const [postProfiles, setPostProfiles] = useState<Record<string, Profile>>({});
   const [postsLoading, setPostsLoading] = useState(true);
   const [postsError, setPostsError] = useState<string | null>(null);
-  const [suggestions, setSuggestions] = useState<Profile[]>([]);
+  const [suggestions, setSuggestions] = useState<PersonRecommendation[]>([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(true);
   const [suggestionsError, setSuggestionsError] = useState<string | null>(null);
   const [connectingId, setConnectingId] = useState<string | null>(null);
@@ -164,25 +168,18 @@ export function LoomaLanding({ showSplash, onSplashComplete }: { showSplash: boo
 
     setSuggestionsLoading(true);
     setSuggestionsError(null);
-    const supabase = getSupabaseBrowserClient();
-    const connectionResult = await getConnectionRows(supabase, user.id);
-    if (connectionResult.error) {
-      setSuggestionsError(connectionResult.error.message);
-      setSuggestionsLoading(false);
-      return;
-    }
-
-    const unavailableIds = getPeerIds((connectionResult.data ?? []) as ConnectionRow[], user.id, ["accepted", "pending"]);
-    const profileResult = await supabase
-      .from("profiles")
-      .select("id, username, full_name, avatar_url, bio, created_at")
-      .neq("id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(30);
-    if (profileResult.error) {
-      setSuggestionsError(profileResult.error.message);
+    const recommendationResult = await getSupabaseBrowserClient()
+      .rpc("get_people_in_motion", { result_limit: 3 });
+    if (recommendationResult.error) {
+      setSuggestionsError(recommendationResult.error.message);
     } else {
-      setSuggestions(((profileResult.data ?? []) as Profile[]).filter((item) => !unavailableIds.has(item.id)).slice(0, 3));
+      setSuggestions((recommendationResult.data ?? []).map((item) => ({
+        id: item.profile_id,
+        full_name: item.full_name,
+        username: item.username,
+        avatar_url: item.avatar_url,
+        recommendation_reason: item.recommendation_reason,
+      })));
     }
     setSuggestionsLoading(false);
   }
@@ -315,7 +312,7 @@ export function LoomaLanding({ showSplash, onSplashComplete }: { showSplash: boo
           </section>
           <aside className="feed-aside" aria-label="Em destaque">
             <div className={`aside-search-compact ${searchPhase === "moving" || searchPhase === "expanded" ? "is-collapsed" : ""}`}><div ref={compactSearchAnchorRef} className="aside-search-anchor" aria-hidden="true" /></div>
-            {suggestionsLoading ? <section className="aside-card home-suggestions-skeleton" aria-label="Carregando sugestões"><i /><i /></section> : suggestionsError ? <section className="aside-card home-aside-error" role="alert">Não foi possível carregar sugestões: {suggestionsError}</section> : suggestions.length > 0 ? <section className="aside-card"><p className="aside-label">Pessoas em movimento</p>{suggestions.map((suggestion) => <div className="person" key={suggestion.id}><ProfileAvatar className="avatar" fullName={suggestion.full_name || "Usuário"} avatarUrl={suggestion.avatar_url} /><div><strong>{suggestion.full_name?.trim() || "Usuário"}</strong>{suggestion.username ? <span>@{suggestion.username.replace(/^@/, "")}</span> : null}</div><button type="button" disabled={connectingId === suggestion.id} onClick={() => void requestConnection(suggestion.id)}>{connectingId === suggestion.id ? "Enviando…" : "Conectar"}</button></div>)}</section> : null}
+            {suggestionsLoading ? <section className="aside-card home-suggestions-skeleton" aria-label="Carregando sugestões"><i /><i /></section> : suggestionsError ? <section className="aside-card home-aside-error" role="alert">Não foi possível carregar sugestões: {suggestionsError}</section> : suggestions.length > 0 ? <section className="aside-card"><p className="aside-label">Pessoas em movimento</p>{suggestions.map((suggestion) => <div className="person" key={suggestion.id}><ProfileAvatar className="avatar" fullName={suggestion.full_name || "Usuário"} avatarUrl={suggestion.avatar_url} /><div><strong>{suggestion.full_name?.trim() || "Usuário"}</strong>{suggestion.username ? <span>@{suggestion.username.replace(/^@/, "")}</span> : null}<small className="person-reason">{suggestion.recommendation_reason}</small></div><button type="button" disabled={connectingId === suggestion.id} onClick={() => void requestConnection(suggestion.id)}>{connectingId === suggestion.id ? "Enviando…" : "Conectar"}</button></div>)}</section> : null}
             {HOME_FEATURE_FLAGS.showTrendingCommunities ? <section className="aside-card"><p className="aside-label">Em alta agora</p><h2>Oportunidades que combinam com o seu trabalho.</h2><a href="#comunidades">Explorar comunidades</a></section> : null}
             {HOME_FEATURE_FLAGS.showInterestRecommendations ? <section className="aside-card interests-card"><p className="aside-label">Recomendado para você</p><h2>Interesses para explorar</h2></section> : null}
           </aside>

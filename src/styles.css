@@ -2176,6 +2176,13 @@ body::-webkit-scrollbar,
   color: #85858b;
   font-size: 0.72rem;
 }
+.person-reason {
+  display: block;
+  margin-top: 0.22rem;
+  color: var(--looma-muted);
+  font-size: 0.7rem;
+  line-height: 1.3;
+}
 .person button {
   padding: 0.38rem 0.64rem;
   border: 1px solid rgba(255, 255, 255, 0.18);
