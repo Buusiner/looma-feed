@@ -8,6 +8,7 @@ import {
   Pencil,
   Send,
   Settings,
+  Sparkles,
   TrendingUp,
   UserRound,
   BriefcaseBusiness,
@@ -29,6 +30,7 @@ const NAV = [
   { icon: BarChart3, label: "Relatórios", path: "/relatorios" },
   { icon: CircleHelp, label: "Comunidade e Ajuda", path: "/comunidade" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
+  { icon: Sparkles, label: "Planos", path: "/planos" },
   { icon: BriefcaseBusiness, label: "Portfólio", path: "/perfil" },
 ];
 

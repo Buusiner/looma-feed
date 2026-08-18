@@ -15,6 +15,7 @@ import { Route as ConexoesRouteImport } from './routes/conexoes'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as OportunidadesRouteImport } from './routes/oportunidades'
 import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as PropostasRouteImport } from './routes/propostas'
 import { Route as ProtegidaRouteImport } from './routes/protegida'
 import { Route as PublicacoesRouteImport } from './routes/publicacoes'
@@ -51,6 +52,11 @@ const PerfilRoute = PerfilRouteImport.update({
   path: '/perfil',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlanosRoute = PlanosRouteImport.update({
+  id: '/planos',
+  path: '/planos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PropostasRoute = PropostasRouteImport.update({
   id: '/propostas',
   path: '/propostas',
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/configuracoes': typeof ConfiguracoesRoute
   '/oportunidades': typeof OportunidadesRoute
   '/perfil': typeof PerfilRouteWithChildren
+  '/planos': typeof PlanosRoute
   '/propostas': typeof PropostasRoute
   '/protegida': typeof ProtegidaRoute
   '/publicacoes': typeof PublicacoesRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/configuracoes': typeof ConfiguracoesRoute
   '/oportunidades': typeof OportunidadesRoute
   '/perfil': typeof PerfilRouteWithChildren
+  '/planos': typeof PlanosRoute
   '/propostas': typeof PropostasRoute
   '/protegida': typeof ProtegidaRoute
   '/publicacoes': typeof PublicacoesRoute
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/configuracoes': typeof ConfiguracoesRoute
   '/oportunidades': typeof OportunidadesRoute
   '/perfil': typeof PerfilRouteWithChildren
+  '/planos': typeof PlanosRoute
   '/propostas': typeof PropostasRoute
   '/protegida': typeof ProtegidaRoute
   '/publicacoes': typeof PublicacoesRoute
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/oportunidades'
     | '/perfil'
+    | '/planos'
     | '/propostas'
     | '/protegida'
     | '/publicacoes'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/oportunidades'
     | '/perfil'
+    | '/planos'
     | '/propostas'
     | '/protegida'
     | '/publicacoes'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/oportunidades'
     | '/perfil'
+    | '/planos'
     | '/propostas'
     | '/protegida'
     | '/publicacoes'
@@ -166,6 +178,7 @@ export interface RootRouteChildren {
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   OportunidadesRoute: typeof OportunidadesRoute
   PerfilRoute: typeof PerfilRouteWithChildren
+  PlanosRoute: typeof PlanosRoute
   PropostasRoute: typeof PropostasRoute
   ProtegidaRoute: typeof ProtegidaRoute
   PublicacoesRoute: typeof PublicacoesRoute
@@ -214,6 +227,13 @@ declare module '@tanstack/react-router' {
       path: '/perfil'
       fullPath: '/perfil'
       preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/planos': {
+      id: '/planos'
+      path: '/planos'
+      fullPath: '/planos'
+      preLoaderRoute: typeof PlanosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/propostas': {
@@ -272,6 +292,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConfiguracoesRoute: ConfiguracoesRoute,
   OportunidadesRoute: OportunidadesRoute,
   PerfilRoute: PerfilRouteWithChildren,
+  PlanosRoute: PlanosRoute,
   PropostasRoute: PropostasRoute,
   ProtegidaRoute: ProtegidaRoute,
   PublicacoesRoute: PublicacoesRoute,
