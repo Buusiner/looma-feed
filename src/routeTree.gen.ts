@@ -14,6 +14,7 @@ import { Route as ComunidadeRouteImport } from './routes/comunidade'
 import { Route as ConexoesRouteImport } from './routes/conexoes'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as OportunidadesRouteImport } from './routes/oportunidades'
+import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as PropostasRouteImport } from './routes/propostas'
 import { Route as ProtegidaRouteImport } from './routes/protegida'
 import { Route as PublicacoesRouteImport } from './routes/publicacoes'
@@ -45,6 +46,11 @@ const OportunidadesRoute = OportunidadesRouteImport.update({
   path: '/oportunidades',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PerfilRoute = PerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PropostasRoute = PropostasRouteImport.update({
   id: '/propostas',
   path: '/propostas',
@@ -66,9 +72,9 @@ const RelatoriosRoute = RelatoriosRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerfilEditarRoute = PerfilEditarRouteImport.update({
-  id: '/perfil/editar',
-  path: '/perfil/editar',
-  getParentRoute: () => rootRouteImport,
+  id: '/editar',
+  path: '/editar',
+  getParentRoute: () => PerfilRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/conexoes': typeof ConexoesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/oportunidades': typeof OportunidadesRoute
+  '/perfil': typeof PerfilRouteWithChildren
   '/propostas': typeof PropostasRoute
   '/protegida': typeof ProtegidaRoute
   '/publicacoes': typeof PublicacoesRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/conexoes': typeof ConexoesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/oportunidades': typeof OportunidadesRoute
+  '/perfil': typeof PerfilRouteWithChildren
   '/propostas': typeof PropostasRoute
   '/protegida': typeof ProtegidaRoute
   '/publicacoes': typeof PublicacoesRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/conexoes': typeof ConexoesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/oportunidades': typeof OportunidadesRoute
+  '/perfil': typeof PerfilRouteWithChildren
   '/propostas': typeof PropostasRoute
   '/protegida': typeof ProtegidaRoute
   '/publicacoes': typeof PublicacoesRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/conexoes'
     | '/configuracoes'
     | '/oportunidades'
+    | '/perfil'
     | '/propostas'
     | '/protegida'
     | '/publicacoes'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/conexoes'
     | '/configuracoes'
     | '/oportunidades'
+    | '/perfil'
     | '/propostas'
     | '/protegida'
     | '/publicacoes'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/conexoes'
     | '/configuracoes'
     | '/oportunidades'
+    | '/perfil'
     | '/propostas'
     | '/protegida'
     | '/publicacoes'
@@ -153,11 +165,11 @@ export interface RootRouteChildren {
   ConexoesRoute: typeof ConexoesRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   OportunidadesRoute: typeof OportunidadesRoute
+  PerfilRoute: typeof PerfilRouteWithChildren
   PropostasRoute: typeof PropostasRoute
   ProtegidaRoute: typeof ProtegidaRoute
   PublicacoesRoute: typeof PublicacoesRoute
   RelatoriosRoute: typeof RelatoriosRoute
-  PerfilEditarRoute: typeof PerfilEditarRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -197,6 +209,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OportunidadesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/perfil': {
+      id: '/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/propostas': {
       id: '/propostas'
       path: '/propostas'
@@ -227,13 +246,24 @@ declare module '@tanstack/react-router' {
     }
     '/perfil/editar': {
       id: '/perfil/editar'
-      path: '/perfil/editar'
+      path: '/editar'
       fullPath: '/perfil/editar'
       preLoaderRoute: typeof PerfilEditarRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof PerfilRoute
     }
   }
 }
+
+interface PerfilRouteChildren {
+  PerfilEditarRoute: typeof PerfilEditarRoute
+}
+
+const PerfilRouteChildren: PerfilRouteChildren = {
+  PerfilEditarRoute: PerfilEditarRoute,
+}
+
+const PerfilRouteWithChildren =
+  PerfilRoute._addFileChildren(PerfilRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -241,11 +271,11 @@ const rootRouteChildren: RootRouteChildren = {
   ConexoesRoute: ConexoesRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
   OportunidadesRoute: OportunidadesRoute,
+  PerfilRoute: PerfilRouteWithChildren,
   PropostasRoute: PropostasRoute,
   ProtegidaRoute: ProtegidaRoute,
   PublicacoesRoute: PublicacoesRoute,
   RelatoriosRoute: RelatoriosRoute,
-  PerfilEditarRoute: PerfilEditarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,17 +1,26 @@
 import { useEffect, useState, type FormEvent, type MouseEvent } from "react";
 import { createPortal } from "react-dom";
 import type { User } from "@supabase/supabase-js";
-import { ArrowLeft, Mail, X } from "lucide-react";
+import { Mail, X } from "lucide-react";
 import { createSupabaseCredentialClient, getSupabaseBrowserClient } from "@/lib/supabase/browser";
-import { markWelcomeShown } from "@/lib/splash-state";
 
 type AuthButtonProps = {
   variant?: "header" | "sidebar";
 };
 
-type EmailStep = "credentials" | "code" | "welcome";
+type EmailStep = "credentials" | "code";
 type AuthMode = "login" | "signup";
 const EMAIL_OTP_LENGTH = 8;
+
+function translateAuthError(message: string) {
+  const securityDelay = message.match(/for security purposes, you can only request this after\s+(\d+)\s+seconds?\.?/i);
+  if (securityDelay) {
+    const seconds = Number(securityDelay[1]);
+    return `Por segurança, aguarde ${seconds} ${seconds === 1 ? "segundo" : "segundos"} antes de tentar novamente.`;
+  }
+
+  return message;
+}
 
 export function AuthButton({ variant = "header" }: AuthButtonProps) {
   const [user, setUser] = useState<User | null>(null);
@@ -22,6 +31,7 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
   const [authMode, setAuthMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
   const [code, setCode] = useState("");
 
   useEffect(() => {
@@ -44,12 +54,6 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isEmailModalOpen, isWorking]);
 
-  useEffect(() => {
-    if (emailStep !== "welcome") return;
-    const timer = window.setTimeout(() => closeEmailModal(), 2200);
-    return () => window.clearTimeout(timer);
-  }, [emailStep]);
-
   async function signInWithGoogle() {
     setIsWorking(true);
     setError(null);
@@ -71,6 +75,10 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
     event.preventDefault();
     const normalizedEmail = email.trim().toLowerCase();
     if (!normalizedEmail || !password) return;
+    if (authMode === "signup" && password !== repeatPassword) {
+      setError("As senhas não coincidem.");
+      return;
+    }
 
     setIsWorking(true);
     setError(null);
@@ -83,7 +91,7 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
       });
 
       if (signupError || !data.user || data.user.identities?.length === 0) {
-        setError(signupError?.message ?? "Este email já está associado a uma conta.");
+        setError(signupError ? translateAuthError(signupError.message) : "Este email já está associado a uma conta.");
         setIsWorking(false);
         return;
       }
@@ -140,8 +148,7 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
       return;
     }
 
-    markWelcomeShown(data.user);
-    setEmailStep("welcome");
+    closeEmailModal();
     setIsWorking(false);
   }
 
@@ -186,6 +193,7 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
     setIsEmailModalOpen(false);
     setEmailStep("credentials");
     setPassword("");
+    setRepeatPassword("");
     setCode("");
     setError(null);
   }
@@ -196,12 +204,10 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
 
   const emailModal = isEmailModalOpen && typeof document !== "undefined" ? createPortal(
     <div className="email-auth-overlay" onMouseDown={handleBackdropClick}>
-      <section className={`email-auth-modal email-auth-${emailStep}`} role="dialog" aria-modal="true" aria-labelledby="email-auth-title">
-        {emailStep !== "welcome" ? (
-          <button type="button" className="email-auth-close" onClick={closeEmailModal} disabled={isWorking} aria-label="Fechar">
-            <X size={18} aria-hidden="true" />
-          </button>
-        ) : null}
+      <section className={`email-auth-modal email-auth-step-${emailStep}`} role="dialog" aria-modal="true" aria-labelledby="email-auth-title">
+        <button type="button" className="email-auth-close" onClick={closeEmailModal} disabled={isWorking} aria-label="Fechar">
+          <X size={18} aria-hidden="true" />
+        </button>
         <span className="looma-logo-mark email-auth-logo" role="img" aria-label="Looma" />
 
         {emailStep === "credentials" ? (
@@ -233,8 +239,23 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
                 minLength={authMode === "login" ? 6 : 8}
                 required
               />
+              {authMode === "signup" ? (
+                <>
+                  <label htmlFor={`modal-auth-repeat-password-${variant}`}>Repetir senha</label>
+                  <input
+                    id={`modal-auth-repeat-password-${variant}`}
+                    type="password"
+                    value={repeatPassword}
+                    onChange={(event) => setRepeatPassword(event.target.value)}
+                    placeholder="Repita a sua senha"
+                    autoComplete="new-password"
+                    minLength={8}
+                    required
+                  />
+                </>
+              ) : null}
               {error ? <p className="email-auth-error" role="alert">{error}</p> : null}
-              <button type="submit" className="email-auth-submit" disabled={isWorking || !email.trim() || (authMode === "login" ? password.length < 6 : password.length < 8)}>
+              <button type="submit" className="email-auth-submit" disabled={isWorking || !email.trim() || (authMode === "login" ? password.length < 6 : password.length < 8 || repeatPassword.length < 8 || password !== repeatPassword)}>
                 {isWorking ? "A continuar…" : authMode === "login" ? "Login" : "Criar conta"}
               </button>
             </form>
@@ -243,17 +264,15 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
               className="email-auth-mode"
               onClick={() => {
                 setAuthMode((current) => current === "login" ? "signup" : "login");
+                setRepeatPassword("");
                 setError(null);
               }}
             >
               {authMode === "login" ? "Ainda não tem conta? Criar conta" : "Já tem conta? Fazer login"}
             </button>
           </>
-        ) : emailStep === "code" ? (
+        ) : (
           <>
-            <button type="button" className="email-auth-back" onClick={() => setEmailStep("credentials")} disabled={isWorking}>
-              <ArrowLeft size={15} aria-hidden="true" /> Voltar
-            </button>
             <header className="email-auth-heading">
               <h1 id="email-auth-title">Confirme o código</h1>
               <p>Enviámos um código de oito dígitos para <strong>{email}</strong>.</p>
@@ -265,7 +284,7 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
                 className="email-auth-code"
                 value={code}
                 onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, EMAIL_OTP_LENGTH))}
-                placeholder="00000000"
+                placeholder="Digite o código de 8 dígitos"
                 inputMode="numeric"
                 autoComplete="one-time-code"
                 pattern="[0-9]{8}"
@@ -281,12 +300,6 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
               {isWorking ? "A reenviar…" : "Reenviar código"}
             </button>
           </>
-        ) : (
-          <div className="email-auth-welcome">
-            <span>Bem-vindo à</span>
-            <h1 id="email-auth-title">looma</h1>
-            <p>We are building connections.</p>
-          </div>
         )}
       </section>
     </div>,

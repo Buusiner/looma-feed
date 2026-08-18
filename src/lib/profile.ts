@@ -9,6 +9,8 @@ export type Profile = {
   avatar_url: string | null;
   bio: string | null;
   created_at: string | null;
+  onboarding_completed_at: string | null;
+  experience_level: "iniciante" | "intermediario" | "experiente" | null;
 };
 
 export function getProfileName(profile: Profile | null, user: User | null) {
@@ -64,7 +66,7 @@ export function useCurrentProfile() {
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, username, full_name, avatar_url, bio, created_at")
+      .select("id, username, full_name, avatar_url, bio, created_at, onboarding_completed_at, experience_level")
       .eq("id", activeUser.id)
       .maybeSingle();
 

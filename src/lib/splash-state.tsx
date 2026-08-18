@@ -1,8 +1,10 @@
 import { createContext, useContext } from "react";
 import type { User } from "@supabase/supabase-js";
+import { getSupabaseBrowserClient } from "./supabase/browser";
 
 let hasShownSplash = false;
-const WELCOME_SESSION_KEY = "looma-welcome-session";
+const WELCOME_METADATA_KEY = "looma_welcome_seen_at";
+const NEW_ACCOUNT_WINDOW_MS = 5 * 60 * 1000;
 
 declare global {
   interface Window {
@@ -18,33 +20,34 @@ export function claimInitialSplash() {
   return true;
 }
 
-function getSessionIdentity(user: User) {
-  return `${user.id}:${user.last_sign_in_at ?? user.created_at}`;
+function isNewAccount(user: User) {
+  const createdAt = Date.parse(user.created_at);
+  const lastSignInAt = Date.parse(user.last_sign_in_at ?? user.created_at);
+  return Number.isFinite(createdAt) && Number.isFinite(lastSignInAt) && Math.abs(lastSignInAt - createdAt) <= NEW_ACCOUNT_WINDOW_MS;
 }
 
 export function shouldShowWelcome(user: User) {
-  if (typeof window === "undefined") return false;
-  return window.localStorage.getItem(WELCOME_SESSION_KEY) !== getSessionIdentity(user);
+  return isNewAccount(user) && !user.user_metadata?.[WELCOME_METADATA_KEY];
 }
 
-export function markWelcomeShown(user: User) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(WELCOME_SESSION_KEY, getSessionIdentity(user));
-}
+export async function markWelcomeShown(_user: User) {
+  const { error } = await getSupabaseBrowserClient().auth.updateUser({
+    data: { [WELCOME_METADATA_KEY]: new Date().toISOString() },
+  });
 
-export function resetWelcomeSession() {
-  if (typeof window === "undefined") return;
-  window.localStorage.removeItem(WELCOME_SESSION_KEY);
+  if (error) console.error("Não foi possível registrar as boas-vindas da Looma:", error.message);
 }
 
 type SplashContextValue = {
   shouldPlaySplash: boolean;
   completeSplash: () => void;
+  startSplash: () => void;
 };
 
 const SplashContext = createContext<SplashContextValue>({
   shouldPlaySplash: true,
   completeSplash: () => undefined,
+  startSplash: () => undefined,
 });
 
 export const SplashProvider = SplashContext.Provider;

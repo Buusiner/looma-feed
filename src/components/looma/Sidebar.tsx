@@ -10,6 +10,7 @@ import {
   Settings,
   TrendingUp,
   UserRound,
+  BriefcaseBusiness,
   Users,
 } from "lucide-react";
 import { Link, useLocation, useRouter } from "@tanstack/react-router";
@@ -28,7 +29,7 @@ const NAV = [
   { icon: BarChart3, label: "Relatórios", path: "/relatorios" },
   { icon: CircleHelp, label: "Comunidade e Ajuda", path: "/comunidade" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
-  { icon: UserRound, label: "Perfil público", path: "/perfil" },
+  { icon: BriefcaseBusiness, label: "Portfólio", path: "/perfil" },
 ];
 
 // Keep the Premium card ready to be restored without removing its markup.
@@ -82,14 +83,6 @@ export function LoomaSidebar() {
       <nav className="sidebar-nav" aria-label="Navegação principal">
         {NAV.map(({ icon: Icon, label, path }) => {
           const isActive = pathname === path;
-          if (path === "/perfil") {
-            return (
-              <button key={label} type="button" className={isActive ? "active" : ""} aria-current={isActive ? "page" : undefined}>
-                <Icon size={16} aria-hidden="true" />
-                <span>{label}</span>
-              </button>
-            );
-          }
           return (
             <Link
               key={label}

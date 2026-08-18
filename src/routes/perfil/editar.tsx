@@ -4,15 +4,13 @@ import { Camera, ChevronLeft, LoaderCircle } from "lucide-react";
 import { AuthButton } from "@/components/looma/AuthButton";
 import { ProfileAvatar } from "@/components/looma/ProfileAvatar";
 import { getProfileName, useCurrentProfile } from "@/lib/profile";
-import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
+import { ACCEPTED_AVATAR_TYPES, getAvatarFileValidationError, normalizeUsername, saveProfileDetails } from "@/lib/profile-editor";
 
 export const Route = createFileRoute("/perfil/editar")({
   head: () => ({ meta: [{ title: "Editar perfil — Looma" }] }),
   component: EditProfilePage,
 });
 
-const ACCEPTED_AVATAR_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-const MAX_AVATAR_SIZE = 2 * 1024 * 1024;
 const PROFILE_ROUTE_FADE_MS = 1000;
 
 function EditProfilePage() {
@@ -52,10 +50,11 @@ function EditProfilePage() {
     const file = event.target.files?.[0] ?? null;
     setError(null);
     if (!file) return setAvatarFile(null);
-    if (!ACCEPTED_AVATAR_TYPES.includes(file.type) || file.size > MAX_AVATAR_SIZE) {
+    const validationError = getAvatarFileValidationError(file);
+    if (validationError) {
       event.target.value = "";
       setAvatarFile(null);
-      setError("Escolha uma imagem JPG, PNG, WebP ou GIF de até 2 MB.");
+      setError(validationError);
       return;
     }
     setAvatarFile(file);
@@ -66,7 +65,7 @@ function EditProfilePage() {
     if (!user) return;
 
     const normalizedName = fullName.trim();
-    const normalizedUsername = username.trim().replace(/^@/, "").toLowerCase();
+    const normalizedUsername = normalizeUsername(username);
     if (!normalizedName) {
       setError("Informe seu nome completo.");
       return;
@@ -81,74 +80,16 @@ function EditProfilePage() {
     setNotice(null);
 
     try {
-      const supabase = getSupabaseBrowserClient();
-      let avatarUrl = profile?.avatar_url ?? null;
-
-      if (avatarFile) {
-        const bucketResponse = await fetch("/api/storage/ensure-avatars", { method: "POST" });
-        if (!bucketResponse.ok) {
-          const body = (await bucketResponse.json().catch(() => null)) as { error?: string } | null;
-          console.error("[Looma] Falha ao preparar o bucket de avatar.", {
-            status: bucketResponse.status,
-            serverError: body?.error ?? null,
-          });
-          if (body?.error === "storage_admin_not_configured") {
-            throw new Error("O upload de avatar ainda não está configurado no servidor.");
-          }
-          throw new Error("Não foi possível preparar o armazenamento de avatar.");
-        }
-
-        const extension = avatarFile.name.split(".").pop()?.toLowerCase() || "jpg";
-        const filePath = `${user.id}/avatar-${Date.now()}.${extension}`;
-        const { error: uploadError } = await supabase.storage.from("avatars").upload(filePath, avatarFile, {
-          cacheControl: "3600",
-          contentType: avatarFile.type,
-          upsert: false,
-        });
-        if (uploadError) {
-          console.error("[Looma] Falha no upload do avatar.", uploadError);
-          throw new Error("Não foi possível enviar a sua foto. Tente novamente.");
-        }
-
-        const { data: publicUrl } = supabase.storage.from("avatars").getPublicUrl(filePath);
-        avatarUrl = publicUrl.publicUrl;
-      }
-
-      console.info("[Looma] Salvando perfil.", {
-        userId: user.id,
+      const updatedProfile = await saveProfileDetails({
+        user,
+        profile,
+        fullName: normalizedName,
         username: normalizedUsername,
-        hasNewAvatar: Boolean(avatarFile),
+        bio,
+        avatarFile,
       });
-      const { data: updatedProfile, error: updateError } = await supabase
-        .from("profiles")
-        .update({
-          full_name: normalizedName,
-          username: normalizedUsername,
-          bio: bio.trim() || null,
-          avatar_url: avatarUrl,
-        })
-        .eq("id", user.id)
-        .select("id, username, full_name, avatar_url, bio, created_at")
-        .single();
 
-      if (updateError) {
-        console.error("[Looma] Falha ao atualizar profiles.", {
-          userId: user.id,
-          code: updateError.code,
-          message: updateError.message,
-          details: updateError.details,
-          hint: updateError.hint,
-        });
-        if (updateError.code === "23505") {
-          throw new Error("Esse username já está em uso. Escolha outro.");
-        }
-        throw new Error("Não foi possível salvar seu perfil. Tente novamente.");
-      }
-
-      console.info("[Looma] Perfil salvo pelo Supabase.", {
-        userId: updatedProfile.id,
-        username: updatedProfile.username,
-      });
+      console.info("[Looma] Perfil salvo pelo Supabase.", { userId: updatedProfile.id, username: updatedProfile.username });
       await refresh(user);
       setAvatarFile(null);
       setNotice("Perfil salvo com sucesso.");

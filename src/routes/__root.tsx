@@ -11,8 +11,10 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { SplashProvider, claimInitialSplash, resetWelcomeSession } from "../lib/splash-state";
+import { SplashProvider, claimInitialSplash, shouldShowWelcome } from "../lib/splash-state";
 import { getSupabaseBrowserClient } from "../lib/supabase/browser";
+import { useCurrentProfile } from "../lib/profile";
+import { OnboardingGate } from "../components/looma/OnboardingGate";
 
 function NotFoundComponent() {
   return (
@@ -119,23 +121,36 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
   const [shouldPlaySplash] = useState(claimInitialSplash);
   const [isSplashActive, setIsSplashActive] = useState(shouldPlaySplash);
   const completeSplash = useCallback(() => setIsSplashActive(false), []);
+  const startSplash = useCallback(() => setIsSplashActive(true), []);
+  const { user, profile, refresh } = useCurrentProfile();
+  const shouldShowOnboarding = Boolean(
+    // Keep the gate mounted while the profile cache refreshes after a step is
+    // saved. Otherwise that brief loading state remounts the component and
+    // resets it back to Step 1.
+    user && profile && !profile.onboarding_completed_at && !isSplashActive,
+  );
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
-    const { data: subscription } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_OUT") resetWelcomeSession();
+    const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session?.user && shouldShowWelcome(session.user)) {
+        startSplash();
+        if (window.location.pathname !== "/") void router.navigate({ to: "/" });
+      }
     });
 
     return () => subscription.subscription.unsubscribe();
-  }, []);
+  }, [router, startSplash]);
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SplashProvider value={{ shouldPlaySplash: isSplashActive, completeSplash }}>
+      <SplashProvider value={{ shouldPlaySplash: isSplashActive, completeSplash, startSplash }}>
         <Outlet />
+        {shouldShowOnboarding && profile ? <OnboardingGate user={user!} profile={profile} refreshProfile={refresh} /> : null}
       </SplashProvider>
     </QueryClientProvider>
   );

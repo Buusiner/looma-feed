@@ -5,7 +5,6 @@ import { ProfileAvatar } from "./ProfileAvatar";
 import { getProfileName, getProfileUsername, type Profile, useCurrentProfile } from "@/lib/profile";
 import { getConnectionRows, getPeerIds, type ConnectionRow } from "@/lib/activity-metrics";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
-import { markWelcomeShown, shouldShowWelcome } from "@/lib/splash-state";
 
 type FeedPost = {
   id: string;
@@ -22,8 +21,7 @@ type SearchPosition = { left: number; top: number; width: number };
 
 const MOBILE_NAV = [Search, Bell, MessageCircle];
 const SEARCH_TRANSITION_MS = 520;
-const WELCOME_SPLASH_MS = 4500;
-const LOGO_SPLASH_MS = 1400;
+const LOGO_SPLASH_MS = 1000;
 
 export const HOME_FEATURE_FLAGS = {
   showTrendingCommunities: false,
@@ -37,7 +35,7 @@ function formatPostDate(value: string) {
 export function LoomaLanding({ showSplash, onSplashComplete }: { showSplash: boolean; onSplashComplete: () => void }) {
   const [feedReady, setFeedReady] = useState(() => !showSplash);
   const [introVisible, setIntroVisible] = useState(() => !showSplash);
-  const [splashMode, setSplashMode] = useState<"pending" | "welcome" | "logo">(() => showSplash ? "pending" : "logo");
+  const [logoMinimumElapsed, setLogoMinimumElapsed] = useState(() => !showSplash);
   const [message, setMessage] = useState("");
   const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
   const [posts, setPosts] = useState<FeedPost[]>([]);
@@ -59,30 +57,36 @@ export function LoomaLanding({ showSplash, onSplashComplete }: { showSplash: boo
   const expandedSearchSlotRef = useRef<HTMLDivElement>(null);
   const searchOverlayRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const splashWasActiveRef = useRef(showSplash);
   const { profile, user, isLoading: isProfileLoading } = useCurrentProfile();
   const displayName = getProfileName(profile, user);
   const username = getProfileUsername(profile, user);
 
   useEffect(() => {
-    if (!showSplash || splashMode !== "pending") return;
-    if (!user && isProfileLoading) return;
-    setSplashMode(user && shouldShowWelcome(user) ? "welcome" : "logo");
-  }, [isProfileLoading, showSplash, splashMode, user]);
+    if (showSplash && !splashWasActiveRef.current) {
+      setFeedReady(false);
+      setIntroVisible(false);
+      setLogoMinimumElapsed(false);
+    }
+    splashWasActiveRef.current = showSplash;
+  }, [showSplash]);
 
   useEffect(() => {
-    if (!showSplash || splashMode === "pending") return;
-    const showIntro = window.requestAnimationFrame(() => setIntroVisible(true));
-    const timer = window.setTimeout(() => {
-      if (splashMode === "welcome" && user) markWelcomeShown(user);
-      setFeedReady(true);
-      onSplashComplete();
-    }, splashMode === "welcome" ? WELCOME_SPLASH_MS : LOGO_SPLASH_MS);
+    if (!showSplash) return;
+    const timer = window.setTimeout(() => setLogoMinimumElapsed(true), LOGO_SPLASH_MS);
 
     return () => {
-      window.cancelAnimationFrame(showIntro);
       window.clearTimeout(timer);
     };
-  }, [onSplashComplete, showSplash, splashMode, user?.id, user?.last_sign_in_at]);
+  }, [showSplash]);
+
+  useEffect(() => {
+    if (!showSplash || !logoMinimumElapsed) return;
+    if (isProfileLoading || postsLoading || suggestionsLoading) return;
+
+    setFeedReady(true);
+    onSplashComplete();
+  }, [isProfileLoading, logoMinimumElapsed, onSplashComplete, postsLoading, showSplash, suggestionsLoading]);
 
   async function loadFeed() {
     setPostsLoading(true);
@@ -271,16 +275,8 @@ export function LoomaLanding({ showSplash, onSplashComplete }: { showSplash: boo
 
   return (
     <main className={`looma-transition ${introVisible ? "intro-visible" : ""} ${feedReady ? "feed-ready" : ""}`}>
-      <section className="brand-intro" aria-label="Looma">
-        {splashMode === "welcome" ? (
-          <div className="intro-lockup">
-            <span className="looma-logo-mark intro-logo" aria-hidden="true" />
-            <div className="intro-brand-copy"><span className="intro-brand-name">looma</span><span className="intro-underline" aria-hidden="true" /></div>
-            <span className="intro-tagline-clip"><span className="intro-tagline">We are building connections.</span></span>
-          </div>
-        ) : (
-          <span className="looma-logo-mark intro-logo-loader" role="img" aria-label="Looma carregando" />
-        )}
+      <section className="brand-intro intro-loading" aria-label="Looma">
+        <span className="looma-logo-mark intro-logo-static" role="img" aria-label="Looma" />
       </section>
 
       <section ref={feedStageRef} className="feed-stage" aria-hidden={!feedReady}>
