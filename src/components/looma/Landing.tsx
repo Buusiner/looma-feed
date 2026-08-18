@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Bell, Heart, Image, MessageCircle, MoreHorizontal, Repeat2, Search, Send, Share, Smile } from "lucide-react";
+import { Search, Send } from "lucide-react";
 import { LoomaSidebar } from "./Sidebar";
 import { ProfileAvatar } from "./ProfileAvatar";
 import { getProfileName, getProfileUsername, type Profile, useCurrentProfile } from "@/lib/profile";
@@ -19,7 +19,6 @@ type FeedTab = "for-you" | "following";
 type SearchPhase = "compact" | "opening-space" | "moving" | "expanded";
 type SearchPosition = { left: number; top: number; width: number };
 
-const MOBILE_NAV = [Search, Bell, MessageCircle];
 const SEARCH_TRANSITION_MS = 520;
 const LOGO_SPLASH_MS = 1000;
 
@@ -294,7 +293,6 @@ export function LoomaLanding({ showSplash, onSplashComplete }: { showSplash: boo
               <div className="composer-body">
                 <textarea value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Compartilhe uma ideia, oportunidade ou projeto" maxLength={300} />
                 <div className="composer-actions">
-                  <div><button type="button" aria-label="Adicionar imagem"><Image size={18} /></button><button type="button" aria-label="Adicionar emoji"><Smile size={18} /></button></div>
                   <button type="button" className="publish-button" disabled={!message.trim() || publishing} onClick={() => void publish()}>{publishing ? "Publicando…" : "Publicar"} <Send size={15} /></button>
                 </div>
                 {composerError ? <p className="home-inline-error" role="alert">{composerError}</p> : null}
@@ -308,9 +306,8 @@ export function LoomaLanding({ showSplash, onSplashComplete }: { showSplash: boo
                 return <article className="feed-post" key={post.id}>
                   <ProfileAvatar className="avatar" fullName={authorName} avatarUrl={author?.avatar_url} />
                   <div className="post-body">
-                    <div className="post-meta"><strong>{authorName}</strong><span>{authorUsername ? `${authorUsername} · ` : ""}{formatPostDate(post.created_at)}</span><button type="button" aria-label="Mais opções"><MoreHorizontal size={18} /></button></div>
+                    <div className="post-meta"><strong>{authorName}</strong><span>{authorUsername ? `${authorUsername} · ` : ""}{formatPostDate(post.created_at)}</span></div>
                     <p>{post.content}</p>
-                    <div className="post-actions"><button type="button" aria-label={`${post.comments_count} comentários`}><MessageCircle size={17} />{post.comments_count || ""}</button><button type="button" aria-label="Recompartilhar"><Repeat2 size={17} /></button><button type="button" aria-label={`${post.likes_count} curtidas`}><Heart size={17} />{post.likes_count || ""}</button><button type="button" aria-label="Compartilhar"><Share size={17} /></button></div>
                   </div>
                 </article>;
               })}
@@ -324,7 +321,7 @@ export function LoomaLanding({ showSplash, onSplashComplete }: { showSplash: boo
           </aside>
         </div>
         {searchPosition ? <div ref={searchOverlayRef} className={`feed-search-overlay ${searchPhase === "compact" ? "is-compact" : ""} ${searchInversion ? "is-inverted" : ""}`} style={{ left: searchPosition.left, top: searchPosition.top, width: searchPosition.width, transform: searchInversion ? `translate(${searchInversion.left}px, ${searchInversion.top}px) scaleX(${searchInversion.width})` : undefined }}><label className="aside-search"><Search size={17} aria-hidden="true" /><input ref={searchInputRef} value={searchQuery} onClick={openSearch} onFocus={openSearch} onChange={(event) => setSearchQuery(event.target.value)} onKeyDown={(event) => { if (event.key === "Escape") closeSearch(); }} placeholder="Buscar na Looma" aria-label="Buscar na Looma" /></label></div> : null}
-        <nav className="mobile-feed-nav" aria-label="Navegação principal"><span className="looma-logo-mark mobile-logo" role="img" aria-label="Looma" />{MOBILE_NAV.map((Icon, index) => <button key={index} type="button" aria-label="Navegar"><Icon size={21} /></button>)}</nav>
+        <nav className="mobile-feed-nav" aria-label="Looma"><span className="looma-logo-mark mobile-logo" role="img" aria-label="Looma" /></nav>
       </section>
     </main>
   );
