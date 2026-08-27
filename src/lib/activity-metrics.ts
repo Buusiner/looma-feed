@@ -65,19 +65,26 @@ export async function getActivityMetricResults(
     opportunityViews.gte("created_at", options.since);
   }
 
-  const [connectionResult, sentResult, receivedResult, postsResult, savesResult, viewsResult] = await Promise.all([
-    connections,
-    proposalsSent,
-    proposalsReceived,
-    posts,
-    opportunitySaves,
-    opportunityViews,
-  ]);
+  const [connectionResult, sentResult, receivedResult, postsResult, savesResult, viewsResult] =
+    await Promise.all([
+      connections,
+      proposalsSent,
+      proposalsReceived,
+      posts,
+      opportunitySaves,
+      opportunityViews,
+    ]);
 
   return {
-    connections: { value: connectionResult.count ?? 0, error: connectionResult.error?.message ?? null },
+    connections: {
+      value: connectionResult.count ?? 0,
+      error: connectionResult.error?.message ?? null,
+    },
     proposalsSent: { value: sentResult.count ?? 0, error: sentResult.error?.message ?? null },
-    proposalsReceived: { value: receivedResult.count ?? 0, error: receivedResult.error?.message ?? null },
+    proposalsReceived: {
+      value: receivedResult.count ?? 0,
+      error: receivedResult.error?.message ?? null,
+    },
     posts: { value: postsResult.count ?? 0, error: postsResult.error?.message ?? null },
     opportunitySaves: { value: savesResult.count ?? 0, error: savesResult.error?.message ?? null },
     opportunityViews: { value: viewsResult.count ?? 0, error: viewsResult.error?.message ?? null },
@@ -122,7 +129,11 @@ export async function getConnectionRows(supabase: SupabaseClient, userId: string
     .order("created_at", { ascending: false });
 }
 
-export function getPeerIds(rows: ConnectionRow[], userId: string, statuses?: ConnectionRow["status"][]) {
+export function getPeerIds(
+  rows: ConnectionRow[],
+  userId: string,
+  statuses?: ConnectionRow["status"][],
+) {
   return new Set(
     rows
       .filter((row) => !statuses || statuses.includes(row.status))

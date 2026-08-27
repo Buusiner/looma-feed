@@ -4,7 +4,12 @@ import { Camera, Check, LoaderCircle, Plus, Search, X } from "lucide-react";
 import { useRouter } from "@tanstack/react-router";
 import { ProfileAvatar } from "@/components/looma/ProfileAvatar";
 import { getProfileName, type Profile } from "@/lib/profile";
-import { ACCEPTED_AVATAR_TYPES, getAvatarFileValidationError, saveProfileDetails } from "@/lib/profile-editor";
+import {
+  ACCEPTED_AVATAR_TYPES,
+  getAvatarFileValidationError,
+  getValidHttpUrl,
+  saveProfileDetails,
+} from "@/lib/profile-editor";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 const ONBOARDING_STEPS = ["Sobre você", "O que você faz", "Experiência", "Onde te encontrar"];
@@ -48,18 +53,6 @@ function normalizeCustomSkill(value: string) {
   return cleaned ? `${cleaned.charAt(0).toLocaleUpperCase("pt-BR")}${cleaned.slice(1)}` : "";
 }
 
-function getValidHttpUrl(value: string) {
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-
-  try {
-    const parsed = new URL(trimmed);
-    return parsed.protocol === "https:" || parsed.protocol === "http:" ? parsed.toString() : null;
-  } catch {
-    return null;
-  }
-}
-
 /** The account-wide gate keeps onboarding data in Supabase as the source of truth. */
 export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGateProps) {
   const router = useRouter();
@@ -74,7 +67,11 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
   const [showCustomSkill, setShowCustomSkill] = useState(false);
   const [similarSuggestion, setSimilarSuggestion] = useState<SimilarSkill | null>(null);
   const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel | null>(null);
-  const [socialLinks, setSocialLinks] = useState<SocialLinkValues>({ instagram: "", youtube: "", tiktok: "" });
+  const [socialLinks, setSocialLinks] = useState<SocialLinkValues>({
+    instagram: "",
+    youtube: "",
+    tiktok: "",
+  });
   const [otherLinkLabel, setOtherLinkLabel] = useState("");
   const [otherLinkUrl, setOtherLinkUrl] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -95,7 +92,9 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
   }, [skillSearch, skillTags]);
 
   useEffect(() => {
-    setFullName(profile.full_name ?? user.user_metadata["full_name"] ?? user.user_metadata["name"] ?? "");
+    setFullName(
+      profile.full_name ?? user.user_metadata["full_name"] ?? user.user_metadata["name"] ?? "",
+    );
     setBio(profile.bio ?? "");
     setExperienceLevel(profile.experience_level);
   }, [profile, user]);
@@ -109,10 +108,14 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
       setError(null);
       try {
         const supabase = getSupabaseBrowserClient();
-        const [{ data: tags, error: tagsError }, { data: savedSkills, error: savedSkillsError }] = await Promise.all([
-          supabase.from("skill_tags").select("id, name").order("name"),
-          supabase.from("user_skills").select("skill_tag_id, custom_label").eq("profile_id", user.id),
-        ]);
+        const [{ data: tags, error: tagsError }, { data: savedSkills, error: savedSkillsError }] =
+          await Promise.all([
+            supabase.from("skill_tags").select("id, name").order("name"),
+            supabase
+              .from("user_skills")
+              .select("skill_tag_id, custom_label")
+              .eq("profile_id", user.id),
+          ]);
         if (tagsError) throw tagsError;
         if (savedSkillsError) throw savedSkillsError;
         if (!isCurrent) return;
@@ -124,7 +127,15 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
             const tag = tagsById.get(skill.skill_tag_id);
             return tag ? [tag] : [];
           }
-          return skill.custom_label ? [{ id: `custom:${searchKey(skill.custom_label)}`, name: skill.custom_label, isCustom: true }] : [];
+          return skill.custom_label
+            ? [
+                {
+                  id: `custom:${searchKey(skill.custom_label)}`,
+                  name: skill.custom_label,
+                  isCustom: true,
+                },
+              ]
+            : [];
         });
 
         setSkillTags(availableTags);
@@ -138,7 +149,9 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
     }
 
     void loadSkills();
-    return () => { isCurrent = false; };
+    return () => {
+      isCurrent = false;
+    };
   }, [currentStep, user.id]);
 
   useEffect(() => {
@@ -183,7 +196,9 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
     }
 
     void loadLinks();
-    return () => { isCurrent = false; };
+    return () => {
+      isCurrent = false;
+    };
   }, [currentStep, user.id]);
 
   function chooseAvatar(event: ChangeEvent<HTMLInputElement>) {
@@ -201,7 +216,8 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
   }
 
   function addSkill(skill: SelectedSkill) {
-    if (selectedSkills.some((selected) => searchKey(selected.name) === searchKey(skill.name))) return;
+    if (selectedSkills.some((selected) => searchKey(selected.name) === searchKey(skill.name)))
+      return;
     if (selectedSkills.length >= MAX_SELECTED_SKILLS) {
       setLimitNotice("Você já selecionou 3 áreas. Remova uma para trocar.");
       return;
@@ -235,8 +251,10 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
     setIsCheckingSimilar(true);
     setError(null);
     try {
-      const { data, error: similarityError } = await getSupabaseBrowserClient()
-        .rpc("find_similar_skill_tags", { search_term: normalized, result_limit: 1 });
+      const { data, error: similarityError } = await getSupabaseBrowserClient().rpc(
+        "find_similar_skill_tags",
+        { search_term: normalized, result_limit: 1 },
+      );
       if (similarityError) throw similarityError;
       const suggestion = (data?.[0] ?? null) as SimilarSkill | null;
       if (suggestion) {
@@ -264,7 +282,8 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
 
   function keepCustomSkill() {
     const normalized = normalizeCustomSkill(customSkill);
-    if (normalized) addSkill({ id: `custom:${searchKey(normalized)}`, name: normalized, isCustom: true });
+    if (normalized)
+      addSkill({ id: `custom:${searchKey(normalized)}`, name: normalized, isCustom: true });
     setSimilarSuggestion(null);
     setCustomSkill("");
     setShowCustomSkill(false);
@@ -285,11 +304,18 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
       setCurrentStep(2);
       setNotice("Informações salvas com sucesso.");
       void refreshProfile(user).catch((refreshError) => {
-        console.error("[Looma] Não foi possível atualizar o perfil após salvar o onboarding.", refreshError);
+        console.error(
+          "[Looma] Não foi possível atualizar o perfil após salvar o onboarding.",
+          refreshError,
+        );
       });
     } catch (caught) {
       console.error("[Looma] Não foi possível salvar a Etapa 1 do onboarding.", caught);
-      setError(caught instanceof Error ? caught.message : "Não foi possível salvar seu perfil. Tente novamente.");
+      setError(
+        caught instanceof Error
+          ? caught.message
+          : "Não foi possível salvar seu perfil. Tente novamente.",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -304,12 +330,21 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
     setError(null);
     try {
       const supabase = getSupabaseBrowserClient();
-      const { error: deleteError } = await supabase.from("user_skills").delete().eq("profile_id", user.id);
+      const { error: deleteError } = await supabase
+        .from("user_skills")
+        .delete()
+        .eq("profile_id", user.id);
       if (deleteError) throw deleteError;
       const { error: insertError } = await supabase.from("user_skills").insert(
-        selectedSkills.map((skill) => skill.isCustom
-          ? { profile_id: user.id, custom_label: normalizeCustomSkill(skill.name), skill_tag_id: null }
-          : { profile_id: user.id, skill_tag_id: skill.id, custom_label: null }),
+        selectedSkills.map((skill) =>
+          skill.isCustom
+            ? {
+                profile_id: user.id,
+                custom_label: normalizeCustomSkill(skill.name),
+                skill_tag_id: null,
+              }
+            : { profile_id: user.id, skill_tag_id: skill.id, custom_label: null },
+        ),
       );
       if (insertError) throw insertError;
       setCurrentStep(3);
@@ -345,7 +380,10 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
       setCurrentStep(4);
       setNotice("Nível de experiência salvo com sucesso.");
       void refreshProfile(user).catch((refreshError) => {
-        console.error("[Looma] Não foi possível atualizar o perfil após salvar a experiência.", refreshError);
+        console.error(
+          "[Looma] Não foi possível atualizar o perfil após salvar a experiência.",
+          refreshError,
+        );
       });
     } catch (caught) {
       console.error("[Looma] Não foi possível salvar o nível de experiência.", caught);
@@ -363,17 +401,22 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
       if (!rawValue) continue;
 
       const url = getValidHttpUrl(rawValue);
-      if (!url) throw new Error(`Informe uma URL válida para ${field.label}, começando com http:// ou https://.`);
+      if (!url)
+        throw new Error(
+          `Informe uma URL válida para ${field.label}, começando com http:// ou https://.`,
+        );
       links.push({ type: field.type, label: field.label, url });
     }
 
     const customLabel = otherLinkLabel.trim().replace(/\s+/g, " ");
     const rawOtherUrl = otherLinkUrl.trim();
-    if (customLabel && !rawOtherUrl) throw new Error("Informe o link correspondente ao campo Outro.");
+    if (customLabel && !rawOtherUrl)
+      throw new Error("Informe o link correspondente ao campo Outro.");
     if (!customLabel && rawOtherUrl) throw new Error("Dê um nome ao seu link em Outro.");
     if (customLabel && rawOtherUrl) {
       const url = getValidHttpUrl(rawOtherUrl);
-      if (!url) throw new Error("Informe uma URL válida para Outro, começando com http:// ou https://.");
+      if (!url)
+        throw new Error("Informe uma URL válida para Outro, começando com http:// ou https://.");
       links.push({ type: "outro", label: customLabel, url });
     }
 
@@ -410,75 +453,404 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
       await router.navigate({ to: "/" });
     } catch (caught) {
       console.error("[Looma] Não foi possível concluir o onboarding.", caught);
-      setError(caught instanceof Error ? caught.message : "Não foi possível concluir seu onboarding. Tente novamente.");
+      setError(
+        caught instanceof Error
+          ? caught.message
+          : "Não foi possível concluir seu onboarding. Tente novamente.",
+      );
     } finally {
       setIsCompletingOnboarding(false);
     }
   }
 
   return (
-    <section className="onboarding-gate" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
+    <section
+      className="onboarding-gate"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="onboarding-title"
+    >
       <div className="onboarding-card">
         <span className="looma-logo-mark onboarding-logo" role="img" aria-label="Looma" />
-        <div className="onboarding-progress" aria-label={`Etapa ${currentStep} de ${ONBOARDING_STEPS.length}`}>
-          <span>Etapa {currentStep} de {ONBOARDING_STEPS.length}</span>
-          <ol>{ONBOARDING_STEPS.map((step, index) => <li className={index < currentStep ? "is-current" : ""} key={step} aria-label={step} />)}</ol>
+        <div
+          className="onboarding-progress"
+          aria-label={`Etapa ${currentStep} de ${ONBOARDING_STEPS.length}`}
+        >
+          <span>
+            Etapa {currentStep} de {ONBOARDING_STEPS.length}
+          </span>
+          <ol>
+            {ONBOARDING_STEPS.map((step, index) => (
+              <li
+                className={index < currentStep ? "is-current" : ""}
+                key={step}
+                aria-label={step}
+              />
+            ))}
+          </ol>
         </div>
 
-        {currentStep === 1 ? <>
-          <header><h1 id="onboarding-title">Conte-nos mais sobre você</h1><p>Essas informações ajudam a deixar seu perfil reconhecível para novas conexões.</p></header>
-          <form className="onboarding-about-form" onSubmit={saveAboutYou}>
-            <div className="onboarding-avatar-row"><ProfileAvatar className="onboarding-avatar" fullName={fullName || getProfileName(profile, user)} avatarUrl={profile.avatar_url} /><div><strong>Foto de perfil</strong><span>JPG, PNG, WebP ou GIF, até 2 MB.</span><label className="avatar-upload-button"><Camera size={16} /> {avatarFile ? "Trocar imagem" : "Enviar imagem"}<input type="file" accept={ACCEPTED_AVATAR_TYPES.join(",")} onChange={chooseAvatar} /></label>{avatarFile ? <small className="selected-avatar-file">{avatarFile.name}</small> : null}</div></div>
-            <label className="onboarding-field"><span>Nome de exibição</span><input value={fullName} onChange={(event) => setFullName(event.target.value)} maxLength={80} autoComplete="name" autoFocus /></label>
-            <label className="onboarding-field"><span>Bio</span><textarea value={bio} onChange={(event) => setBio(event.target.value)} maxLength={160} placeholder="Conte um pouco sobre o seu trabalho." /><small>{bio.length}/160</small></label>
-            {error ? <p className="onboarding-form-error" role="alert" aria-live="assertive">{error}</p> : null}
-            <button type="submit" className="onboarding-primary-action" disabled={isSaving}>{isSaving ? <><LoaderCircle size={17} /> Salvando…</> : "Próximo"}</button>
-          </form>
-        </> : null}
+        {currentStep === 1 ? (
+          <>
+            <header>
+              <h1 id="onboarding-title">Conte-nos mais sobre você</h1>
+              <p>Essas informações ajudam a deixar seu perfil reconhecível para novas conexões.</p>
+            </header>
+            <form className="onboarding-about-form" onSubmit={saveAboutYou}>
+              <div className="onboarding-avatar-row">
+                <ProfileAvatar
+                  className="onboarding-avatar"
+                  fullName={fullName || getProfileName(profile, user)}
+                  avatarUrl={profile.avatar_url}
+                />
+                <div>
+                  <strong>Foto de perfil</strong>
+                  <span>JPG, PNG, WebP ou GIF, até 2 MB.</span>
+                  <label className="avatar-upload-button">
+                    <Camera size={16} /> {avatarFile ? "Trocar imagem" : "Enviar imagem"}
+                    <input
+                      type="file"
+                      accept={ACCEPTED_AVATAR_TYPES.join(",")}
+                      onChange={chooseAvatar}
+                    />
+                  </label>
+                  {avatarFile ? (
+                    <small className="selected-avatar-file">{avatarFile.name}</small>
+                  ) : null}
+                </div>
+              </div>
+              <label className="onboarding-field">
+                <span>Nome de exibição</span>
+                <input
+                  value={fullName}
+                  onChange={(event) => setFullName(event.target.value)}
+                  maxLength={80}
+                  autoComplete="name"
+                  autoFocus
+                />
+              </label>
+              <label className="onboarding-field">
+                <span>Bio</span>
+                <textarea
+                  value={bio}
+                  onChange={(event) => setBio(event.target.value)}
+                  maxLength={160}
+                  placeholder="Conte um pouco sobre o seu trabalho."
+                />
+                <small>{bio.length}/160</small>
+              </label>
+              {error ? (
+                <p className="onboarding-form-error" role="alert" aria-live="assertive">
+                  {error}
+                </p>
+              ) : null}
+              <button type="submit" className="onboarding-primary-action" disabled={isSaving}>
+                {isSaving ? (
+                  <>
+                    <LoaderCircle size={17} /> Salvando…
+                  </>
+                ) : (
+                  "Próximo"
+                )}
+              </button>
+            </form>
+          </>
+        ) : null}
 
-        {currentStep === 2 ? <>
-          <header><h1 id="onboarding-title">Conte-nos o que você faz</h1><p>Escolha até três áreas para tornar suas conexões mais relevantes.</p></header>
-          <div className="onboarding-skills" aria-busy={isLoadingSkills}>
-            <label className="onboarding-skill-search"><Search size={18} /><input value={skillSearch} onChange={(event) => setSkillSearch(event.target.value)} placeholder="Busque uma área de atuação" autoComplete="off" /></label>
-            {selectedSkills.length ? <div className="onboarding-selected-skills" aria-label="Áreas selecionadas">{selectedSkills.map((skill) => <button type="button" className="onboarding-skill-chip is-selected" key={skill.id} onClick={() => removeSkill(skill)}>{skill.name} <X size={14} aria-label={`Remover ${skill.name}`} /></button>)}</div> : null}
-            <div className="onboarding-skill-results" aria-label="Resultados da busca">
-              {isLoadingSkills ? <p className="onboarding-skills-loading"><LoaderCircle size={16} /> Carregando áreas…</p> : null}
-              {!isLoadingSkills && filteredSkillTags.map((tag) => { const isSelected = selectedSkills.some((selected) => selected.id === tag.id); return <button type="button" className="onboarding-skill-chip" key={tag.id} onClick={() => addSkill(tag)} disabled={isSelected || selectedSkills.length >= MAX_SELECTED_SKILLS}>{isSelected ? <Check size={14} /> : <Plus size={14} />} {tag.name}</button>; })}
-              {!isLoadingSkills && !filteredSkillTags.length ? <p className="onboarding-skills-empty">Nenhuma área encontrada. Tente “Outro”.</p> : null}
+        {currentStep === 2 ? (
+          <>
+            <header>
+              <h1 id="onboarding-title">Conte-nos o que você faz</h1>
+              <p>Escolha até três áreas para tornar suas conexões mais relevantes.</p>
+            </header>
+            <div className="onboarding-skills" aria-busy={isLoadingSkills}>
+              <label className="onboarding-skill-search">
+                <Search size={18} />
+                <input
+                  value={skillSearch}
+                  onChange={(event) => setSkillSearch(event.target.value)}
+                  placeholder="Busque uma área de atuação"
+                  autoComplete="off"
+                />
+              </label>
+              {selectedSkills.length ? (
+                <div className="onboarding-selected-skills" aria-label="Áreas selecionadas">
+                  {selectedSkills.map((skill) => (
+                    <button
+                      type="button"
+                      className="onboarding-skill-chip is-selected"
+                      key={skill.id}
+                      onClick={() => removeSkill(skill)}
+                    >
+                      {skill.name} <X size={14} aria-label={`Remover ${skill.name}`} />
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+              <div className="onboarding-skill-results" aria-label="Resultados da busca">
+                {isLoadingSkills ? (
+                  <p className="onboarding-skills-loading">
+                    <LoaderCircle size={16} /> Carregando áreas…
+                  </p>
+                ) : null}
+                {!isLoadingSkills &&
+                  filteredSkillTags.map((tag) => {
+                    const isSelected = selectedSkills.some((selected) => selected.id === tag.id);
+                    return (
+                      <button
+                        type="button"
+                        className="onboarding-skill-chip"
+                        key={tag.id}
+                        onClick={() => addSkill(tag)}
+                        disabled={isSelected || selectedSkills.length >= MAX_SELECTED_SKILLS}
+                      >
+                        {isSelected ? <Check size={14} /> : <Plus size={14} />} {tag.name}
+                      </button>
+                    );
+                  })}
+                {!isLoadingSkills && !filteredSkillTags.length ? (
+                  <p className="onboarding-skills-empty">Nenhuma área encontrada. Tente “Outro”.</p>
+                ) : null}
+              </div>
+              <button
+                type="button"
+                className="onboarding-other-button"
+                onClick={() => {
+                  setShowCustomSkill((visible) => !visible);
+                  setSimilarSuggestion(null);
+                  setError(null);
+                }}
+              >
+                <Plus size={16} /> Outro
+              </button>
+              {showCustomSkill ? (
+                <form className="onboarding-custom-skill" onSubmit={checkCustomSkill}>
+                  <label>
+                    <span>Qual área você quer adicionar?</span>
+                    <input
+                      value={customSkill}
+                      onChange={(event) => {
+                        setCustomSkill(event.target.value);
+                        setSimilarSuggestion(null);
+                      }}
+                      placeholder="Ex.: Especialista em motion"
+                      maxLength={80}
+                      autoFocus
+                    />
+                  </label>
+                  <button type="submit" disabled={isCheckingSimilar}>
+                    {isCheckingSimilar ? "Buscando…" : "Adicionar"}
+                  </button>
+                </form>
+              ) : null}
+              {similarSuggestion ? (
+                <div className="onboarding-similar-suggestion" role="status">
+                  <strong>Você quis dizer “{similarSuggestion.name}”?</strong>
+                  <span>Encontramos uma área parecida no catálogo. Você decide qual usar.</span>
+                  <div>
+                    <button type="button" onClick={acceptSuggestion}>
+                      Usar “{similarSuggestion.name}”
+                    </button>
+                    <button type="button" onClick={keepCustomSkill}>
+                      Manter “{normalizeCustomSkill(customSkill)}”
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+              <p className="onboarding-skill-count">
+                {selectedSkills.length}/{MAX_SELECTED_SKILLS} áreas selecionadas
+              </p>
+              {limitNotice ? (
+                <p className="onboarding-limit-notice" role="status">
+                  {limitNotice}
+                </p>
+              ) : null}
+              {error ? (
+                <p className="onboarding-form-error" role="alert" aria-live="assertive">
+                  {error}
+                </p>
+              ) : null}
+              {notice ? (
+                <p className="onboarding-form-notice" role="status" aria-live="polite">
+                  {notice}
+                </p>
+              ) : null}
+              <button
+                type="button"
+                className="onboarding-primary-action"
+                onClick={() => void saveSkills()}
+                disabled={isSavingSkills || !selectedSkills.length}
+              >
+                {isSavingSkills ? (
+                  <>
+                    <LoaderCircle size={17} /> Salvando…
+                  </>
+                ) : (
+                  "Próximo"
+                )}
+              </button>
+              <button type="button" className="onboarding-back" onClick={() => setCurrentStep(1)}>
+                Voltar
+              </button>
             </div>
-            <button type="button" className="onboarding-other-button" onClick={() => { setShowCustomSkill((visible) => !visible); setSimilarSuggestion(null); setError(null); }}><Plus size={16} /> Outro</button>
-            {showCustomSkill ? <form className="onboarding-custom-skill" onSubmit={checkCustomSkill}><label><span>Qual área você quer adicionar?</span><input value={customSkill} onChange={(event) => { setCustomSkill(event.target.value); setSimilarSuggestion(null); }} placeholder="Ex.: Especialista em motion" maxLength={80} autoFocus /></label><button type="submit" disabled={isCheckingSimilar}>{isCheckingSimilar ? "Buscando…" : "Adicionar"}</button></form> : null}
-            {similarSuggestion ? <div className="onboarding-similar-suggestion" role="status"><strong>Você quis dizer “{similarSuggestion.name}”?</strong><span>Encontramos uma área parecida no catálogo. Você decide qual usar.</span><div><button type="button" onClick={acceptSuggestion}>Usar “{similarSuggestion.name}”</button><button type="button" onClick={keepCustomSkill}>Manter “{normalizeCustomSkill(customSkill)}”</button></div></div> : null}
-            <p className="onboarding-skill-count">{selectedSkills.length}/{MAX_SELECTED_SKILLS} áreas selecionadas</p>
-            {limitNotice ? <p className="onboarding-limit-notice" role="status">{limitNotice}</p> : null}
-            {error ? <p className="onboarding-form-error" role="alert" aria-live="assertive">{error}</p> : null}
-            {notice ? <p className="onboarding-form-notice" role="status" aria-live="polite">{notice}</p> : null}
-            <button type="button" className="onboarding-primary-action" onClick={() => void saveSkills()} disabled={isSavingSkills || !selectedSkills.length}>{isSavingSkills ? <><LoaderCircle size={17} /> Salvando…</> : "Próximo"}</button>
-            <button type="button" className="onboarding-back" onClick={() => setCurrentStep(1)}>Voltar</button>
-          </div>
-        </> : null}
+          </>
+        ) : null}
 
-        {currentStep === 3 ? <>
-          <header><h1 id="onboarding-title">Há quanto tempo você faz isso?</h1><p>Isso nos ajuda a apresentar oportunidades no ritmo certo para você.</p></header>
-          <div className="onboarding-experience-options" role="radiogroup" aria-label="Nível de experiência">
-            {EXPERIENCE_LEVELS.map((level) => <button type="button" role="radio" aria-checked={experienceLevel === level.value} className={`onboarding-experience-option ${experienceLevel === level.value ? "is-selected" : ""}`} key={level.value} onClick={() => { setExperienceLevel(level.value); setError(null); }}><strong>{level.title}</strong><span>{level.description}</span></button>)}
-          </div>
-          {error ? <p className="onboarding-form-error" role="alert" aria-live="assertive">{error}</p> : null}
-          <button type="button" className="onboarding-primary-action" onClick={() => void saveExperience()} disabled={isSavingExperience || !experienceLevel}>{isSavingExperience ? <><LoaderCircle size={17} /> Salvando…</> : "Próximo"}</button>
-          <button type="button" className="onboarding-back" onClick={() => setCurrentStep(2)}>Voltar</button>
-        </> : null}
+        {currentStep === 3 ? (
+          <>
+            <header>
+              <h1 id="onboarding-title">Há quanto tempo você faz isso?</h1>
+              <p>Isso nos ajuda a apresentar oportunidades no ritmo certo para você.</p>
+            </header>
+            <div
+              className="onboarding-experience-options"
+              role="radiogroup"
+              aria-label="Nível de experiência"
+            >
+              {EXPERIENCE_LEVELS.map((level) => (
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={experienceLevel === level.value}
+                  className={`onboarding-experience-option ${experienceLevel === level.value ? "is-selected" : ""}`}
+                  key={level.value}
+                  onClick={() => {
+                    setExperienceLevel(level.value);
+                    setError(null);
+                  }}
+                >
+                  <strong>{level.title}</strong>
+                  <span>{level.description}</span>
+                </button>
+              ))}
+            </div>
+            {error ? (
+              <p className="onboarding-form-error" role="alert" aria-live="assertive">
+                {error}
+              </p>
+            ) : null}
+            <button
+              type="button"
+              className="onboarding-primary-action"
+              onClick={() => void saveExperience()}
+              disabled={isSavingExperience || !experienceLevel}
+            >
+              {isSavingExperience ? (
+                <>
+                  <LoaderCircle size={17} /> Salvando…
+                </>
+              ) : (
+                "Próximo"
+              )}
+            </button>
+            <button type="button" className="onboarding-back" onClick={() => setCurrentStep(2)}>
+              Voltar
+            </button>
+          </>
+        ) : null}
 
-        {currentStep === 4 ? <>
-          <header><h1 id="onboarding-title">Onde mais podem te encontrar?</h1><p>Adicione seus links profissionais. Esta etapa é opcional e você pode completar depois.</p></header>
-          <div className="onboarding-social-links" aria-busy={isLoadingLinks}>
-            {SOCIAL_LINK_FIELDS.map((field) => <label className="onboarding-field" key={field.type}><span>{field.label}</span><input type="url" inputMode="url" value={socialLinks[field.type]} onChange={(event) => { setSocialLinks((current) => ({ ...current, [field.type]: event.target.value })); setError(null); }} placeholder={field.placeholder} autoComplete="url" /></label>)}
-            <div className="onboarding-other-link"><label className="onboarding-field"><span>Outro</span><input value={otherLinkLabel} onChange={(event) => { setOtherLinkLabel(event.target.value); setError(null); }} placeholder="Ex.: Meu site" maxLength={60} /></label><label className="onboarding-field"><span>Link</span><input type="url" inputMode="url" value={otherLinkUrl} onChange={(event) => { setOtherLinkUrl(event.target.value); setError(null); }} placeholder="https://seusite.com" autoComplete="url" /></label></div>
-            {isLoadingLinks ? <p className="onboarding-links-loading"><LoaderCircle size={16} /> Carregando links…</p> : null}
-          </div>
-          {error ? <p className="onboarding-form-error" role="alert" aria-live="assertive">{error}</p> : null}
-          <div className="onboarding-final-actions"><button type="button" className="onboarding-skip-action" onClick={() => void completeOnboarding(false)} disabled={isCompletingOnboarding || isLoadingLinks}>Pular por agora</button><button type="button" className="onboarding-primary-action" onClick={() => void completeOnboarding(true)} disabled={isCompletingOnboarding || isLoadingLinks}>{isCompletingOnboarding ? <><LoaderCircle size={17} /> Concluindo…</> : "Concluir"}</button></div>
-          <button type="button" className="onboarding-back" onClick={() => setCurrentStep(3)} disabled={isCompletingOnboarding}>Voltar</button>
-        </> : null}
+        {currentStep === 4 ? (
+          <>
+            <header>
+              <h1 id="onboarding-title">Onde mais podem te encontrar?</h1>
+              <p>
+                Adicione seus links profissionais. Esta etapa é opcional e você pode completar
+                depois.
+              </p>
+            </header>
+            <div className="onboarding-social-links" aria-busy={isLoadingLinks}>
+              {SOCIAL_LINK_FIELDS.map((field) => (
+                <label className="onboarding-field" key={field.type}>
+                  <span>{field.label}</span>
+                  <input
+                    type="url"
+                    inputMode="url"
+                    value={socialLinks[field.type]}
+                    onChange={(event) => {
+                      setSocialLinks((current) => ({
+                        ...current,
+                        [field.type]: event.target.value,
+                      }));
+                      setError(null);
+                    }}
+                    placeholder={field.placeholder}
+                    autoComplete="url"
+                  />
+                </label>
+              ))}
+              <div className="onboarding-other-link">
+                <label className="onboarding-field">
+                  <span>Outro</span>
+                  <input
+                    value={otherLinkLabel}
+                    onChange={(event) => {
+                      setOtherLinkLabel(event.target.value);
+                      setError(null);
+                    }}
+                    placeholder="Ex.: Meu site"
+                    maxLength={60}
+                  />
+                </label>
+                <label className="onboarding-field">
+                  <span>Link</span>
+                  <input
+                    type="url"
+                    inputMode="url"
+                    value={otherLinkUrl}
+                    onChange={(event) => {
+                      setOtherLinkUrl(event.target.value);
+                      setError(null);
+                    }}
+                    placeholder="https://seusite.com"
+                    autoComplete="url"
+                  />
+                </label>
+              </div>
+              {isLoadingLinks ? (
+                <p className="onboarding-links-loading">
+                  <LoaderCircle size={16} /> Carregando links…
+                </p>
+              ) : null}
+            </div>
+            {error ? (
+              <p className="onboarding-form-error" role="alert" aria-live="assertive">
+                {error}
+              </p>
+            ) : null}
+            <div className="onboarding-final-actions">
+              <button
+                type="button"
+                className="onboarding-skip-action"
+                onClick={() => void completeOnboarding(false)}
+                disabled={isCompletingOnboarding || isLoadingLinks}
+              >
+                Pular por agora
+              </button>
+              <button
+                type="button"
+                className="onboarding-primary-action"
+                onClick={() => void completeOnboarding(true)}
+                disabled={isCompletingOnboarding || isLoadingLinks}
+              >
+                {isCompletingOnboarding ? (
+                  <>
+                    <LoaderCircle size={17} /> Concluindo…
+                  </>
+                ) : (
+                  "Concluir"
+                )}
+              </button>
+            </div>
+            <button
+              type="button"
+              className="onboarding-back"
+              onClick={() => setCurrentStep(3)}
+              disabled={isCompletingOnboarding}
+            >
+              Voltar
+            </button>
+          </>
+        ) : null}
       </div>
     </section>
   );

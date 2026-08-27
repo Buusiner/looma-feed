@@ -16,15 +16,15 @@ export type Profile = {
 export function getProfileName(profile: Profile | null, user: User | null) {
   return (
     profile?.full_name?.trim() ||
-    user?.user_metadata.full_name?.trim() ||
-    user?.user_metadata.name?.trim() ||
+    user?.user_metadata["full_name"]?.trim() ||
+    user?.user_metadata["name"]?.trim() ||
     user?.email?.split("@")[0] ||
     "Sua conta"
   );
 }
 
 export function getProfileUsername(profile: Profile | null, user: User | null) {
-  const username = profile?.username?.trim() || user?.user_metadata.user_name?.trim();
+  const username = profile?.username?.trim() || user?.user_metadata["user_name"]?.trim();
   return username ? `@${username.replace(/^@/, "")}` : "Configure seu @username";
 }
 
@@ -52,7 +52,10 @@ export function useCurrentProfile() {
     const authResult = knownUser === undefined ? await supabase.auth.getUser() : null;
     const activeUser = knownUser === undefined ? authResult?.data.user : knownUser;
 
-    if (authResult?.error) {
+    // Supabase returns this error when there is no persisted session. That is the
+    // expected anonymous state for the public product shell, not an application
+    // failure worth surfacing in the console.
+    if (authResult?.error && authResult.error.name !== "AuthSessionMissingError") {
       console.error("[Looma] Não foi possível ler a sessão do Supabase.", authResult.error);
     }
 
@@ -66,7 +69,9 @@ export function useCurrentProfile() {
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, username, full_name, avatar_url, bio, created_at, onboarding_completed_at, experience_level")
+      .select(
+        "id, username, full_name, avatar_url, bio, created_at, onboarding_completed_at, experience_level",
+      )
       .eq("id", activeUser.id)
       .maybeSingle();
 

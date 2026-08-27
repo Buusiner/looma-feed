@@ -21,17 +21,32 @@ import { ProfileAvatar } from "./ProfileAvatar";
 import { getProfileName, getProfileUsername, useCurrentProfile } from "@/lib/profile";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
-const NAV = [
-  { icon: Home, label: "Início", path: "/" },
-  { icon: TrendingUp, label: "Oportunidades em alta", path: "/oportunidades" },
-  { icon: FileText, label: "Publicações", path: "/publicacoes" },
-  { icon: Users, label: "Conexões", path: "/conexoes" },
-  { icon: Send, label: "Propostas", path: "/propostas" },
-  { icon: BarChart3, label: "Relatórios", path: "/relatorios" },
-  { icon: CircleHelp, label: "Comunidade e Ajuda", path: "/comunidade" },
-  { icon: Settings, label: "Configurações", path: "/configuracoes" },
-  { icon: Sparkles, label: "Planos", path: "/planos" },
-  { icon: BriefcaseBusiness, label: "Portfólio", path: "/perfil" },
+const NAV_GROUPS = [
+  {
+    label: "Descobrir",
+    items: [
+      { icon: Home, label: "Início", path: "/" },
+      { icon: TrendingUp, label: "Oportunidades em alta", path: "/oportunidades" },
+      { icon: FileText, label: "Publicações", path: "/publicacoes" },
+      { icon: Users, label: "Conexões", path: "/conexoes" },
+    ],
+  },
+  {
+    label: "Acompanhar",
+    items: [
+      { icon: Send, label: "Propostas", path: "/propostas" },
+      { icon: BarChart3, label: "Relatórios", path: "/relatorios" },
+    ],
+  },
+  {
+    label: "Sua Looma",
+    items: [
+      { icon: CircleHelp, label: "Comunidade e Ajuda", path: "/comunidade" },
+      { icon: Settings, label: "Configurações", path: "/configuracoes" },
+      { icon: Sparkles, label: "Planos", path: "/planos" },
+      { icon: BriefcaseBusiness, label: "Portfólio", path: "/perfil" },
+    ],
+  },
 ];
 
 // Keep the Premium card ready to be restored without removing its markup.
@@ -39,7 +54,7 @@ const SHOW_PREMIUM_UPSELL = false;
 const PROFILE_ROUTE_FADE_MS = 1000;
 
 export function LoomaSidebar() {
-  const pathname = useLocation({ select: (location) => location.pathname });
+  const pathname = useLocation({ select: (location: { pathname: string }) => location.pathname });
   const router = useRouter();
   const { profile, user } = useCurrentProfile();
   const displayName = user ? getProfileName(profile, user) : "Usuário";
@@ -50,7 +65,14 @@ export function LoomaSidebar() {
   const [isLeavingForProfile, setIsLeavingForProfile] = useState(false);
 
   function openProfileEditor(event: MouseEvent<HTMLAnchorElement>) {
-    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
       return;
     }
 
@@ -83,20 +105,25 @@ export function LoomaSidebar() {
       </header>
 
       <nav className="sidebar-nav" aria-label="Navegação principal">
-        {NAV.map(({ icon: Icon, label, path }) => {
-          const isActive = pathname === path;
-          return (
-            <Link
-              key={label}
-              to={path}
-              className={isActive ? "active" : ""}
-              aria-current={isActive ? "page" : undefined}
-            >
-              <Icon size={16} aria-hidden="true" />
-              <span>{label}</span>
-            </Link>
-          );
-        })}
+        {NAV_GROUPS.map((group) => (
+          <div className="sidebar-nav-group" key={group.label}>
+            <p className="sidebar-nav-group-label">{group.label}</p>
+            {group.items.map(({ icon: Icon, label, path }) => {
+              const isActive = pathname === path;
+              return (
+                <Link
+                  key={label}
+                  to={path}
+                  className={isActive ? "active" : ""}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  <Icon size={16} aria-hidden="true" />
+                  <span>{label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
       <section

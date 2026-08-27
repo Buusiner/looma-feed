@@ -3,7 +3,7 @@ import { getInitials } from "@/lib/profile";
 
 type ProfileAvatarProps = {
   fullName: string;
-  avatarUrl?: string | null;
+  avatarUrl?: string | null | undefined;
   className?: string;
 };
 
@@ -13,9 +13,14 @@ export function ProfileAvatar({ fullName, avatarUrl, className = "" }: ProfileAv
   useEffect(() => setImageFailed(false), [avatarUrl]);
 
   return (
-    <span className={className} aria-hidden="true">
+    <span className={`${className} looma-avatar-frame`} aria-hidden="true">
       {avatarUrl && !imageFailed ? (
-        <img src={avatarUrl} alt="" onError={() => setImageFailed(true)} />
+        <img
+          className="looma-avatar-image"
+          src={avatarUrl}
+          alt=""
+          onError={() => setImageFailed(true)}
+        />
       ) : (
         getInitials(fullName)
       )}

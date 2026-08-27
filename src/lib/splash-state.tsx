@@ -23,7 +23,11 @@ export function claimInitialSplash() {
 function isNewAccount(user: User) {
   const createdAt = Date.parse(user.created_at);
   const lastSignInAt = Date.parse(user.last_sign_in_at ?? user.created_at);
-  return Number.isFinite(createdAt) && Number.isFinite(lastSignInAt) && Math.abs(lastSignInAt - createdAt) <= NEW_ACCOUNT_WINDOW_MS;
+  return (
+    Number.isFinite(createdAt) &&
+    Number.isFinite(lastSignInAt) &&
+    Math.abs(lastSignInAt - createdAt) <= NEW_ACCOUNT_WINDOW_MS
+  );
 }
 
 export function shouldShowWelcome(user: User) {

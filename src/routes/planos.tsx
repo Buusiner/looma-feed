@@ -25,23 +25,45 @@ function PlansPage() {
   const [hasRegisteredInterest, setHasRegisteredInterest] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const userId = user?.id;
 
   useEffect(() => {
-    if (!user) {
+    if (!userId) {
       setHasRegisteredInterest(false);
       return;
     }
 
-    getSupabaseBrowserClient()
-      .from("plan_interest")
-      .select("id")
-      .eq("profile_id", user.id)
-      .eq("plan", "pro")
-      .maybeSingle()
-      .then(({ data, error }) => {
-        if (!error) setHasRegisteredInterest(Boolean(data));
-      });
-  }, [user?.id]);
+    let isCurrent = true;
+
+    async function loadRegisteredInterest() {
+      const { data, error } = await getSupabaseBrowserClient()
+        .from("plan_interest")
+        .select("id")
+        .eq("profile_id", userId)
+        .eq("plan", "pro")
+        .maybeSingle();
+
+      if (!isCurrent) return;
+
+      if (error) {
+        console.error("[Looma] Falha ao consultar interesse no plano Pro.", error);
+        setFeedback("Não foi possível verificar seu interesse no Pro agora.");
+        return;
+      }
+
+      setHasRegisteredInterest(Boolean(data));
+    }
+
+    void loadRegisteredInterest().catch((error: unknown) => {
+      if (!isCurrent) return;
+      console.error("[Looma] Erro inesperado ao consultar interesse no plano Pro.", error);
+      setFeedback("Não foi possível verificar seu interesse no Pro agora.");
+    });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [userId]);
 
   async function registerInterest() {
     if (!user) {
@@ -77,27 +99,73 @@ function PlansPage() {
             <span className="looma-logo-mark" role="img" aria-label="Logo da Looma" />
             <strong>looma</strong>
           </div>
-          <span className="plans-eyebrow"><Sparkles size={15} aria-hidden="true" /> Planos</span>
+          <span className="plans-eyebrow">
+            <Sparkles size={15} aria-hidden="true" /> Planos
+          </span>
           <h1>Escolha como quer crescer na Looma.</h1>
-          <p>Comece sem custo. O Pro está sendo preparado para dar mais visibilidade ao seu trabalho.</p>
+          <p>
+            Comece sem custo. O Pro está sendo preparado para dar mais visibilidade ao seu trabalho.
+          </p>
         </header>
 
         <section className="plans-grid" aria-label="Planos Looma">
           <article className="plan-card">
-            <div><span className="plan-label">Para começar</span><h2>Basic</h2><p>O essencial para construir sua presença e criar conexões.</p></div>
-            <ul>{BASIC_FEATURES.map((feature) => <li key={feature}><Check size={17} aria-hidden="true" />{feature}</li>)}</ul>
-            <button type="button" className="plan-basic-button" disabled>Plano atual</button>
+            <div>
+              <span className="plan-label">Para começar</span>
+              <h2>Basic</h2>
+              <p>O essencial para construir sua presença e criar conexões.</p>
+            </div>
+            <ul>
+              {BASIC_FEATURES.map((feature) => (
+                <li key={feature}>
+                  <Check size={17} aria-hidden="true" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <button type="button" className="plan-basic-button" disabled>
+              Plano atual
+            </button>
           </article>
 
           <article className="plan-card plan-card-pro">
-            <div><span className="plan-label">Em breve</span><h2>Pro</h2><p>Mais alcance para quem quer transformar boas conexões em trabalho.</p></div>
-            <ul>{PRO_FEATURES.map((feature) => <li key={feature}><Check size={17} aria-hidden="true" />{feature}</li>)}</ul>
-            <button type="button" className="plan-pro-button" onClick={() => void registerInterest()} disabled={isSaving || hasRegisteredInterest}>
-              {isSaving ? "Registrando…" : hasRegisteredInterest ? "Interesse registrado" : "Quero o Pro"}
+            <div>
+              <span className="plan-label">Em breve</span>
+              <h2>Pro</h2>
+              <p>Mais alcance para quem quer transformar boas conexões em trabalho.</p>
+            </div>
+            <ul>
+              {PRO_FEATURES.map((feature) => (
+                <li key={feature}>
+                  <Check size={17} aria-hidden="true" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              className="plan-pro-button"
+              onClick={() => void registerInterest()}
+              disabled={isSaving || hasRegisteredInterest}
+            >
+              {isSaving
+                ? "Registrando…"
+                : hasRegisteredInterest
+                  ? "Interesse registrado"
+                  : "Quero o Pro"}
             </button>
           </article>
         </section>
-        {feedback ? <p className={feedback.startsWith("Interesse") ? "plans-feedback success" : "plans-feedback"} role="status">{feedback}</p> : null}
+        {feedback ? (
+          <p
+            className={
+              feedback.startsWith("Interesse") ? "plans-feedback success" : "plans-feedback"
+            }
+            role="status"
+          >
+            {feedback}
+          </p>
+        ) : null}
       </section>
     </main>
   );

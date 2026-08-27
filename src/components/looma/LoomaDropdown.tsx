@@ -13,7 +13,12 @@ type LoomaDropdownProps<T extends string | number> = {
   ariaLabel: string;
 };
 
-export function LoomaDropdown<T extends string | number>({ value, options, onChange, ariaLabel }: LoomaDropdownProps<T>) {
+export function LoomaDropdown<T extends string | number>({
+  value,
+  options,
+  onChange,
+  ariaLabel,
+}: LoomaDropdownProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const menuId = useId();
@@ -34,14 +39,40 @@ export function LoomaDropdown<T extends string | number>({ value, options, onCha
     };
   }, []);
 
-  return <div className="looma-dropdown" ref={containerRef}>
-    <button type="button" className="looma-dropdown-trigger" aria-label={ariaLabel} aria-haspopup="listbox" aria-expanded={isOpen} aria-controls={menuId} onClick={() => setIsOpen((open) => !open)}>
-      <span>{selected?.label}</span><ChevronDown size={16} aria-hidden="true" />
-    </button>
-    {isOpen ? <div id={menuId} className="looma-dropdown-menu" role="listbox" aria-label={ariaLabel}>
-      {options.map((option) => <button key={String(option.value)} type="button" role="option" aria-selected={option.value === value} className={option.value === value ? "active" : ""} onClick={() => { onChange(option.value); setIsOpen(false); }}>
-        <span>{option.label}</span>{option.value === value ? <Check size={15} aria-hidden="true" /> : null}
-      </button>)}
-    </div> : null}
-  </div>;
+  return (
+    <div className="looma-dropdown" ref={containerRef}>
+      <button
+        type="button"
+        className="looma-dropdown-trigger"
+        aria-label={ariaLabel}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-controls={menuId}
+        onClick={() => setIsOpen((open) => !open)}
+      >
+        <span>{selected?.label}</span>
+        <ChevronDown size={16} aria-hidden="true" />
+      </button>
+      {isOpen ? (
+        <div id={menuId} className="looma-dropdown-menu" role="listbox" aria-label={ariaLabel}>
+          {options.map((option) => (
+            <button
+              key={String(option.value)}
+              type="button"
+              role="option"
+              aria-selected={option.value === value}
+              className={option.value === value ? "active" : ""}
+              onClick={() => {
+                onChange(option.value);
+                setIsOpen(false);
+              }}
+            >
+              <span>{option.label}</span>
+              {option.value === value ? <Check size={15} aria-hidden="true" /> : null}
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
 }

@@ -26,13 +26,13 @@ function getServerConfig(env?: SupabaseWorkerEnv) {
   const url =
     env?.SUPABASE_URL ??
     getLocalServerEnv("SUPABASE_URL") ??
-    import.meta.env.SUPABASE_URL ??
-    import.meta.env.VITE_SUPABASE_URL;
+    import.meta.env["SUPABASE_URL"] ??
+    import.meta.env["VITE_SUPABASE_URL"];
   const key =
     env?.SUPABASE_ANON_KEY ??
     getLocalServerEnv("SUPABASE_ANON_KEY") ??
-    import.meta.env.SUPABASE_ANON_KEY ??
-    import.meta.env.VITE_SUPABASE_ANON_KEY;
+    import.meta.env["SUPABASE_ANON_KEY"] ??
+    import.meta.env["VITE_SUPABASE_ANON_KEY"];
 
   if (!url || !key) {
     throw new Error("SUPABASE_URL e SUPABASE_ANON_KEY são obrigatórias no ambiente do servidor.");
@@ -46,7 +46,7 @@ export function createSupabaseAdminClient(env?: SupabaseWorkerEnv) {
   const serviceRoleKey =
     env?.SUPABASE_SERVICE_ROLE_KEY ??
     getLocalServerEnv("SUPABASE_SERVICE_ROLE_KEY") ??
-    import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
+    import.meta.env["SUPABASE_SERVICE_ROLE_KEY"];
   if (!serviceRoleKey) return null;
 
   const { url } = getServerConfig(env);
@@ -86,7 +86,7 @@ function serializeCookie(name: string, value: string, options: CookieOptions) {
 
   if (options.sameSite) {
     const sameSite = options.sameSite === true ? "Strict" : options.sameSite;
-    parts.push(`SameSite=${sameSite[0].toUpperCase()}${sameSite.slice(1)}`);
+    parts.push(`SameSite=${sameSite.charAt(0).toUpperCase()}${sameSite.slice(1)}`);
   }
 
   return parts.join("; ");

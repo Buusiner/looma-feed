@@ -158,7 +158,11 @@ async function authenticateProtectedRequest(
   headers.delete("x-looma-authenticated-user");
   headers.set(
     "x-looma-authenticated-user",
-    JSON.stringify({ id: user.id, email: user.email ?? null, name: user.user_metadata.full_name ?? null }),
+    JSON.stringify({
+      id: user.id,
+      email: user.email ?? null,
+      name: user.user_metadata["full_name"] ?? null,
+    }),
   );
 
   return {

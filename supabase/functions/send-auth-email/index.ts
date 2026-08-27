@@ -53,9 +53,6 @@ Deno.serve(async (request) => {
     return Response.json({});
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to send authentication email";
-    return Response.json(
-      { error: { http_code: 401, message } },
-      { status: 401 },
-    );
+    return Response.json({ error: { http_code: 401, message } }, { status: 401 });
   }
 });

@@ -97,17 +97,19 @@ export function ConnectionCanvas() {
       const pulseTime = reducedMotion.matches ? -1 : time % pulseCycle;
       if (satelliteOpacity > 0 && pulseTime > 0.34 && pulseTime < 1.42) {
         const target = positions[Math.floor(time / pulseCycle) % positions.length];
-        const progress = (pulseTime - 0.34) / 1.08;
-        const x = center.x + (target.x - center.x) * progress;
-        const y = center.y + (target.y - center.y) * progress;
-        const glow = context.createRadialGradient(x, y, 0, x, y, 11);
-        glow.addColorStop(0, `rgba(255,218,197,${0.92 * satelliteOpacity})`);
-        glow.addColorStop(0.32, `rgba(255,109,38,${0.72 * satelliteOpacity})`);
-        glow.addColorStop(1, "rgba(255,109,38,0)");
-        context.fillStyle = glow;
-        context.beginPath();
-        context.arc(x, y, 11, 0, Math.PI * 2);
-        context.fill();
+        if (target) {
+          const progress = (pulseTime - 0.34) / 1.08;
+          const x = center.x + (target.x - center.x) * progress;
+          const y = center.y + (target.y - center.y) * progress;
+          const glow = context.createRadialGradient(x, y, 0, x, y, 11);
+          glow.addColorStop(0, `rgba(255,218,197,${0.92 * satelliteOpacity})`);
+          glow.addColorStop(0.32, `rgba(255,109,38,${0.72 * satelliteOpacity})`);
+          glow.addColorStop(1, "rgba(255,109,38,0)");
+          context.fillStyle = glow;
+          context.beginPath();
+          context.arc(x, y, 11, 0, Math.PI * 2);
+          context.fill();
+        }
       }
 
       positions.forEach(({ x, y, satellite }) => {

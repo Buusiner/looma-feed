@@ -15,11 +15,12 @@ function PortfolioPage() {
   const { user, profile, isLoading } = useCurrentProfile();
   const pathname = useLocation({ select: (location: { pathname: string }) => location.pathname });
   const [links, setLinks] = useState<ProfileLink[]>([]);
+  const userId = user?.id;
 
   useEffect(() => {
-    if (!user || pathname !== "/perfil") return;
+    if (!userId || pathname !== "/perfil") return;
     let isCurrent = true;
-    const profileId = user.id;
+    const profileId = userId;
 
     async function loadLinks() {
       const { data, error } = await getSupabaseBrowserClient()
@@ -35,18 +36,32 @@ function PortfolioPage() {
     }
 
     void loadLinks();
-    return () => { isCurrent = false; };
-  }, [pathname, user?.id]);
+    return () => {
+      isCurrent = false;
+    };
+  }, [pathname, userId]);
 
   // `/perfil` is the public portfolio; child routes own their full page.
   if (pathname !== "/perfil") return <Outlet />;
 
   if (isLoading) {
-    return <WorkspaceLayout title="Portfólio" description="Seu espaço profissional na comunidade Looma."><p className="workspace-helper">Carregando portfólio…</p></WorkspaceLayout>;
+    return (
+      <WorkspaceLayout title="Portfólio" description="Seu espaço profissional na comunidade Looma.">
+        <p className="workspace-helper">Carregando portfólio…</p>
+      </WorkspaceLayout>
+    );
   }
 
   if (!user) {
-    return <WorkspaceLayout title="Portfólio" description="Seu espaço profissional na comunidade Looma."><WorkspaceEmpty icon={BriefcaseBusiness} title="Entre para montar seu portfólio" description="Faça login para apresentar seu trabalho, bio e informações de perfil." /></WorkspaceLayout>;
+    return (
+      <WorkspaceLayout title="Portfólio" description="Seu espaço profissional na comunidade Looma.">
+        <WorkspaceEmpty
+          icon={BriefcaseBusiness}
+          title="Entre para montar seu portfólio"
+          description="Faça login para apresentar seu trabalho, bio e informações de perfil."
+        />
+      </WorkspaceLayout>
+    );
   }
 
   const name = getProfileName(profile, user);
@@ -55,17 +70,40 @@ function PortfolioPage() {
     <WorkspaceLayout
       title="Portfólio"
       description="Apresente sua identidade e o seu trabalho na Looma."
-      action={<Link className="workspace-primary-action" to="/perfil/editar"><Pencil size={16} /> Editar portfólio</Link>}
+      action={
+        <Link className="workspace-primary-action" to="/perfil/editar">
+          <Pencil size={16} /> Editar portfólio
+        </Link>
+      }
     >
       <section className="workspace-card workspace-person-card">
-        <ProfileAvatar className="workspace-avatar" fullName={name} avatarUrl={profile?.avatar_url ?? null} />
+        <ProfileAvatar
+          className="workspace-avatar"
+          fullName={name}
+          avatarUrl={profile?.avatar_url ?? null}
+        />
         <div>
           <h2>{name}</h2>
           <p>{username}</p>
           <p>{profile?.bio?.trim() || "Adicione uma bio para apresentar o seu trabalho."}</p>
         </div>
       </section>
-      {links.length ? <section className="workspace-section workspace-portfolio-links" aria-labelledby="portfolio-links-title"><h2 id="portfolio-links-title">Onde me encontrar</h2><div>{links.map((link) => <a key={link.id} href={link.url} target="_blank" rel="noreferrer"><span>{link.type === "outro" ? link.label : link.type}</span><ExternalLink size={15} /></a>)}</div></section> : null}
+      {links.length ? (
+        <section
+          className="workspace-section workspace-portfolio-links"
+          aria-labelledby="portfolio-links-title"
+        >
+          <h2 id="portfolio-links-title">Onde me encontrar</h2>
+          <div>
+            {links.map((link) => (
+              <a key={link.id} href={link.url} target="_blank" rel="noreferrer">
+                <span>{link.type === "outro" ? link.label : link.type}</span>
+                <ExternalLink size={15} />
+              </a>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </WorkspaceLayout>
   );
 }
