@@ -1,7 +1,8 @@
-import { type ChangeEvent, type FormEvent, useEffect, useMemo, useState } from "react";
+import { type ChangeEvent, type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { Camera, Check, LoaderCircle, Plus, Search, X } from "lucide-react";
 import { useRouter } from "@tanstack/react-router";
+import { AvatarCropDialog } from "@/components/looma/AvatarCropDialog";
 import { ProfileAvatar } from "@/components/looma/ProfileAvatar";
 import { getProfileName, type Profile } from "@/lib/profile";
 import {
@@ -27,6 +28,7 @@ type ExperienceLevel = NonNullable<Profile["experience_level"]>;
 type SocialLinkType = "instagram" | "youtube" | "tiktok";
 type SocialLinkValues = Record<SocialLinkType, string>;
 type SubmittedProfileLink = { type: SocialLinkType | "outro"; label: string | null; url: string };
+type CropSource = { file: File; previewUrl: string };
 
 const SOCIAL_LINK_FIELDS: Array<{ type: SocialLinkType; label: string; placeholder: string }> = [
   { type: "instagram", label: "Instagram", placeholder: "https://instagram.com/seu-perfil" },
@@ -60,6 +62,8 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
   const [fullName, setFullName] = useState("");
   const [bio, setBio] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(null);
+  const [cropSource, setCropSource] = useState<CropSource | null>(null);
   const [skillTags, setSkillTags] = useState<SkillTag[]>([]);
   const [selectedSkills, setSelectedSkills] = useState<SelectedSkill[]>([]);
   const [skillSearch, setSkillSearch] = useState("");
@@ -84,6 +88,24 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [limitNotice, setLimitNotice] = useState<string | null>(null);
+  const avatarPreviewRef = useRef<string | null>(null);
+  const cropSourceRef = useRef<CropSource | null>(null);
+
+  useEffect(() => {
+    avatarPreviewRef.current = avatarPreviewUrl;
+  }, [avatarPreviewUrl]);
+
+  useEffect(() => {
+    cropSourceRef.current = cropSource;
+  }, [cropSource]);
+
+  useEffect(
+    () => () => {
+      if (avatarPreviewRef.current) URL.revokeObjectURL(avatarPreviewRef.current);
+      if (cropSourceRef.current) URL.revokeObjectURL(cropSourceRef.current.previewUrl);
+    },
+    [],
+  );
 
   const filteredSkillTags = useMemo(() => {
     const term = searchKey(skillSearch);
@@ -203,16 +225,30 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
 
   function chooseAvatar(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0] ?? null;
+    event.target.value = "";
     setError(null);
-    if (!file) return setAvatarFile(null);
+    if (!file) return;
     const validationError = getAvatarFileValidationError(file);
     if (validationError) {
-      event.target.value = "";
-      setAvatarFile(null);
       setError(validationError);
       return;
     }
-    setAvatarFile(file);
+
+    if (cropSource?.previewUrl) URL.revokeObjectURL(cropSource.previewUrl);
+    setCropSource({ file, previewUrl: URL.createObjectURL(file) });
+  }
+
+  function cancelCrop() {
+    if (cropSource?.previewUrl) URL.revokeObjectURL(cropSource.previewUrl);
+    setCropSource(null);
+  }
+
+  function confirmCrop(croppedFile: File) {
+    if (avatarPreviewUrl) URL.revokeObjectURL(avatarPreviewUrl);
+    if (cropSource?.previewUrl) URL.revokeObjectURL(cropSource.previewUrl);
+    setAvatarFile(croppedFile);
+    setAvatarPreviewUrl(URL.createObjectURL(croppedFile));
+    setCropSource(null);
   }
 
   function addSkill(skill: SelectedSkill) {
@@ -301,6 +337,8 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
     try {
       await saveProfileDetails({ user, profile, fullName, bio, avatarFile });
       setAvatarFile(null);
+      if (avatarPreviewUrl) URL.revokeObjectURL(avatarPreviewUrl);
+      setAvatarPreviewUrl(null);
       setCurrentStep(2);
       setNotice("Informações salvas com sucesso.");
       void refreshProfile(user).catch((refreshError) => {
@@ -501,7 +539,7 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
                 <ProfileAvatar
                   className="onboarding-avatar"
                   fullName={fullName || getProfileName(profile, user)}
-                  avatarUrl={profile.avatar_url}
+                  avatarUrl={avatarPreviewUrl ?? profile.avatar_url}
                 />
                 <div>
                   <strong>Foto de perfil</strong>
@@ -852,6 +890,12 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
           </>
         ) : null}
       </div>
+      <AvatarCropDialog
+        file={cropSource?.file ?? null}
+        previewUrl={cropSource?.previewUrl ?? null}
+        onCancel={cancelCrop}
+        onConfirm={confirmCrop}
+      />
     </section>
   );
 }

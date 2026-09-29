@@ -11,6 +11,7 @@ export type Profile = {
   created_at: string | null;
   onboarding_completed_at: string | null;
   experience_level: "iniciante" | "intermediario" | "experiente" | null;
+  is_admin: boolean;
 };
 
 export function getProfileName(profile: Profile | null, user: User | null) {
@@ -48,56 +49,60 @@ export function useCurrentProfile() {
 
   const refresh = useCallback(async (knownUser?: User | null) => {
     setIsLoading(true);
-    const supabase = getSupabaseBrowserClient();
-    const authResult = knownUser === undefined ? await supabase.auth.getUser() : null;
-    const activeUser = knownUser === undefined ? authResult?.data.user : knownUser;
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const authResult = knownUser === undefined ? await supabase.auth.getUser() : null;
+      const activeUser = knownUser === undefined ? authResult?.data.user : knownUser;
 
-    // Supabase returns this error when there is no persisted session. That is the
-    // expected anonymous state for the public product shell, not an application
-    // failure worth surfacing in the console.
-    if (authResult?.error && authResult.error.name !== "AuthSessionMissingError") {
-      console.error("[Looma] Não foi possível ler a sessão do Supabase.", authResult.error);
-    }
+      // Supabase returns this error when there is no persisted session. That is the
+      // expected anonymous state for the public product shell, not an application
+      // failure worth surfacing in the console.
+      if (authResult?.error && authResult.error.name !== "AuthSessionMissingError") {
+        console.error("[Looma] Não foi possível ler a sessão do Supabase.", authResult.error);
+      }
 
-    setUser(activeUser ?? null);
-    if (!activeUser) {
-      setProfile(null);
+      setUser(activeUser ?? null);
+      if (!activeUser) {
+        setProfile(null);
+        setProfileError(null);
+        return null;
+      }
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select(
+          "id, username, full_name, avatar_url, bio, created_at, onboarding_completed_at, experience_level, is_admin",
+        )
+        .eq("id", activeUser.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("[Looma] Falha ao buscar profiles para o usuário autenticado.", {
+          userId: activeUser.id,
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+        });
+        setProfile(null);
+        setProfileError(error.message);
+        return null;
+      }
+
+      setProfile(data);
       setProfileError(null);
-      setIsLoading(false);
-      return null;
-    }
-
-    const { data, error } = await supabase
-      .from("profiles")
-      .select(
-        "id, username, full_name, avatar_url, bio, created_at, onboarding_completed_at, experience_level",
-      )
-      .eq("id", activeUser.id)
-      .maybeSingle();
-
-    if (error) {
-      console.error("[Looma] Falha ao buscar profiles para o usuário autenticado.", {
-        userId: activeUser.id,
-        code: error.code,
-        message: error.message,
-        details: error.details,
-        hint: error.hint,
-      });
+      return data;
+    } catch (caught) {
+      const message =
+        caught instanceof Error ? caught.message : "Não foi possível carregar a conta.";
+      console.error("[Looma] Erro inesperado ao carregar a conta.", caught);
+      setUser(null);
       setProfile(null);
-      setProfileError(error.message);
-      setIsLoading(false);
+      setProfileError(message);
       return null;
+    } finally {
+      setIsLoading(false);
     }
-
-    console.info("[Looma] Perfil carregado.", {
-      userId: activeUser.id,
-      found: Boolean(data),
-      username: data?.username ?? null,
-    });
-    setProfile(data);
-    setProfileError(null);
-    setIsLoading(false);
-    return data;
   }, []);
 
   useEffect(() => {

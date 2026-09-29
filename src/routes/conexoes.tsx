@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Check, Search, UserRound, X } from "lucide-react";
 import { ProfileAvatar } from "@/components/looma/ProfileAvatar";
+import { AdminVerifiedBadge } from "@/components/looma/AdminVerifiedBadge";
 import {
   WorkspaceEmpty,
   WorkspaceError,
@@ -25,47 +26,53 @@ function ConnectionsPage() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [updatingConnectionId, setUpdatingConnectionId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const userId = user?.id;
     if (!userId) {
       setConnections([]);
+      setProfiles({});
+      setError(null);
       setLoading(false);
       return;
     }
     setLoading(true);
     setError(null);
-    const supabase = getSupabaseBrowserClient();
-    const { data, error: connectionError } = await getConnectionRows(supabase, userId);
-    if (connectionError) {
-      setError(connectionError.message);
-      setLoading(false);
-      return;
-    }
-    const rows = (data ?? []) as Connection[];
-    const ids = [
-      ...new Set(
-        rows.flatMap((row) => [row.requester_id, row.addressee_id]).filter((id) => id !== userId),
-      ),
-    ];
-    if (ids.length) {
-      const { data: profileRows, error: profileError } = await supabase
-        .from("profiles")
-        .select("id, username, full_name, avatar_url, bio, created_at")
-        .in("id", ids);
-      if (profileError) {
-        setError(profileError.message);
-        setLoading(false);
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { data, error: connectionError } = await getConnectionRows(supabase, userId);
+      if (connectionError) {
+        setError(connectionError.message);
         return;
       }
-      setProfiles(
-        Object.fromEntries(
-          ((profileRows ?? []) as Profile[]).map((profile) => [profile.id, profile]),
+      const rows = (data ?? []) as Connection[];
+      const ids = [
+        ...new Set(
+          rows.flatMap((row) => [row.requester_id, row.addressee_id]).filter((id) => id !== userId),
         ),
-      );
-    } else setProfiles({});
-    setConnections(rows);
-    setLoading(false);
+      ];
+      if (ids.length) {
+        const { data: profileRows, error: profileError } = await supabase
+          .from("profiles")
+          .select("id, username, full_name, avatar_url, bio, created_at, is_admin")
+          .in("id", ids);
+        if (profileError) {
+          setError(profileError.message);
+          return;
+        }
+        setProfiles(
+          Object.fromEntries(
+            ((profileRows ?? []) as Profile[]).map((profile) => [profile.id, profile]),
+          ),
+        );
+      } else setProfiles({});
+      setConnections(rows);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Não foi possível carregar conexões.");
+    } finally {
+      setLoading(false);
+    }
   }, [user?.id]);
   useEffect(() => {
     void load();
@@ -98,15 +105,41 @@ function ConnectionsPage() {
   );
 
   async function updateConnection(id: string, action: "accept" | "decline" | "cancel" | "remove") {
+    if (!user || updatingConnectionId) return;
+    setUpdatingConnectionId(id);
+    setError(null);
     const supabase = getSupabaseBrowserClient();
-    const result =
-      action === "accept"
-        ? await supabase.from("connections").update({ status: "accepted" }).eq("id", id)
-        : action === "decline"
-          ? await supabase.from("connections").update({ status: "declined" }).eq("id", id)
-          : await supabase.from("connections").delete().eq("id", id);
-    if (result.error) setError(result.error.message);
-    else await load();
+    try {
+      const result =
+        action === "accept"
+          ? await supabase
+              .from("connections")
+              .update({ status: "accepted" })
+              .eq("id", id)
+              .eq("addressee_id", user.id)
+              .eq("status", "pending")
+          : action === "decline"
+            ? await supabase
+                .from("connections")
+                .update({ status: "declined" })
+                .eq("id", id)
+                .eq("addressee_id", user.id)
+                .eq("status", "pending")
+            : action === "cancel"
+              ? await supabase
+                  .from("connections")
+                  .delete()
+                  .eq("id", id)
+                  .eq("requester_id", user.id)
+                  .eq("status", "pending")
+              : await supabase.from("connections").delete().eq("id", id).eq("status", "accepted");
+      if (result.error) setError(result.error.message);
+      else await load();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Não foi possível atualizar a conexão.");
+    } finally {
+      setUpdatingConnectionId(null);
+    }
   }
   const labels: Record<Tab, string> = {
     accepted: "Minhas conexões",
@@ -175,6 +208,10 @@ function ConnectionsPage() {
               <Link to="/" className="workspace-empty-action">
                 Conectar-se
               </Link>
+            ) : !user ? (
+              <Link to="/oportunidades" className="workspace-empty-action">
+                Explorar oportunidades
+              </Link>
             ) : null
           }
         />
@@ -194,7 +231,23 @@ function ConnectionsPage() {
                   avatarUrl={peer?.avatar_url}
                 />
                 <div>
-                  <h2>{peer?.full_name || "Usuário"}</h2>
+                  {peer?.username ? (
+                    <Link
+                      className="workspace-person-profile-link"
+                      to="/perfil/$username"
+                      params={{ username: peer.username.replace(/^@/, "") }}
+                    >
+                      <h2>
+                        {peer.full_name || "Usuário"}
+                        {peer.is_admin ? <AdminVerifiedBadge /> : null}
+                      </h2>
+                    </Link>
+                  ) : (
+                    <h2>
+                      {peer?.full_name || "Usuário"}
+                      {peer?.is_admin ? <AdminVerifiedBadge /> : null}
+                    </h2>
+                  )}
                   <p>
                     {peer?.username
                       ? `@${peer.username.replace(/^@/, "")}`
@@ -206,21 +259,31 @@ function ConnectionsPage() {
                     <>
                       <button
                         className="workspace-primary-action"
+                        disabled={updatingConnectionId !== null}
                         onClick={() => void updateConnection(connection.id, "accept")}
                       >
-                        <Check size={16} /> Aceitar
+                        <Check size={16} />
+                        {updatingConnectionId === connection.id ? "Atualizando…" : "Aceitar"}
                       </button>
-                      <button onClick={() => void updateConnection(connection.id, "decline")}>
+                      <button
+                        disabled={updatingConnectionId !== null}
+                        onClick={() => void updateConnection(connection.id, "decline")}
+                      >
                         <X size={16} /> Recusar
                       </button>
                     </>
                   ) : (
                     <button
+                      disabled={updatingConnectionId !== null}
                       onClick={() =>
                         void updateConnection(connection.id, tab === "sent" ? "cancel" : "remove")
                       }
                     >
-                      {tab === "sent" ? "Cancelar" : "Remover"}
+                      {updatingConnectionId === connection.id
+                        ? "Atualizando…"
+                        : tab === "sent"
+                          ? "Cancelar"
+                          : "Remover"}
                     </button>
                   )}
                 </div>

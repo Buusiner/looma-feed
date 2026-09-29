@@ -165,7 +165,7 @@ function ReportsPage() {
               {cardsLoading ? (
                 <i className="report-card-skeleton" aria-label="Carregando" />
               ) : (
-                <strong>{result?.error ? "—" : (result?.value ?? 0)}</strong>
+                <strong>{result?.error ? "Indisponível" : (result?.value ?? 0)}</strong>
               )}
               <small>{result?.error ? "Erro ao carregar" : periodDescription}</small>
             </article>

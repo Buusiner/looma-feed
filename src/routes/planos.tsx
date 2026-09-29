@@ -13,6 +13,12 @@ const BASIC_FEATURES = [
   "Publicações e oportunidades",
 ];
 
+const FREE_FEATURES = [
+  "Crie seu perfil profissional",
+  "Explore a comunidade Looma",
+  "Comece a construir conexões",
+];
+
 const PRO_FEATURES = [
   "Tudo do Basic",
   "Mais destaque nas buscas",
@@ -109,6 +115,25 @@ function PlansPage() {
         </header>
 
         <section className="plans-grid" aria-label="Planos Looma">
+          <article className="plan-card plan-card-free">
+            <div>
+              <span className="plan-label">Para experimentar</span>
+              <h2>Free</h2>
+              <p>O ponto de partida para conhecer a Looma no seu ritmo.</p>
+            </div>
+            <ul>
+              {FREE_FEATURES.map((feature) => (
+                <li key={feature}>
+                  <Check size={17} aria-hidden="true" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <button type="button" className="plan-free-button" disabled>
+              Plano gratuito
+            </button>
+          </article>
+
           <article className="plan-card">
             <div>
               <span className="plan-label">Para começar</span>

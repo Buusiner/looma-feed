@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ComunidadeRouteImport } from './routes/comunidade'
 import { Route as ConexoesRouteImport } from './routes/conexoes'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
@@ -20,11 +21,17 @@ import { Route as PropostasRouteImport } from './routes/propostas'
 import { Route as ProtegidaRouteImport } from './routes/protegida'
 import { Route as PublicacoesRouteImport } from './routes/publicacoes'
 import { Route as RelatoriosRouteImport } from './routes/relatorios'
+import { Route as PerfilUsernameRouteImport } from './routes/perfil/$username'
 import { Route as PerfilEditarRouteImport } from './routes/perfil/editar'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComunidadeRoute = ComunidadeRouteImport.update({
@@ -77,6 +84,11 @@ const RelatoriosRoute = RelatoriosRouteImport.update({
   path: '/relatorios',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PerfilUsernameRoute = PerfilUsernameRouteImport.update({
+  id: '/$username',
+  path: '/$username',
+  getParentRoute: () => PerfilRoute,
+} as any)
 const PerfilEditarRoute = PerfilEditarRouteImport.update({
   id: '/editar',
   path: '/editar',
@@ -85,6 +97,7 @@ const PerfilEditarRoute = PerfilEditarRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/comunidade': typeof ComunidadeRoute
   '/conexoes': typeof ConexoesRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -95,10 +108,12 @@ export interface FileRoutesByFullPath {
   '/protegida': typeof ProtegidaRoute
   '/publicacoes': typeof PublicacoesRoute
   '/relatorios': typeof RelatoriosRoute
+  '/perfil/$username': typeof PerfilUsernameRoute
   '/perfil/editar': typeof PerfilEditarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/comunidade': typeof ComunidadeRoute
   '/conexoes': typeof ConexoesRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -109,11 +124,13 @@ export interface FileRoutesByTo {
   '/protegida': typeof ProtegidaRoute
   '/publicacoes': typeof PublicacoesRoute
   '/relatorios': typeof RelatoriosRoute
+  '/perfil/$username': typeof PerfilUsernameRoute
   '/perfil/editar': typeof PerfilEditarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/comunidade': typeof ComunidadeRoute
   '/conexoes': typeof ConexoesRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -124,12 +141,14 @@ export interface FileRoutesById {
   '/protegida': typeof ProtegidaRoute
   '/publicacoes': typeof PublicacoesRoute
   '/relatorios': typeof RelatoriosRoute
+  '/perfil/$username': typeof PerfilUsernameRoute
   '/perfil/editar': typeof PerfilEditarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/comunidade'
     | '/conexoes'
     | '/configuracoes'
@@ -140,10 +159,12 @@ export interface FileRouteTypes {
     | '/protegida'
     | '/publicacoes'
     | '/relatorios'
+    | '/perfil/$username'
     | '/perfil/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/comunidade'
     | '/conexoes'
     | '/configuracoes'
@@ -154,10 +175,12 @@ export interface FileRouteTypes {
     | '/protegida'
     | '/publicacoes'
     | '/relatorios'
+    | '/perfil/$username'
     | '/perfil/editar'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/comunidade'
     | '/conexoes'
     | '/configuracoes'
@@ -168,11 +191,13 @@ export interface FileRouteTypes {
     | '/protegida'
     | '/publicacoes'
     | '/relatorios'
+    | '/perfil/$username'
     | '/perfil/editar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   ComunidadeRoute: typeof ComunidadeRoute
   ConexoesRoute: typeof ConexoesRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
@@ -192,6 +217,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/comunidade': {
@@ -264,6 +296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RelatoriosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/perfil/$username': {
+      id: '/perfil/$username'
+      path: '/$username'
+      fullPath: '/perfil/$username'
+      preLoaderRoute: typeof PerfilUsernameRouteImport
+      parentRoute: typeof PerfilRoute
+    }
     '/perfil/editar': {
       id: '/perfil/editar'
       path: '/editar'
@@ -275,10 +314,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface PerfilRouteChildren {
+  PerfilUsernameRoute: typeof PerfilUsernameRoute
   PerfilEditarRoute: typeof PerfilEditarRoute
 }
 
 const PerfilRouteChildren: PerfilRouteChildren = {
+  PerfilUsernameRoute: PerfilUsernameRoute,
   PerfilEditarRoute: PerfilEditarRoute,
 }
 
@@ -287,6 +328,7 @@ const PerfilRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   ComunidadeRoute: ComunidadeRoute,
   ConexoesRoute: ConexoesRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,

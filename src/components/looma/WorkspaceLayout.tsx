@@ -14,13 +14,13 @@ export function WorkspaceLayout({ title, description, action, children }: Worksp
       <LoomaSidebar />
       <section className="workspace-content">
         <header className="workspace-header">
-          <div>
+          <div className="workspace-heading-copy">
             <h1>{title}</h1>
             <span>{description}</span>
           </div>
           {action ? <div className="workspace-header-action">{action}</div> : null}
         </header>
-        {children}
+        <div className="workspace-body">{children}</div>
       </section>
     </main>
   );

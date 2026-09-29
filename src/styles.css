@@ -134,6 +134,22 @@
   --sidebar-ring: oklch(0.702 0.176 26.5);
 }
 
+.admin-verified-badge {
+  color: #f4b816;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 1em;
+  margin-left: 0.28em;
+  vertical-align: -0.12em;
+  width: 1em;
+}
+
+.admin-verified-badge svg {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
 .dark {
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
@@ -1195,7 +1211,11 @@
   display: grid;
   grid-template-columns: auto auto;
   grid-template-rows: auto auto;
-  column-gap: clamp(1rem, 2vw, 1.5rem);
+  --intro-logo-slot: 0.872em;
+  --intro-logo-gap: clamp(1rem, 2vw, 1.5rem);
+  --intro-underline-logo-inset: 0.28em;
+  --intro-tagline-offset: calc(var(--intro-underline-logo-inset) * 1.45);
+  column-gap: var(--intro-logo-gap);
   align-items: end;
   color: white;
   font-size: clamp(3rem, 7vw, 6.4rem);
@@ -1221,8 +1241,12 @@
 .intro-underline {
   position: absolute;
   top: calc(100% + 0.42rem);
-  left: 0;
-  width: 100%;
+  left: calc(
+    (var(--intro-logo-slot) + var(--intro-logo-gap)) * -1 + var(--intro-underline-logo-inset)
+  );
+  width: calc(
+    100% + var(--intro-logo-slot) + var(--intro-logo-gap) - var(--intro-underline-logo-inset)
+  );
   height: 3px;
   border-radius: 999px;
   background: var(--looma-primary);
@@ -1232,12 +1256,13 @@
 }
 .intro-tagline-clip {
   display: block;
-  grid-column: 2;
+  grid-column: 1 / span 2;
   grid-row: 2;
   justify-self: center;
   width: max-content;
   height: 1.6rem;
   margin-top: 1.1rem;
+  margin-left: var(--intro-tagline-offset);
   overflow: hidden;
 }
 .intro-tagline {
@@ -1266,9 +1291,9 @@
   transform: translateY(0);
 }
 .intro-logo {
-  width: clamp(2.9rem, 5vw, 4.35rem);
-  height: clamp(2.9rem, 5vw, 4.35rem);
-  transform: translateY(clamp(-0.7rem, -1vw, -0.45rem));
+  width: var(--intro-logo-slot);
+  height: var(--intro-logo-slot);
+  transform: translateY(-0.071em);
 }
 @keyframes intro-logo-loading {
   0%,
@@ -1292,8 +1317,8 @@
 .looma-logo-mark {
   display: block;
   background: var(--looma-primary);
-  -webkit-mask: url("/looma-logo-clean.png") center / contain no-repeat;
-  mask: url("/looma-logo-clean.png") center / contain no-repeat;
+  -webkit-mask: url("/looma-logo-mark.svg") center / contain no-repeat;
+  mask: url("/looma-logo-mark.svg") center / contain no-repeat;
 }
 .sidebar-logo {
   width: 1.5rem;
@@ -1954,6 +1979,14 @@
   font-size: 0.68rem;
 }
 
+.sidebar-profile-menu-note {
+  margin: 0;
+  padding: 0.45rem;
+  color: var(--looma-muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
 .profile-avatar-guest {
   background: rgba(255, 255, 255, 0.88);
   color: #8f3d2c;
@@ -2444,7 +2477,7 @@ body::-webkit-scrollbar,
 }
 .plans-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
   max-width: 61rem;
 }
@@ -2462,6 +2495,9 @@ body::-webkit-scrollbar,
 .plan-card-pro {
   border-color: color-mix(in srgb, var(--looma-primary) 55%, white);
   background: linear-gradient(145deg, #fff8f5 0%, var(--looma-surface) 52%);
+}
+.plan-card-free {
+  background: var(--looma-surface);
 }
 .plan-label {
   color: var(--looma-primary);
@@ -2498,11 +2534,17 @@ body::-webkit-scrollbar,
 .plan-card li svg {
   color: var(--looma-primary);
 }
+.plan-free-button,
 .plan-basic-button,
 .plan-pro-button {
   min-height: 2.75rem;
   border-radius: 0.6rem;
   font-weight: 800;
+}
+.plan-free-button {
+  border: 1px solid var(--looma-rim);
+  color: var(--looma-muted);
+  background: transparent;
 }
 .plan-basic-button {
   border: 1px solid var(--looma-rim);
@@ -2529,6 +2571,11 @@ body::-webkit-scrollbar,
 }
 .plans-feedback.success {
   color: #277a55;
+}
+@media (max-width: 960px) {
+  .plans-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 @media (max-width: 700px) {
   .plans-grid {
@@ -3807,10 +3854,10 @@ body {
   opacity: 0;
   transform: translateY(-0.5rem);
   transition:
-    height 520ms ease-in-out,
-    margin 520ms ease-in-out,
-    opacity 520ms ease-in-out,
-    transform 520ms ease-in-out;
+    height 560ms ease-in-out,
+    margin 560ms ease-in-out,
+    opacity 560ms ease-in-out,
+    transform 560ms ease-in-out;
 }
 
 .feed-search-expand-slot.is-expanded {
@@ -3826,9 +3873,9 @@ body {
   opacity: 1;
   transform: translateY(0);
   transition:
-    max-height 520ms ease-in-out,
-    opacity 520ms ease-in-out,
-    transform 520ms ease-in-out;
+    max-height 560ms ease-in-out,
+    opacity 560ms ease-in-out,
+    transform 560ms ease-in-out;
 }
 
 .aside-search-anchor {
@@ -3889,6 +3936,80 @@ body {
 
 .feed-search-overlay .aside-search:focus-within {
   border-color: var(--looma-primary);
+}
+
+.home-search-results {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  right: 0;
+  left: 0;
+  overflow: hidden;
+  border: 1px solid var(--looma-rim);
+  border-radius: var(--looma-radius-md);
+  background: var(--looma-surface);
+  box-shadow: var(--looma-shadow-md);
+}
+
+.home-search-results > p {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  color: var(--looma-muted);
+  font-size: var(--looma-font-small);
+}
+
+.home-search-results ul {
+  display: grid;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+}
+
+.home-search-results a,
+.home-search-results button {
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.65rem;
+  border: 0;
+  border-radius: calc(var(--looma-radius-sm) - 0.1rem);
+  padding: 0.65rem;
+  background: transparent;
+  color: var(--looma-text);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+}
+
+.home-search-results a:hover,
+.home-search-results a:focus-visible,
+.home-search-results button:hover,
+.home-search-results button:focus-visible {
+  background: var(--looma-primary-soft);
+  color: var(--looma-primary);
+  outline: none;
+}
+
+.home-search-results span {
+  display: grid;
+  min-width: 0;
+  gap: 0.14rem;
+}
+
+.home-search-results strong,
+.home-search-results small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-search-results strong {
+  font-size: 0.85rem;
+}
+
+.home-search-results small {
+  color: var(--looma-muted);
+  font-size: 0.76rem;
 }
 
 /* Focused route transition between the feed and profile editor. */
@@ -4820,27 +4941,28 @@ html.looma-route-leaving .feed-stage {
 }
 .composer .publish-button:disabled {
   cursor: not-allowed;
-  opacity: 0.58;
+  opacity: 1;
 }
 
 /* Splash sequence: icon, typed word, underline, then tagline. */
 .intro-lockup {
   /* The mark already has a generous visual footprint; keep the wordmark attached to it. */
-  column-gap: clamp(0.35rem, 0.6vw, 0.55rem);
+  --intro-logo-gap: clamp(0.18rem, 0.32vw, 0.3rem);
+  column-gap: var(--intro-logo-gap);
   opacity: 1;
   transform: none;
   transition: none;
 }
 .intro-logo {
   opacity: 0;
-  transform: translateY(clamp(-0.7rem, -1vw, -0.45rem)) scale(0.82);
+  transform: translateY(0.01em) scale(0.82);
   transition:
-    opacity 320ms ease 100ms,
-    transform 600ms cubic-bezier(0.16, 1, 0.3, 1) 100ms;
+    opacity 420ms ease 120ms,
+    transform 760ms cubic-bezier(0.16, 1, 0.3, 1) 120ms;
 }
 .intro-visible .intro-logo {
   opacity: 1;
-  transform: translateY(clamp(-0.7rem, -1vw, -0.45rem)) scale(1);
+  transform: translateY(0.01em) scale(1);
 }
 .intro-brand-name {
   position: relative;
@@ -4853,6 +4975,13 @@ html.looma-route-leaving .feed-stage {
   inset: 0 auto auto 0;
   white-space: nowrap;
 }
+.intro-brand-typed {
+  opacity: 0;
+  transform: translateY(0.04em);
+  transition:
+    opacity 640ms ease,
+    transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
+}
 .intro-brand-reserve {
   display: block;
   visibility: hidden;
@@ -4860,6 +4989,12 @@ html.looma-route-leaving .feed-stage {
 }
 .intro-brand-fallback {
   display: none;
+}
+.intro-stage-word .intro-brand-typed,
+.intro-stage-line .intro-brand-typed,
+.intro-stage-tagline .intro-brand-typed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Do not let the former all-at-once intro rules start these stages early. */
@@ -4870,7 +5005,7 @@ html.looma-route-leaving .feed-stage {
   /* The line stays invisible until the completed word explicitly releases it. */
   transform: scaleX(0);
   transform-origin: center;
-  transition: transform 780ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 940ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .intro-stage-line .intro-underline,
 .intro-stage-tagline .intro-underline {
@@ -4882,8 +5017,8 @@ html.looma-route-leaving .feed-stage {
 }
 .intro-tagline {
   transition:
-    opacity 520ms ease,
-    transform 580ms cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 640ms ease,
+    transform 720ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .intro-stage-tagline .intro-tagline {
   opacity: 1;
@@ -6383,6 +6518,9 @@ body {
 
 /* Each avatar remains a square crop even inside flex rows with changing height. */
 .looma-avatar-frame {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex: 0 0 auto;
   aspect-ratio: 1;
   overflow: hidden;
@@ -6396,6 +6534,14 @@ body {
   max-width: none;
   object-fit: cover;
   object-position: center;
+}
+
+.looma-avatar-frame > .looma-avatar-anonymous {
+  width: 54%;
+  height: 54%;
+  color: currentColor;
+  opacity: 0.78;
+  stroke-width: 1.8;
 }
 
 /* Keep the sidebar avatar identical in proportion to the editor preview. */
@@ -6421,7 +6567,9 @@ body {
 /* Reset only the profile-card avatar so no inherited decoration can form a halo. */
 .sidebar-profile .profile-avatar.looma-avatar-frame {
   box-sizing: border-box;
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 2.85rem;
   height: 2.85rem;
   min-width: 2.85rem;
@@ -6548,7 +6696,7 @@ button,
   flex-direction: column;
   gap: 0;
   overflow-y: auto;
-  padding: var(--looma-space-4) var(--looma-space-3);
+  padding: var(--looma-space-3);
   scrollbar-width: none;
 }
 
@@ -6562,25 +6710,15 @@ button,
 }
 
 .sidebar-nav-group + .sidebar-nav-group {
-  margin-top: var(--looma-space-3);
-  border-top: 1px solid #f0f0f3;
-  padding-top: var(--looma-space-3);
-}
-
-.sidebar-nav-group-label {
-  margin: 0 0 0.25rem;
-  padding: 0 var(--looma-space-3);
-  color: #a0a0ab;
-  font-size: 0.65rem;
-  font-weight: 760;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
+  margin-top: var(--looma-space-2);
+  border-top: 1px solid var(--looma-primary);
+  padding-top: var(--looma-space-2);
 }
 
 .looma-sidebar .sidebar-nav a,
 .looma-sidebar .sidebar-nav button {
   width: 100%;
-  min-height: 2.75rem;
+  min-height: 2.5rem;
   gap: 0.75rem;
   border: 0;
   border-radius: var(--looma-radius-sm);
@@ -6687,6 +6825,38 @@ button,
   color: var(--looma-muted);
 }
 
+/* On shorter notebooks, keep all navigation destinations visible without turning
+   the sidebar into a second hidden-scrolling surface. Both sign-in methods stay
+   available; only their decorative divider is removed to recover vertical room. */
+@media (min-width: 1024px) and (max-height: 48rem) {
+  .looma-sidebar .sidebar-nav {
+    padding-top: 0.1875rem;
+    padding-bottom: 0.1875rem;
+  }
+
+  .sidebar-nav-group {
+    gap: 0;
+  }
+
+  .sidebar-nav-group + .sidebar-nav-group {
+    margin-top: 0.25rem;
+    padding-top: 0.25rem;
+  }
+
+  .auth-control-sidebar .auth-login-options {
+    gap: 0.5rem;
+  }
+
+  .auth-control-sidebar .auth-login-divider {
+    display: none;
+  }
+
+  .sidebar-profile-wrap {
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+  }
+}
+
 /* Home feed: keep the conversation as the visual centre. */
 .feed-stage {
   overflow-x: clip;
@@ -6697,7 +6867,7 @@ button,
   display: grid;
   grid-template-columns: minmax(0, var(--looma-feed-max)) minmax(18rem, var(--looma-rail-width));
   align-items: start;
-  justify-content: start;
+  justify-content: center;
   width: min(100%, 80rem);
   min-height: 100%;
   margin: 0 auto;
@@ -7585,7 +7755,7 @@ button,
 
 /* Account and onboarding flows use the same indigo product language. */
 :root {
-  --looma-sidebar-width: 16rem;
+  --looma-sidebar-width: 15.25rem;
   --looma-font-base: 1rem;
   --looma-font-small: 0.875rem;
   --looma-font-label: 0.75rem;
@@ -7760,4 +7930,2915 @@ button,
 
 .email-auth-submit:hover:not(:disabled) {
   background: var(--looma-primary-hover);
+}
+
+/* Portfolio sections use live profile data where available and make future areas explicit. */
+.portfolio-section {
+  display: grid;
+  gap: var(--looma-space-4);
+}
+
+.portfolio-section > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--looma-space-3);
+  margin: 0;
+}
+
+.portfolio-section > header > svg {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+  color: var(--looma-primary);
+}
+
+.portfolio-section-label {
+  margin: 0 0 0.3rem;
+  color: var(--looma-primary) !important;
+  font-size: var(--looma-font-label);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.portfolio-section > header h2 {
+  margin: 0;
+}
+
+.portfolio-section > header p:not(.portfolio-section-label) {
+  margin: 0.38rem 0 0;
+  max-width: 38rem;
+}
+
+.portfolio-skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.portfolio-skill-list span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.2rem;
+  border: 1px solid rgba(99, 91, 255, 0.2);
+  border-radius: 999px;
+  padding: 0.25rem 0.72rem;
+  background: var(--looma-primary-soft);
+  color: var(--looma-primary);
+  font-size: var(--looma-font-small);
+  font-weight: 750;
+}
+
+.portfolio-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--looma-space-3);
+  min-height: 5.25rem;
+  border: 1px dashed var(--looma-rim);
+  border-radius: var(--looma-radius-md);
+  padding: var(--looma-space-4);
+  background: #fcfcfd;
+}
+
+.portfolio-empty-state p,
+.portfolio-section-status {
+  margin: 0;
+  color: var(--looma-muted);
+  font-size: var(--looma-font-small);
+}
+
+.portfolio-empty-state-muted {
+  justify-content: flex-start;
+}
+
+.portfolio-section-action {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.35rem;
+  border: 1px solid rgba(99, 91, 255, 0.26);
+  border-radius: var(--looma-radius-sm);
+  padding: 0.35rem 0.75rem;
+  color: var(--looma-primary);
+  font-size: var(--looma-font-small);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.portfolio-section-action:hover {
+  border-color: var(--looma-primary);
+  background: var(--looma-primary-soft);
+}
+
+.portfolio-section-status-error {
+  color: #b42318;
+}
+
+.portfolio-performance-empty {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--looma-space-4);
+  min-height: 6rem;
+  border-radius: var(--looma-radius-md);
+  padding: var(--looma-space-4);
+  background: #fafafa;
+}
+
+.portfolio-performance-ring {
+  width: 3.5rem;
+  height: 3.5rem;
+  flex: 0 0 3.5rem;
+  border: 0.38rem solid #e7e7eb;
+  border-top-color: #b5b5bd;
+  border-radius: 50%;
+}
+
+.portfolio-performance-empty h3,
+.portfolio-performance-empty p {
+  margin: 0;
+}
+
+.portfolio-performance-empty h3 {
+  color: var(--looma-text);
+  font-size: var(--looma-font-small);
+}
+
+.portfolio-performance-empty p {
+  margin-top: 0.3rem;
+  color: var(--looma-muted);
+  font-size: var(--looma-font-small);
+}
+
+@media (max-width: 520px) {
+  .portfolio-empty-state {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .portfolio-section-action {
+    width: 100%;
+  }
+}
+
+/* Home: discovery is a full product surface, not a narrow feed with an empty rail. */
+.home-shell {
+  display: grid;
+  width: min(100%, 100rem);
+  box-sizing: border-box;
+  gap: clamp(1.25rem, 2vw, 2rem);
+  margin: 0 auto;
+  padding: 5.75rem 1rem 5.5rem;
+}
+
+/* The Home now contains several vertical sections, so its fixed application
+   stage must own a real scroll area rather than clipping the content. */
+.feed-stage {
+  overflow-y: auto;
+}
+
+.home-topbar,
+.home-panel-heading,
+.home-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--looma-space-4);
+}
+
+.home-topbar h1,
+.home-panel-heading h2,
+.home-section-header h2,
+.home-next-steps h2,
+.home-feed-companion h2 {
+  margin: 0;
+  color: var(--looma-institutional);
+  letter-spacing: -0.055em;
+}
+
+.home-topbar h1 {
+  font-size: clamp(2.15rem, 3.5vw, 3rem);
+  line-height: 1;
+}
+
+.home-topbar > div:first-child > p:not(.home-section-kicker),
+.home-section-header > div > p:not(.home-section-kicker),
+.home-next-steps > p:not(.home-section-kicker),
+.home-feed-companion > p:not(.home-section-kicker) {
+  max-width: 42rem;
+  margin: 0.55rem 0 0;
+  color: var(--looma-muted);
+  font-size: var(--looma-font-body);
+  line-height: 1.55;
+}
+
+.home-section-kicker {
+  margin: 0 0 0.42rem;
+  color: var(--looma-primary);
+  font-size: var(--looma-font-label);
+  font-weight: 800;
+  letter-spacing: 0.085em;
+  text-transform: uppercase;
+}
+
+.home-search-compact {
+  width: min(100%, 23rem);
+  flex: 0 1 23rem;
+}
+
+.home-shell .feed-search-expand-slot.is-expanded {
+  margin: 0 0 0.25rem;
+}
+
+.home-top-grid,
+.home-feed-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(18rem, 24vw, 24rem);
+  align-items: stretch;
+  gap: clamp(1rem, 1.75vw, 1.75rem);
+}
+
+.home-composer-panel,
+.home-next-steps,
+.home-feed-companion,
+.home-discovery-section {
+  min-width: 0;
+}
+
+.home-composer-panel,
+.home-next-steps,
+.home-feed-companion {
+  border: 1px solid var(--looma-rim);
+  border-radius: var(--looma-radius-lg);
+  background: var(--looma-surface);
+  box-shadow: var(--looma-shadow-sm);
+}
+
+.home-composer-panel {
+  padding: var(--looma-space-5);
+}
+
+.home-panel-heading h2,
+.home-section-header h2,
+.home-next-steps h2,
+.home-feed-companion h2 {
+  font-size: clamp(1.2rem, 1.75vw, 1.55rem);
+  line-height: 1.2;
+}
+
+.home-composer-panel .composer {
+  margin: var(--looma-space-4) 0 0;
+  box-shadow: none;
+}
+
+.home-next-steps,
+.home-feed-companion {
+  display: flex;
+  flex-direction: column;
+  padding: var(--looma-space-5);
+}
+
+.home-next-step-actions {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: auto;
+  padding-top: var(--looma-space-5);
+}
+
+.home-next-step-actions a,
+.home-companion-link {
+  display: flex;
+  min-height: 2.65rem;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--looma-rim);
+  border-radius: var(--looma-radius-sm);
+  padding: 0.5rem 0.75rem;
+  color: var(--looma-text);
+  font-size: var(--looma-font-small);
+  font-weight: 720;
+  text-decoration: none;
+}
+
+.home-next-step-actions a:first-child {
+  border-color: transparent;
+  background: var(--looma-primary);
+  color: #ffffff;
+}
+
+.home-next-step-actions a:hover,
+.home-companion-link:hover {
+  border-color: rgba(99, 91, 255, 0.34);
+  background: var(--looma-primary-soft);
+  color: var(--looma-primary);
+}
+
+.home-next-step-actions a:first-child:hover {
+  background: var(--looma-primary-hover);
+  color: #ffffff;
+}
+
+.home-feed-panel {
+  min-height: 0;
+}
+
+.home-feed-heading {
+  align-items: center;
+  margin-bottom: var(--looma-space-4);
+}
+
+.home-feed-heading .feed-tabs {
+  gap: 0.85rem;
+  margin: 0;
+  border: 0;
+}
+
+.home-feed-heading .feed-tabs button {
+  min-height: 2.35rem;
+  border: 1px solid var(--looma-rim);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+}
+
+.home-feed-heading .feed-tabs button:hover,
+.home-feed-heading .feed-tabs button.active {
+  border-color: transparent;
+  background: var(--looma-primary-soft);
+}
+
+.home-feed-companion {
+  min-height: 100%;
+}
+
+.home-companion-link {
+  margin-top: 0.6rem;
+}
+
+.home-companion-link:first-of-type {
+  margin-top: auto;
+  padding-top: var(--looma-space-5);
+}
+
+.home-discovery-section {
+  border: 1px solid var(--looma-rim);
+  border-radius: var(--looma-radius-lg);
+  padding: clamp(1.15rem, 2.2vw, 1.75rem);
+  background: var(--looma-surface);
+  box-shadow: var(--looma-shadow-sm);
+}
+
+.home-section-header {
+  margin-bottom: var(--looma-space-4);
+}
+
+.home-section-header > a {
+  flex: 0 0 auto;
+  color: var(--looma-primary);
+  font-size: var(--looma-font-small);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.home-section-header > a:hover {
+  color: var(--looma-primary-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.home-opportunity-grid,
+.home-people-grid,
+.home-discovery-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: var(--looma-space-3);
+}
+
+.home-opportunity-card,
+.home-person-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border: 1px solid #efeff3;
+  border-radius: var(--looma-radius-md);
+  padding: var(--looma-space-4);
+  background: #fcfcfd;
+}
+
+.home-opportunity-card:hover,
+.home-person-card:hover {
+  border-color: rgba(99, 91, 255, 0.28);
+  background: #ffffff;
+}
+
+.home-opportunity-card-top,
+.home-opportunity-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.home-opportunity-card-top {
+  justify-content: space-between;
+  color: var(--looma-primary);
+}
+
+.home-opportunity-card-top span,
+.home-opportunity-meta span {
+  border-radius: 999px;
+  padding: 0.24rem 0.48rem;
+  background: var(--looma-primary-soft);
+  color: var(--looma-primary);
+  font-size: 0.7rem;
+  font-weight: 720;
+}
+
+.home-opportunity-card h3,
+.home-person-card h3,
+.home-discovery-empty h3 {
+  margin: var(--looma-space-3) 0 0;
+  color: var(--looma-text);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.home-opportunity-card > p,
+.home-person-card p,
+.home-person-card small,
+.home-discovery-empty p {
+  margin: 0.5rem 0 0;
+  color: var(--looma-muted);
+  font-size: var(--looma-font-small);
+  line-height: 1.5;
+}
+
+.home-opportunity-meta {
+  flex-wrap: wrap;
+  margin-top: var(--looma-space-3);
+}
+
+.home-opportunity-card > a {
+  margin-top: auto;
+  padding-top: var(--looma-space-4);
+  color: var(--looma-primary);
+  font-size: var(--looma-font-small);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.home-opportunity-card > a:hover {
+  color: var(--looma-primary-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.home-person-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--looma-space-3);
+}
+
+.home-person-card .avatar {
+  width: 2.8rem;
+  height: 2.8rem;
+}
+
+.home-person-card h3 {
+  margin: 0;
+}
+
+.home-person-profile-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.home-person-profile-link:hover h3,
+.home-person-profile-link:focus-visible h3 {
+  color: var(--looma-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.home-person-card button {
+  grid-column: 1 / -1;
+  min-height: 2.45rem;
+  border: 1px solid rgba(99, 91, 255, 0.24);
+  border-radius: var(--looma-radius-sm);
+  background: var(--looma-primary-soft);
+  color: var(--looma-primary);
+  font-size: var(--looma-font-small);
+  font-weight: 750;
+}
+
+.home-person-card button:hover:not(:disabled) {
+  border-color: var(--looma-primary);
+  background: var(--looma-primary);
+  color: #ffffff;
+}
+
+.home-discovery-empty {
+  display: flex;
+  min-height: 7.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--looma-space-4);
+  border: 1px dashed #dedee5;
+  border-radius: var(--looma-radius-md);
+  padding: var(--looma-space-4);
+  background: #fcfcfd;
+}
+
+.home-discovery-empty h3 {
+  margin-top: 0;
+}
+
+.home-discovery-empty > a {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(99, 91, 255, 0.26);
+  border-radius: var(--looma-radius-sm);
+  padding: 0.4rem 0.7rem;
+  color: var(--looma-primary);
+  font-size: var(--looma-font-small);
+  font-weight: 750;
+  text-align: center;
+  text-decoration: none;
+}
+
+.home-discovery-empty > a:hover {
+  border-color: var(--looma-primary);
+  background: var(--looma-primary-soft);
+}
+
+.home-projects-empty > svg {
+  flex: 0 0 auto;
+  color: var(--looma-primary);
+}
+
+.home-interest-grid,
+.home-interest-skeleton {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.home-interest-grid a {
+  display: flex;
+  min-height: 3.25rem;
+  align-items: center;
+  border: 1px solid #efeff3;
+  border-radius: var(--looma-radius-sm);
+  padding: 0.5rem 0.75rem;
+  background: #fcfcfd;
+  color: var(--looma-text);
+  font-size: var(--looma-font-small);
+  font-weight: 720;
+  text-decoration: none;
+}
+
+.home-interest-grid a:hover {
+  border-color: rgba(99, 91, 255, 0.28);
+  background: var(--looma-primary-soft);
+  color: var(--looma-primary);
+}
+
+.home-discovery-skeleton i,
+.home-interest-skeleton i {
+  display: block;
+  min-height: 10rem;
+  border-radius: var(--looma-radius-md);
+  background: linear-gradient(90deg, #f4f4f7 25%, #fbfbfd 37%, #f4f4f7 63%);
+  background-size: 400% 100%;
+  animation: home-discovery-shimmer 1.35s ease infinite;
+}
+
+.home-interest-skeleton i {
+  min-height: 3.25rem;
+}
+
+@keyframes home-discovery-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+.feed-ready .home-shell {
+  animation: workspace-route-enter 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (min-width: 1024px) {
+  .home-shell {
+    padding: clamp(1.5rem, 3vw, 2.75rem) clamp(1.25rem, 3vw, 2.5rem) 4.5rem;
+  }
+}
+
+@media (max-width: 1180px) {
+  .home-top-grid,
+  .home-feed-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-feed-companion {
+    min-height: 0;
+  }
+
+  .home-next-step-actions,
+  .home-feed-companion {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-next-steps,
+  .home-feed-companion {
+    display: grid;
+  }
+
+  .home-next-steps > p,
+  .home-next-steps > h2,
+  .home-feed-companion > p,
+  .home-feed-companion > h2 {
+    grid-column: 1 / -1;
+  }
+
+  .home-next-step-actions {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .home-companion-link:first-of-type {
+    margin-top: 0;
+    padding-top: 0.5rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .home-topbar,
+  .home-panel-heading,
+  .home-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .home-search-compact {
+    display: none;
+  }
+
+  .home-feed-heading {
+    gap: var(--looma-space-3);
+  }
+
+  .home-opportunity-grid,
+  .home-people-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-interest-grid,
+  .home-interest-skeleton {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-discovery-empty {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 520px) {
+  .home-shell {
+    gap: var(--looma-space-4);
+    padding-inline: 0.75rem;
+  }
+
+  .home-composer-panel,
+  .home-next-steps,
+  .home-feed-companion,
+  .home-discovery-section {
+    border-radius: var(--looma-radius-md);
+    padding: var(--looma-space-3);
+  }
+
+  .home-next-step-actions,
+  .home-feed-companion {
+    grid-template-columns: 1fr;
+  }
+
+  .home-feed-heading .feed-tabs {
+    width: 100%;
+  }
+
+  .home-feed-heading .feed-tabs button {
+    flex: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feed-ready .home-shell,
+  .home-discovery-skeleton i,
+  .home-interest-skeleton i {
+    animation: none;
+  }
+}
+
+/* Second visual pass: a softer, more tactile language shared by every Looma surface. */
+:root {
+  --radius: 1rem;
+  --looma-background: #fafafe;
+  --looma-surface: #ffffff;
+  --looma-primary-soft: #f3f1ff;
+  --looma-rim: #e9e9f1;
+  --looma-radius-sm: 0.75rem;
+  --looma-radius-md: 1rem;
+  --looma-radius-lg: 1.375rem;
+  --looma-shadow-sm: 0 1px 2px rgba(11, 16, 32, 0.025), 0 5px 18px rgba(11, 16, 32, 0.035);
+  --looma-shadow-md: 0 14px 36px rgba(11, 16, 32, 0.09);
+  --looma-control-height: 3rem;
+}
+
+body {
+  line-height: 1.55;
+  text-rendering: optimizeLegibility;
+}
+
+:where(button, a, input, textarea, select) {
+  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:where(input, textarea)::placeholder {
+  color: #9898a5;
+  opacity: 1;
+}
+
+/* Navigation stays clear, while the active destination feels like a gentle destination chip. */
+.looma-sidebar .sidebar-nav {
+  gap: 0.1rem;
+  padding: calc(var(--looma-space-3) + 0.12rem);
+}
+
+.sidebar-nav-group {
+  gap: 0.34rem;
+}
+
+.sidebar-nav-group + .sidebar-nav-group {
+  margin-top: 0.82rem;
+  border-top-color: rgba(99, 91, 255, 0.42);
+  padding-top: 0.82rem;
+}
+
+.looma-sidebar .sidebar-nav a,
+.looma-sidebar .sidebar-nav button {
+  min-height: 2.72rem;
+  border-radius: 0.88rem;
+  padding-inline: 0.84rem;
+  font-size: 0.9rem;
+  font-weight: 660;
+}
+
+.looma-sidebar .sidebar-nav a:not(.active):hover,
+.looma-sidebar .sidebar-nav button:not(.active):hover {
+  background: #f6f5fb;
+  color: var(--looma-institutional);
+}
+
+.looma-sidebar .sidebar-nav a.active,
+.looma-sidebar .sidebar-nav a.active:hover,
+.looma-sidebar .sidebar-nav button.active,
+.looma-sidebar .sidebar-nav button.active:hover {
+  border: 1px solid rgba(99, 91, 255, 0.1);
+  background: linear-gradient(135deg, #f5f3ff, #eeecff);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+}
+
+.sidebar-profile {
+  min-height: 4.45rem;
+  border-color: #ececf3;
+  border-radius: 1.05rem;
+  background: #fdfdff;
+}
+
+.sidebar-profile:hover,
+.sidebar-profile[aria-expanded="true"] {
+  border-color: rgba(99, 91, 255, 0.26);
+  background: #faf9ff;
+  box-shadow: 0 6px 18px rgba(11, 16, 32, 0.045);
+}
+
+.sidebar-profile strong {
+  color: var(--looma-text);
+}
+
+.sidebar-profile-menu {
+  border-radius: 1rem;
+}
+
+/* Cards and controls get a little more depth and a more comfortable touch target. */
+.home-composer-panel,
+.home-next-steps,
+.home-feed-companion,
+.home-discovery-section,
+.composer,
+.feed-post,
+.aside-card,
+.workspace-card,
+.workspace-person-card,
+.workspace-section,
+.workspace-chart,
+.settings-panel,
+.workspace-report-table,
+.workspace-composer,
+.plan-card,
+.profile-edit-card,
+.onboarding-card {
+  border-color: #e9e9f1;
+  box-shadow: var(--looma-shadow-sm);
+}
+
+.home-next-steps,
+.home-feed-companion,
+.home-discovery-empty,
+.home-feed-empty,
+.workspace-state {
+  background: linear-gradient(145deg, #ffffff 0%, #fbfaff 100%);
+}
+
+.home-composer-panel,
+.home-next-steps,
+.home-feed-companion,
+.home-discovery-section,
+.workspace-card,
+.workspace-section,
+.workspace-chart,
+.settings-panel {
+  padding: clamp(1.2rem, 1.9vw, 1.7rem);
+}
+
+.home-panel-heading h2,
+.home-section-header h2,
+.home-next-steps h2,
+.home-feed-companion h2,
+.workspace-card-heading h2,
+.workspace-person-card h2,
+.workspace-chart h2,
+.workspace-section h2,
+.settings-panel h2 {
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+.home-section-kicker,
+.portfolio-section-label,
+.aside-label,
+.home-feed-empty-eyebrow {
+  letter-spacing: 0.075em;
+}
+
+.composer,
+.workspace-composer {
+  background: #fefeff;
+}
+
+.composer:focus-within,
+.workspace-composer:focus-within {
+  border-color: rgba(99, 91, 255, 0.38);
+  box-shadow:
+    0 0 0 4px rgba(99, 91, 255, 0.08),
+    var(--looma-shadow-sm);
+}
+
+.feed-post:hover,
+.workspace-card:hover,
+.workspace-person-card:hover,
+.home-opportunity-card:hover,
+.home-person-card:hover {
+  border-color: #dedbf7;
+  box-shadow: 0 8px 24px rgba(11, 16, 32, 0.055);
+}
+
+.home-opportunity-card,
+.home-person-card,
+.home-interest-grid a,
+.home-next-step-actions a,
+.home-companion-link {
+  border-color: #ebebf2;
+  background: #fdfdff;
+}
+
+.home-opportunity-card:hover,
+.home-person-card:hover,
+.home-interest-grid a:hover,
+.home-next-step-actions a:hover,
+.home-companion-link:hover {
+  background: #faf9ff;
+}
+
+.aside-search,
+.workspace-search,
+.workspace-composer textarea,
+.workspace-form input,
+.workspace-form textarea,
+.settings-field input,
+.profile-edit-card input,
+.profile-edit-card textarea,
+.profile-field input,
+.profile-field textarea,
+.onboarding-field input,
+.onboarding-field textarea,
+.onboarding-skill-search,
+.onboarding-custom-skill input,
+.email-auth-form input {
+  border-color: #e5e5ee;
+  border-radius: var(--looma-radius-md);
+  background: #ffffff;
+}
+
+.aside-search:focus-within,
+.workspace-search:focus-within,
+.workspace-composer textarea:focus,
+.workspace-form input:focus,
+.workspace-form textarea:focus,
+.settings-field input:focus,
+.profile-edit-card input:focus,
+.profile-edit-card textarea:focus,
+.profile-field input:focus,
+.profile-field textarea:focus,
+.onboarding-field input:focus,
+.onboarding-field textarea:focus,
+.onboarding-skill-search:focus-within,
+.onboarding-custom-skill input:focus,
+.email-auth-form input:focus {
+  border-color: var(--looma-primary);
+  box-shadow: 0 0 0 4px rgba(99, 91, 255, 0.1);
+}
+
+.publish-button,
+.composer-actions button,
+.workspace-primary-action,
+.workspace-composer button,
+.workspace-empty-action,
+.workspace-state button,
+.plan-pro-button,
+.onboarding-primary-action,
+.email-auth-submit,
+.avatar-upload-button,
+.profile-form-actions > button {
+  border-radius: 0.88rem;
+  box-shadow: 0 2px 5px rgba(79, 70, 229, 0.12);
+}
+
+.publish-button:hover:not(:disabled),
+.composer-actions button:hover:not(:disabled),
+.workspace-primary-action:hover:not(:disabled),
+.workspace-composer button:hover:not(:disabled),
+.workspace-empty-action:hover,
+.workspace-state button:hover,
+.plan-pro-button:hover:not(:disabled),
+.onboarding-primary-action:hover:not(:disabled),
+.email-auth-submit:hover:not(:disabled),
+.avatar-upload-button:hover,
+.profile-form-actions > button:hover:not(:disabled) {
+  box-shadow: 0 7px 16px rgba(79, 70, 229, 0.2);
+}
+
+.feed-tabs button,
+.workspace-filters button,
+.workspace-tabs button,
+.home-feed-heading .feed-tabs button {
+  border-radius: 999px;
+}
+
+.workspace-filters button.active,
+.workspace-tabs button.active,
+.home-feed-heading .feed-tabs button.active {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82);
+}
+
+.workspace-state,
+.portfolio-empty-state,
+.home-discovery-empty {
+  border-color: #e5e5ed;
+}
+
+@media (max-width: 760px) {
+  .home-composer-panel,
+  .home-next-steps,
+  .home-feed-companion,
+  .home-discovery-section,
+  .workspace-card,
+  .workspace-section,
+  .workspace-chart,
+  .settings-panel {
+    padding: var(--looma-space-4);
+  }
+}
+
+@media (min-width: 1024px) and (max-height: 48rem) {
+  .looma-sidebar .sidebar-nav {
+    gap: 0;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+
+  .sidebar-nav-group {
+    gap: 0.1rem;
+  }
+
+  .sidebar-nav-group + .sidebar-nav-group {
+    margin-top: 0.42rem;
+    padding-top: 0.42rem;
+  }
+
+  .looma-sidebar .sidebar-nav a,
+  .looma-sidebar .sidebar-nav button {
+    min-height: 2.38rem;
+    border-radius: 0.75rem;
+    font-size: 0.84rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(button, a, input, textarea, select) {
+    transition: none;
+  }
+}
+
+/* Stronger surface hierarchy: this keeps the existing layout, but makes its
+   calm, human product language immediately visible rather than merely subtle. */
+:root {
+  --looma-background: #f7f7fc;
+  --looma-primary-soft: #eceaff;
+  --looma-rim: #e4e3ee;
+  --looma-shadow-sm: 0 8px 22px rgba(26, 24, 55, 0.045), 0 1px 2px rgba(26, 24, 55, 0.025);
+  --looma-shadow-md: 0 18px 44px rgba(26, 24, 55, 0.12);
+}
+
+.feed-stage,
+.workspace-page {
+  background:
+    radial-gradient(circle at 75% -10%, rgba(99, 91, 255, 0.11), transparent 32rem),
+    radial-gradient(circle at 12% 20%, rgba(164, 157, 255, 0.075), transparent 28rem),
+    var(--looma-background);
+}
+
+.looma-sidebar {
+  border-right-color: #e3e2ed;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfaff 100%);
+}
+
+.sidebar-brand {
+  border-bottom-color: #ecebf3;
+}
+
+.looma-sidebar .sidebar-nav a:not(.active):hover,
+.looma-sidebar .sidebar-nav button:not(.active):hover {
+  box-shadow: inset 0 0 0 1px rgba(99, 91, 255, 0.06);
+}
+
+.looma-sidebar .sidebar-nav a.active,
+.looma-sidebar .sidebar-nav a.active:hover,
+.looma-sidebar .sidebar-nav button.active,
+.looma-sidebar .sidebar-nav button.active:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 5px 14px rgba(99, 91, 255, 0.08);
+}
+
+.home-topbar {
+  padding-bottom: 0.25rem;
+}
+
+.home-topbar > div:first-child > p:not(.home-section-kicker) {
+  color: #666578;
+}
+
+.home-composer-panel,
+.home-next-steps,
+.home-feed-companion,
+.home-discovery-section {
+  box-shadow:
+    0 12px 30px rgba(26, 24, 55, 0.055),
+    0 1px 2px rgba(26, 24, 55, 0.02);
+}
+
+.home-composer-panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffffff 0%, #fbfaff 100%);
+}
+
+.home-composer-panel::before {
+  position: absolute;
+  z-index: -1;
+  top: -8rem;
+  right: -5rem;
+  width: 17rem;
+  height: 17rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99, 91, 255, 0.115), transparent 68%);
+  content: "";
+  pointer-events: none;
+}
+
+.home-next-steps {
+  border-color: #dfdcf6;
+  background: linear-gradient(155deg, #f1efff 0%, #faf9ff 50%, #ffffff 100%);
+}
+
+.home-feed-companion {
+  border-color: #e2e0f2;
+  background: linear-gradient(160deg, #ffffff 0%, #f3f2ff 100%);
+}
+
+.home-discovery-section {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.home-discovery-section > .home-section-header {
+  margin-bottom: 1.35rem;
+  border-bottom: 1px solid #efeff5;
+  padding-bottom: 1.1rem;
+}
+
+.home-feed-panel {
+  border-radius: var(--looma-radius-lg);
+  padding: 0.25rem;
+}
+
+.home-feed-heading {
+  margin-bottom: 1rem;
+  padding: 0.6rem 0.55rem 0;
+}
+
+.feed-post {
+  border-color: #e7e6ef;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.feed-post:hover {
+  background: #ffffff;
+  box-shadow: 0 12px 26px rgba(26, 24, 55, 0.07);
+}
+
+.home-opportunity-card,
+.home-person-card,
+.home-interest-grid a {
+  border-color: #e7e5f1;
+  background: linear-gradient(145deg, #ffffff, #fbfaff);
+  box-shadow: 0 3px 10px rgba(26, 24, 55, 0.025);
+}
+
+.home-opportunity-card:hover,
+.home-person-card:hover,
+.home-interest-grid a:hover {
+  border-color: #d5d0fb;
+  background: #ffffff;
+  box-shadow: 0 9px 20px rgba(99, 91, 255, 0.08);
+}
+
+.home-next-step-actions a,
+.home-companion-link {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.home-next-step-actions a:first-child {
+  box-shadow: 0 8px 16px rgba(99, 91, 255, 0.19);
+}
+
+.home-feed-heading .feed-tabs button,
+.workspace-filters button,
+.workspace-tabs button {
+  border-color: #e6e5ef;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+/* Experience reconstruction: the Home is now a discovery workspace with a
+   primary flow, a contextual rail, and wide exploration sections. */
+.home-shell {
+  width: min(100%, 106rem);
+  gap: clamp(1.75rem, 3vw, 3.5rem);
+  padding-block: clamp(2rem, 3vw, 3.25rem) 5rem;
+}
+
+.home-command-header {
+  align-items: center;
+  min-height: 5.25rem;
+  padding: 0.25rem 0;
+}
+
+.home-welcome-label {
+  margin: 0 0 0.45rem;
+  color: var(--looma-primary);
+  font-size: 0.72rem;
+  font-weight: 780;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.home-command-header h1 {
+  max-width: 44rem;
+  font-size: clamp(2rem, 3.2vw, 3.15rem);
+  font-weight: 720;
+  line-height: 1.06;
+  letter-spacing: -0.06em;
+}
+
+.home-command-header h1 span {
+  display: inline-block;
+  font-size: 0.7em;
+  letter-spacing: 0;
+}
+
+.home-command-header .home-welcome > p:last-child {
+  margin: 0.6rem 0 0;
+  color: #626174;
+  font-size: clamp(0.98rem, 1.2vw, 1.08rem);
+  font-weight: 440;
+}
+
+.home-header-search {
+  min-width: min(100%, 19rem);
+}
+
+.home-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(19rem, 22vw, 23.5rem);
+  align-items: start;
+  gap: clamp(1rem, 2vw, 1.75rem);
+}
+
+.home-composer-panel {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.25rem, 2.2vw, 1.8rem);
+}
+
+.home-composer-panel .home-panel-heading {
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.home-composer-panel .home-panel-heading h2 {
+  font-size: clamp(1.2rem, 1.65vw, 1.48rem);
+}
+
+.home-composer-panel .composer {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.home-composer-panel .composer textarea {
+  min-height: 4.25rem;
+  padding-top: 0.2rem;
+  font-size: 0.97rem;
+  line-height: 1.55;
+}
+
+.home-composer-panel .composer-actions {
+  justify-content: flex-end;
+  margin-top: 0.65rem;
+  border-top: 1px solid #eeedf4;
+  padding-top: 0.75rem;
+}
+
+.home-composer-panel .publish-button {
+  min-height: 2.5rem;
+  padding-inline: 1rem;
+}
+
+.home-context-rail {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  align-content: start;
+  gap: 0.95rem;
+  min-width: 0;
+}
+
+.home-next-steps,
+.home-trending-card,
+.home-feed-companion {
+  min-width: 0;
+  border: 1px solid #e5e3f1;
+  border-radius: 1.25rem;
+  padding: 1.2rem;
+  box-shadow:
+    0 10px 26px rgba(36, 31, 77, 0.045),
+    0 1px 2px rgba(36, 31, 77, 0.03);
+}
+
+.home-context-heading,
+.home-trending-card header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.home-context-heading h2,
+.home-trending-card h2,
+.home-feed-companion h2 {
+  font-size: 1.03rem;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+}
+
+.home-context-icon {
+  display: inline-grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: 0 0 2.25rem;
+  place-items: center;
+  border-radius: 0.8rem;
+  background: var(--looma-primary);
+  color: #ffffff;
+  box-shadow: 0 7px 14px rgba(99, 91, 255, 0.17);
+}
+
+.home-next-steps > p:not(.home-section-kicker),
+.home-feed-companion > p:not(.home-section-kicker) {
+  margin: 0.85rem 0 0;
+  color: #666578;
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.home-next-step-actions {
+  gap: 0.45rem;
+  margin-top: 1rem;
+  padding-top: 0;
+}
+
+.home-next-step-actions a,
+.home-companion-link {
+  min-height: 2.65rem;
+  justify-content: flex-start;
+  border-radius: 0.82rem;
+  padding: 0.52rem 0.65rem;
+  font-size: 0.78rem;
+}
+
+.home-next-step-actions a svg:last-child,
+.home-companion-link svg:last-child {
+  margin-left: auto;
+}
+
+.home-next-step-actions a:first-child {
+  background: #635bff;
+}
+
+.home-trending-card {
+  background: #ffffff;
+}
+
+.home-trending-card header {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.home-trending-card header > svg {
+  color: var(--looma-primary);
+}
+
+.home-trending-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.95rem;
+}
+
+.home-trending-list a {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  border: 1px solid #e5e3f1;
+  border-radius: 999px;
+  padding: 0.35rem 0.6rem;
+  background: #fbfaff;
+  color: #555368;
+  font-size: 0.72rem;
+  font-weight: 670;
+  text-decoration: none;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.home-trending-list a:hover {
+  border-color: #cfcafd;
+  background: var(--looma-primary-soft);
+  color: var(--looma-primary);
+  transform: translateY(-1px);
+}
+
+.home-trending-state {
+  margin: 0.9rem 0 0;
+  color: var(--looma-muted);
+  font-size: 0.79rem;
+  line-height: 1.5;
+}
+
+.home-trending-skeleton {
+  display: flex;
+  gap: 0.45rem;
+  margin-top: 0.95rem;
+}
+
+.home-trending-skeleton i {
+  display: block;
+  width: 4.5rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f0eff7 25%, #fbfaff 37%, #f0eff7 63%);
+  background-size: 400% 100%;
+  animation: home-discovery-shimmer 1.35s ease infinite;
+}
+
+.home-feed-companion {
+  justify-content: initial;
+  background: linear-gradient(155deg, #f0efff, #fbfaff 70%);
+}
+
+.home-companion-link {
+  width: 100%;
+  margin-top: 1rem;
+  padding-top: 0.52rem;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.home-feed-stream {
+  width: min(100%, 72rem);
+}
+
+.home-feed-stream .home-feed-panel {
+  border: 1px solid #e6e4f0;
+  border-radius: 1.35rem;
+  padding: clamp(1.1rem, 2vw, 1.6rem);
+  background: rgba(255, 255, 255, 0.87);
+  box-shadow:
+    0 10px 26px rgba(36, 31, 77, 0.045),
+    0 1px 2px rgba(36, 31, 77, 0.03);
+}
+
+.home-feed-stream .home-feed-heading {
+  margin-bottom: 1.1rem;
+  padding: 0;
+}
+
+.home-feed-stream .post-list {
+  gap: 0.75rem;
+}
+
+.home-feed-stream .feed-post {
+  border-radius: 1.05rem;
+  padding: 1rem 1.1rem;
+}
+
+.home-feed-stream .feed-post:hover {
+  transform: translateY(-1px);
+}
+
+.home-discovery-board {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(19rem, 0.75fr);
+  gap: clamp(1.25rem, 2vw, 1.75rem);
+}
+
+.home-discovery-board .home-opportunities-section {
+  grid-column: 1 / -1;
+}
+
+.home-discovery-section {
+  padding: clamp(1.25rem, 2.2vw, 1.85rem);
+}
+
+.home-discovery-section > .home-section-header {
+  align-items: flex-start;
+  margin-bottom: 1.15rem;
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.home-section-header h2 {
+  font-size: clamp(1.25rem, 1.8vw, 1.6rem);
+  font-weight: 700;
+}
+
+.home-section-header > div > p:not(.home-section-kicker) {
+  max-width: 38rem;
+  margin-top: 0.4rem;
+  font-size: 0.87rem;
+}
+
+.home-opportunity-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.home-opportunity-card,
+.home-person-card {
+  border-radius: 1.05rem;
+  padding: 1.1rem;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.home-opportunity-card:hover,
+.home-person-card:hover {
+  transform: translateY(-2px);
+}
+
+.home-people-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.home-person-card {
+  gap: 0.8rem;
+}
+
+.home-person-card button {
+  min-height: 2.35rem;
+  border-radius: 0.75rem;
+}
+
+.home-projects-section {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(243, 241, 255, 0.9)),
+    var(--looma-surface);
+}
+
+.home-projects-empty {
+  min-height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 1.2rem;
+}
+
+.home-projects-empty > svg {
+  display: grid;
+  width: 2.7rem;
+  height: 2.7rem;
+  place-items: center;
+  border-radius: 0.85rem;
+  padding: 0.65rem;
+  background: #ffffff;
+  box-sizing: content-box;
+}
+
+.home-projects-empty > a {
+  margin-top: auto;
+}
+
+/* The same surfaces extend across workspace pages instead of making Home a one-off. */
+.workspace-content {
+  width: min(100%, 96rem);
+  padding-top: clamp(2rem, 3.3vw, 3.5rem);
+}
+
+.workspace-header {
+  padding-bottom: 1.15rem;
+  border-bottom: 1px solid rgba(30, 27, 65, 0.08);
+}
+
+.workspace-header h1 {
+  font-weight: 710;
+}
+
+.workspace-card-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.workspace-state {
+  border-style: dashed;
+  background: linear-gradient(145deg, #ffffff, #fbfaff);
+}
+
+@media (max-width: 1180px) {
+  .home-workspace,
+  .home-discovery-board {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-context-rail {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto;
+  }
+
+  .home-feed-stream,
+  .home-discovery-board .home-opportunities-section {
+    width: 100%;
+  }
+
+  .home-discovery-board .home-opportunities-section {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 860px) {
+  .home-context-rail {
+    grid-template-columns: 1fr;
+  }
+
+  .home-opportunity-grid,
+  .home-people-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .home-shell {
+    gap: 1.25rem;
+    padding-top: 1.35rem;
+  }
+
+  .home-command-header {
+    min-height: 0;
+  }
+
+  .home-command-header h1 {
+    font-size: clamp(1.85rem, 9.3vw, 2.45rem);
+  }
+
+  .home-workspace,
+  .home-discovery-board {
+    gap: 1rem;
+  }
+
+  .home-feed-stream .home-feed-panel,
+  .home-next-steps,
+  .home-trending-card,
+  .home-feed-companion,
+  .home-discovery-section {
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 540px) {
+  .home-opportunity-grid,
+  .home-people-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-section-header > a {
+    align-self: stretch;
+    width: 100%;
+    min-height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e3e1ef;
+    border-radius: 0.8rem;
+    background: #fbfaff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-trending-skeleton i {
+    animation: none;
+  }
+
+  .home-trending-list a:hover,
+  .home-opportunity-card:hover,
+  .home-person-card:hover,
+  .home-feed-stream .feed-post:hover {
+    transform: none;
+  }
+}
+
+.home-feed-heading .feed-tabs button.active,
+.workspace-filters button.active,
+.workspace-tabs button.active {
+  border-color: rgba(99, 91, 255, 0.12);
+  background: #eeecff;
+}
+
+.aside-search,
+.workspace-search,
+.workspace-composer textarea,
+.workspace-form input,
+.workspace-form textarea,
+.settings-field input,
+.profile-edit-card input,
+.profile-edit-card textarea,
+.profile-field input,
+.profile-field textarea,
+.onboarding-field input,
+.onboarding-field textarea,
+.onboarding-skill-search,
+.onboarding-custom-skill input,
+.email-auth-form input {
+  background: #fdfdff;
+}
+
+.workspace-card,
+.workspace-person-card,
+.workspace-section,
+.workspace-chart,
+.settings-panel,
+.workspace-report-table,
+.workspace-composer,
+.plan-card,
+.profile-edit-card,
+.onboarding-card {
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.workspace-card:hover,
+.workspace-person-card:hover {
+  border-color: #d9d5f4;
+  box-shadow: 0 11px 24px rgba(26, 24, 55, 0.065);
+}
+
+/* Navigation groups remain spaced, but no divider rule competes with the items. */
+.looma-sidebar .sidebar-brand,
+.sidebar-nav-group + .sidebar-nav-group {
+  border-top: 0;
+  border-bottom: 0;
+}
+
+/* Keep the contextual rail useful without making the primary creation/feed flow
+   wait for its entire height. On narrower layouts it returns to the document flow. */
+@media (min-width: 1181px) {
+  .home-workspace {
+    display: contents;
+  }
+
+  .home-command-header,
+  .home-shell > .feed-search-expand-slot {
+    grid-column: 1 / -1;
+  }
+
+  .home-shell {
+    grid-template-columns: minmax(0, 1fr) clamp(19rem, 22vw, 23.5rem);
+    align-items: start;
+  }
+
+  .home-composer-panel,
+  .home-feed-stream,
+  .home-discovery-board {
+    grid-column: 1;
+    width: 100%;
+  }
+
+  .home-context-rail {
+    position: static;
+    grid-column: 2;
+    grid-row: span 3;
+    width: auto;
+  }
+}
+
+@media (max-width: 1180px) {
+  .home-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-workspace {
+    display: contents;
+  }
+
+  .home-command-header,
+  .home-shell > .feed-search-expand-slot,
+  .home-composer-panel,
+  .home-feed-stream,
+  .home-context-rail,
+  .home-discovery-board {
+    grid-column: 1;
+  }
+
+  .home-command-header {
+    grid-row: 1;
+  }
+
+  .home-shell > .feed-search-expand-slot {
+    grid-row: 2;
+  }
+
+  .home-composer-panel {
+    grid-row: 3;
+  }
+
+  .home-feed-stream {
+    grid-row: 4;
+  }
+
+  .home-context-rail {
+    grid-row: 5;
+  }
+
+  .home-discovery-board {
+    grid-row: 6;
+  }
+}
+
+.workspace-heading-copy {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.workspace-heading-copy > span {
+  display: block;
+}
+
+.workspace-body {
+  display: grid;
+  gap: clamp(1rem, 1.8vw, 1.5rem);
+  min-width: 0;
+}
+
+.workspace-body > .workspace-tabs + .workspace-search-inline,
+.workspace-body > .workspace-tabs + .workspace-card-list,
+.workspace-body > .workspace-tabs + .workspace-state,
+.workspace-body > .workspace-composer + .workspace-tabs {
+  margin-top: -0.35rem;
+}
+
+.workspace-header-action {
+  flex: 0 0 auto;
+}
+
+.workspace-header-action .workspace-primary-action {
+  min-height: 2.8rem;
+  padding-inline: 1rem;
+}
+
+/* Keep the navigation groups separated by space, without visible rules. */
+.looma-sidebar .sidebar-brand {
+  border-bottom: 0;
+}
+
+.looma-sidebar .sidebar-nav-group + .sidebar-nav-group {
+  border-top: 0;
+}
+
+/* Desktop workspace: navigation stays fixed while each content column owns its scroll. */
+@media (min-width: 1181px) {
+  html,
+  body,
+  #root {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .looma-sidebar {
+    overflow-y: hidden;
+  }
+
+  .workspace-page {
+    height: 100vh;
+    height: 100svh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .workspace-content {
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+  }
+
+  .feed-stage {
+    height: 100vh;
+    height: 100svh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .home-shell {
+    grid-template-columns: minmax(0, 1fr) clamp(19rem, 22vw, 23.5rem);
+    width: min(100%, 106rem);
+    height: 100%;
+    min-height: 0;
+    align-items: stretch;
+    padding: 0;
+  }
+
+  .home-main-scroll,
+  .home-context-rail {
+    min-height: 0;
+    height: 100%;
+    overscroll-behavior-y: contain;
+  }
+
+  .home-main-scroll {
+    display: grid;
+    grid-column: 1;
+    grid-row: 1;
+    align-content: start;
+    gap: clamp(1.25rem, 2vw, 2rem);
+    overflow-y: auto;
+    padding: clamp(2rem, 3vw, 3.25rem) 0 4rem;
+    scrollbar-width: none;
+  }
+
+  /* Keep the Home greeting aligned with the content inside the first card. */
+  .home-main-scroll > .home-command-header {
+    padding-inline-start: clamp(1.875rem, 2.2vw, 2.5rem);
+  }
+
+  .home-main-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .home-main-scroll .home-workspace {
+    display: block;
+    width: 100%;
+  }
+
+  .home-main-scroll .home-composer-panel,
+  .home-main-scroll .home-feed-stream,
+  .home-main-scroll .home-discovery-board {
+    width: 100%;
+  }
+
+  .home-main-scroll .feed-column {
+    height: auto;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .home-context-rail {
+    display: grid;
+    grid-column: 2;
+    grid-row: 1;
+    align-content: start;
+    overflow-y: auto;
+    padding: clamp(2rem, 3vw, 3.25rem) 0 4rem;
+    scrollbar-width: none;
+  }
+
+  .home-context-rail::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 1180px) {
+  .home-main-scroll {
+    display: grid;
+    min-width: 0;
+    gap: clamp(1.25rem, 2vw, 2rem);
+  }
+
+  .home-context-rail {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+
+/* Dashboard rhythm: reuse a small spacing scale across the primary surfaces. */
+:root {
+  --looma-dashboard-heading-gap: 0.75rem;
+  --looma-dashboard-card-heading-gap: 0.625rem;
+  --looma-dashboard-card-gap: 1.75rem;
+  --looma-sidebar-group-space: 1.25rem;
+}
+
+.home-command-header.home-topbar .home-welcome > .home-welcome-label {
+  margin: 0 0 var(--looma-dashboard-heading-gap);
+}
+
+.home-command-header h1 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.home-command-header.home-topbar .home-welcome > p:last-child {
+  margin-top: 0.75rem;
+}
+
+.home-panel-heading .home-section-kicker,
+.home-section-header .home-section-kicker,
+.home-context-heading .home-section-kicker,
+.home-trending-card .home-section-kicker,
+.home-feed-companion .home-section-kicker {
+  margin-bottom: var(--looma-dashboard-card-heading-gap);
+}
+
+.home-panel-heading h2,
+.home-section-header h2,
+.home-context-heading h2,
+.home-next-steps h2,
+.home-trending-card h2,
+.home-feed-companion h2 {
+  line-height: 1.25;
+}
+
+.home-section-header > div > p:not(.home-section-kicker) {
+  margin-top: 0.625rem;
+}
+
+.home-main-scroll,
+.home-context-rail {
+  gap: var(--looma-dashboard-card-gap);
+}
+
+/* The collapsed search slot stays in the grid for its expansion animation. */
+.home-main-scroll > .home-command-header {
+  margin-bottom: -1rem;
+}
+
+.home-feed-stream .post-list {
+  gap: var(--looma-dashboard-card-gap);
+}
+
+.sidebar-nav-group {
+  gap: 0.375rem;
+}
+
+.looma-sidebar .sidebar-nav-group + .sidebar-nav-group {
+  margin-top: var(--looma-sidebar-group-space);
+  border-top: 0;
+  padding-top: 0.75rem;
+}
+
+.looma-sidebar .sidebar-nav-group:first-child > a:first-child {
+  margin-bottom: var(--looma-sidebar-group-space);
+}
+
+.looma-sidebar .sidebar-nav-group:first-child > a:nth-child(2) {
+  border-top: 0;
+  padding-top: 0.75rem;
+}
+
+.looma-sidebar .sidebar-nav a,
+.looma-sidebar .sidebar-nav button {
+  min-height: 3.25rem;
+  padding-block: 0.75rem;
+  line-height: 1.35;
+}
+
+.home-composer-panel .home-panel-heading h2 {
+  font-size: clamp(1.375rem, 1.65vw, 1.625rem);
+}
+
+.home-context-heading h2,
+.home-trending-card h2,
+.home-feed-companion h2 {
+  font-size: clamp(1.125rem, 1.4vw, 1.3rem);
+}
+
+@media (min-width: 761px) {
+  .home-composer-panel,
+  .home-next-steps,
+  .home-trending-card,
+  .home-feed-companion,
+  .home-discovery-section,
+  .home-feed-stream .home-feed-panel {
+    padding: 1.875rem;
+  }
+
+  .home-feed-stream .feed-post {
+    padding: 1.875rem;
+  }
+}
+
+@media (min-width: 1024px) and (min-height: 50rem) {
+  .looma-sidebar .sidebar-nav {
+    padding-top: 2rem;
+  }
+}
+
+@media (min-width: 1181px) {
+  .home-context-rail {
+    grid-template-rows: none;
+    grid-auto-rows: max-content;
+  }
+
+  .home-context-rail .home-composer-panel {
+    order: -1;
+  }
+
+  .home-context-rail .home-discovery-board {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--looma-dashboard-card-gap);
+  }
+
+  .home-context-rail .home-discovery-board .home-opportunities-section {
+    grid-column: auto;
+  }
+
+  .home-context-rail .home-opportunity-grid,
+  .home-context-rail .home-people-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-context-rail .home-projects-empty {
+    min-height: 0;
+  }
+}
+
+/* Search opens a real slot above the feed before it reappears in the new position. */
+.home-main-scroll:has(.feed-search-expand-slot.is-expanded) > .home-command-header {
+  margin-bottom: 0;
+}
+
+.feed-search-overlay {
+  transition:
+    transform 560ms ease-in-out,
+    opacity 180ms ease;
+}
+
+.feed-search-overlay.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-0.45rem) scale(0.98);
+}
+
+.feed-search-overlay.is-revealing .aside-search {
+  position: relative;
+  border-color: transparent;
+}
+
+.feed-search-overlay.is-revealing .aside-search::after {
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--looma-primary);
+  border-radius: inherit;
+  content: "";
+  pointer-events: none;
+  transform: scaleX(0);
+  transform-origin: center;
+  animation: looma-search-outline 360ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both;
+}
+
+.feed-search-overlay.is-revealing .aside-search svg {
+  opacity: 0;
+  transform: translateY(0.25rem) scale(0.86);
+  animation: looma-search-icon-reveal 180ms ease-out both;
+}
+
+.feed-search-overlay.is-revealing .aside-search input {
+  opacity: 0;
+  transform: translateX(-0.35rem);
+  animation: looma-search-text-reveal 260ms ease-out 560ms both;
+}
+
+@keyframes looma-search-icon-reveal {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes looma-search-outline {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes looma-search-text-reveal {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* This interaction communicates a deliberate change of focus, so keep its
+   staged reveal visible even when the preview surface requests reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .feed-search-overlay.is-revealing .aside-search::after {
+    animation-duration: 360ms !important;
+  }
+
+  .feed-search-overlay.is-revealing .aside-search svg {
+    animation-duration: 180ms !important;
+  }
+
+  .feed-search-overlay.is-revealing .aside-search input {
+    animation-duration: 260ms !important;
+  }
+}
+
+/* Keep the feed as one continuous surface, separating each publication with
+   calm dividers rather than turning every entry into a detached card. */
+.home-feed-stream .home-feed-panel {
+  border: 1px solid #e6e4f0;
+  border-radius: 1.35rem;
+  padding: clamp(1.1rem, 2vw, 1.6rem);
+  background: rgba(255, 255, 255, 0.87);
+  box-shadow:
+    0 10px 26px rgba(36, 31, 77, 0.045),
+    0 1px 2px rgba(36, 31, 77, 0.03);
+}
+
+.home-feed-stream .home-feed-heading {
+  justify-content: flex-start;
+  margin: 0;
+  border-bottom: 1px solid #e7e6ef;
+  padding: 0 0 0.9rem;
+}
+
+.home-feed-stream .home-feed-heading .feed-tabs {
+  margin: 0;
+}
+
+.home-feed-stream .post-list {
+  gap: 0;
+}
+
+.home-feed-stream .feed-post {
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid #e7e6ef;
+  border-radius: 0;
+  padding: 1.25rem 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.home-feed-stream .feed-post:last-child {
+  border-bottom: 0;
+}
+
+@media (min-width: 761px) {
+  .home-feed-stream .feed-post {
+    padding-block: 1.5rem;
+  }
+}
+
+/* A publication can contain a long link or an uninterrupted word. Keep that
+   text inside its own column, on new lines below the author metadata. */
+.home-feed-stream .post-body,
+.home-feed-stream .post-body > p {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.home-feed-stream .post-body > p {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Align the feed card with the visual inset of the Home heading, leaving a
+   deliberate breathing space beside the fixed navigation without reducing
+   the established gap to the contextual rail. */
+@media (min-width: 1181px) {
+  .home-main-scroll .home-feed-stream {
+    width: auto;
+    margin-inline-start: clamp(1.5rem, 2vw, 2rem);
+  }
+}
+
+.home-feed-heading .feed-tabs button.active::after {
+  display: none;
+}
+
+.post-meta .post-author-link {
+  color: var(--looma-text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+
+.post-meta .post-author-link:hover,
+.post-meta .post-author-link:focus-visible {
+  text-decoration: underline;
+}
+
+/* The metadata colour rule also matches the badge's span. Keep the verified
+   state deliberately yellow rather than inheriting the muted timestamp tone. */
+.post-meta .admin-verified-badge {
+  color: #f4b816;
+}
+
+.public-profile-post p {
+  overflow-wrap: anywhere;
+}
+
+/* The composer is the first action in the contextual rail. Keep it at the
+   beginning at every breakpoint so the publish control never sits below the
+   longer discovery sections. */
+.home-context-rail .home-composer-panel {
+  order: -1;
+}
+
+@media (max-width: 1180px) {
+  .home-context-rail .home-composer-panel {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+}
+
+/* Dark mode keeps the Looma accent while replacing every neutral surface with
+   a high-contrast graphite scale. The feature is controlled from Settings. */
+.dark {
+  color-scheme: dark;
+  --looma-background: #050507;
+  --looma-surface: #0c0c10;
+  --looma-sidebar: #050507;
+  --looma-primary: #635bff;
+  --looma-primary-hover: #827cff;
+  --looma-primary-soft: #17142f;
+  --looma-institutional: #f4f3fb;
+  --looma-text: #f4f3fb;
+  --looma-muted: #b2b0c0;
+  --looma-rim: #242236;
+  --looma-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.22), 0 7px 20px rgba(0, 0, 0, 0.2);
+  --looma-shadow-md: 0 18px 44px rgba(0, 0, 0, 0.36);
+  --background: var(--looma-background);
+  --foreground: var(--looma-text);
+  --surface: var(--looma-surface);
+  --elevated: var(--looma-surface);
+  --line: var(--looma-rim);
+  --line-strong: #363153;
+  --avatar: var(--looma-muted);
+  --card: var(--looma-surface);
+  --card-foreground: var(--looma-text);
+  --popover: var(--looma-surface);
+  --popover-foreground: var(--looma-text);
+  --primary: var(--looma-primary);
+  --primary-foreground: #111019;
+  --secondary: #111119;
+  --secondary-foreground: var(--looma-text);
+  --muted: #111119;
+  --muted-foreground: var(--looma-muted);
+  --subtle: var(--looma-muted);
+  --accent: #17142f;
+  --accent-foreground: var(--looma-text);
+  --border: var(--looma-rim);
+  --input: var(--looma-rim);
+  --ring: var(--looma-primary);
+  --sidebar: var(--looma-sidebar);
+  --sidebar-foreground: var(--looma-text);
+  --sidebar-primary: var(--looma-primary);
+  --sidebar-primary-foreground: #111019;
+  --sidebar-accent: #111119;
+  --sidebar-accent-foreground: var(--looma-text);
+  --sidebar-border: var(--looma-rim);
+  --sidebar-ring: var(--looma-primary);
+}
+
+.dark .feed-stage,
+.dark .workspace-page {
+  background: var(--looma-background);
+}
+
+.dark .looma-sidebar {
+  border-right-color: var(--looma-rim);
+  background: var(--looma-background);
+}
+
+.dark .looma-sidebar .sidebar-nav a:not(.active):hover,
+.dark .looma-sidebar .sidebar-nav button:not(.active):hover {
+  background: #111119;
+  color: var(--looma-text);
+}
+
+.dark .looma-sidebar .sidebar-nav a.active,
+.dark .looma-sidebar .sidebar-nav a.active:hover,
+.dark .looma-sidebar .sidebar-nav button.active,
+.dark .looma-sidebar .sidebar-nav button.active:hover {
+  border-color: rgba(99, 91, 255, 0.45);
+  background: var(--looma-primary-soft);
+  box-shadow: none;
+}
+
+.dark .sidebar-profile,
+.dark .sidebar-profile-menu,
+.dark .home-composer-panel,
+.dark .home-feed-stream .home-feed-panel,
+.dark .home-next-steps,
+.dark .home-feed-companion,
+.dark .home-discovery-section,
+.dark .home-discovery-empty,
+.dark .home-feed-empty,
+.dark .workspace-card,
+.dark .workspace-person-card,
+.dark .workspace-section,
+.dark .workspace-chart,
+.dark .settings-panel,
+.dark .workspace-report-table,
+.dark .workspace-composer,
+.dark .plan-card,
+.dark .profile-edit-card,
+.dark .profile-discard-dialog,
+.dark .onboarding-card,
+.dark .email-auth-modal,
+.dark .workspace-state {
+  border-color: var(--looma-rim);
+  background: var(--looma-surface);
+  box-shadow: var(--looma-shadow-sm);
+}
+
+.dark .home-next-steps,
+.dark .home-feed-companion,
+.dark .home-discovery-empty,
+.dark .home-feed-empty,
+.dark .workspace-state {
+  background: var(--looma-surface);
+}
+
+.dark .feed-post,
+.dark .home-opportunity-card,
+.dark .home-person-card,
+.dark .home-interest-grid a,
+.dark .home-next-step-actions a,
+.dark .home-companion-link,
+.dark .workspace-accordion article,
+.dark .workspace-inline-empty {
+  border-color: var(--looma-rim);
+  background: #0f0f14;
+  color: var(--looma-text);
+}
+
+.dark .feed-post:hover,
+.dark .home-opportunity-card:hover,
+.dark .home-person-card:hover,
+.dark .home-interest-grid a:hover,
+.dark .home-next-step-actions a:hover,
+.dark .home-companion-link:hover,
+.dark .workspace-card:hover,
+.dark .workspace-person-card:hover {
+  border-color: #3e376d;
+  background: #111119;
+  box-shadow: var(--looma-shadow-md);
+}
+
+.dark .home-feed-stream .home-feed-heading,
+.dark .home-feed-stream .feed-post,
+.dark .home-discovery-section > .home-section-header,
+.dark .workspace-header,
+.dark .composer-actions {
+  border-color: var(--looma-rim);
+}
+
+.dark .composer,
+.dark .workspace-composer,
+.dark .aside-search,
+.dark .workspace-search,
+.dark .workspace-composer textarea,
+.dark .workspace-form input,
+.dark .workspace-form textarea,
+.dark .settings-field input,
+.dark .profile-edit-card input,
+.dark .profile-edit-card textarea,
+.dark .profile-field input,
+.dark .profile-field textarea,
+.dark .onboarding-field input,
+.dark .onboarding-field textarea,
+.dark .onboarding-skill-search,
+.dark .onboarding-custom-skill input,
+.dark .email-auth-form input {
+  border-color: var(--looma-rim);
+  background: #09090d;
+  color: var(--looma-text);
+}
+
+.dark :where(input, textarea)::placeholder {
+  color: #9694a6;
+}
+
+.dark .home-feed-heading .feed-tabs button,
+.dark .workspace-filters button,
+.dark .workspace-tabs button,
+.dark .settings-nav button,
+.dark .profile-discard-continue {
+  border-color: var(--looma-rim);
+  background: #0f0f14;
+  color: var(--looma-muted);
+}
+
+.dark .home-feed-heading .feed-tabs button.active,
+.dark .workspace-filters button.active,
+.dark .workspace-tabs button.active,
+.dark .settings-nav button.active {
+  border-color: rgba(99, 91, 255, 0.52);
+  background: var(--looma-primary-soft);
+  color: var(--looma-primary);
+}
+
+.dark .profile-avatar-guest,
+.dark .onboarding-step-preview,
+.dark .onboarding-account {
+  background: #111119;
+  color: var(--looma-muted);
+}
+
+.settings-appearance {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.75rem;
+  border-top: 1px solid var(--looma-rim);
+  padding-top: 1.5rem;
+}
+
+.settings-appearance h2 {
+  margin: 0;
+}
+
+.settings-appearance .workspace-helper {
+  margin-top: 0.35rem;
+}
+
+.settings-password-section {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.75rem;
+  border-top: 1px solid var(--looma-rim);
+  padding-top: 1.5rem;
+}
+
+.settings-password-section h2 {
+  margin: 0;
+}
+
+.settings-password-section .workspace-helper {
+  margin-top: 0.35rem;
+}
+
+.settings-password-trigger,
+.settings-password-actions button {
+  min-height: 2.75rem;
+  border-radius: var(--looma-radius-sm);
+  padding: 0.55rem 0.9rem;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.settings-password-trigger {
+  justify-self: start;
+  border: 1px solid var(--looma-primary);
+  background: var(--looma-primary);
+  color: #fff;
+}
+
+.settings-password-trigger:hover,
+.settings-password-trigger:focus-visible,
+.settings-password-actions button[type="submit"]:hover:not(:disabled),
+.settings-password-actions button[type="submit"]:focus-visible {
+  border-color: var(--looma-primary-hover);
+  background: var(--looma-primary-hover);
+  outline: 0;
+}
+
+.settings-password-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  max-width: 46rem;
+}
+
+.settings-password-form .settings-password-error,
+.settings-password-actions {
+  grid-column: 1 / -1;
+}
+
+.settings-password-error {
+  margin: 0;
+  border-radius: var(--looma-radius-sm);
+  padding: 0.7rem 0.8rem;
+  background: rgba(196, 61, 48, 0.1);
+  color: #aa3124;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.settings-password-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+.settings-password-actions button {
+  border: 1px solid var(--looma-rim);
+  background: var(--looma-surface);
+  color: var(--looma-text);
+}
+
+.settings-password-actions button[type="submit"] {
+  border-color: var(--looma-primary);
+  background: var(--looma-primary);
+  color: #fff;
+}
+
+.settings-password-actions button:disabled,
+.settings-password-trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.settings-password-unavailable {
+  margin-top: 1.75rem;
+  border-top: 1px solid var(--looma-rim);
+  padding-top: 1.5rem;
+}
+
+.settings-theme-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.settings-theme-options button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--looma-rim);
+  border-radius: var(--looma-radius-sm);
+  padding: 0.55rem 0.9rem;
+  background: var(--looma-surface);
+  color: var(--looma-muted);
+  font: inherit;
+  font-weight: 650;
+}
+
+.settings-theme-options button:hover,
+.settings-theme-options button:focus-visible {
+  border-color: var(--looma-primary);
+  color: var(--looma-primary);
+  outline: 0;
+}
+
+.settings-theme-options button.active {
+  border-color: var(--looma-primary);
+  background: var(--looma-primary-soft);
+  color: var(--looma-primary);
+}
+
+@media (max-width: 43rem) {
+  .settings-password-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Work posts keep the regular feed rhythm while making their proposal action
+   easy to find without giving it more visual weight than the publication. */
+.composer-kind-selector {
+  display: inline-flex;
+  gap: 0.4rem;
+  margin-bottom: 0.8rem;
+  padding: 0.22rem;
+  border: 1px solid var(--looma-rim);
+  border-radius: 0.72rem;
+  background: var(--looma-background);
+}
+
+.composer-kind-selector button {
+  min-height: 2.1rem;
+  border: 0;
+  border-radius: 0.52rem;
+  padding: 0.35rem 0.68rem;
+  background: transparent;
+  color: var(--looma-muted);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.composer-kind-selector button:hover:not(:disabled),
+.composer-kind-selector button:focus-visible {
+  background: var(--looma-primary-soft);
+  color: var(--looma-primary);
+  outline: 0;
+}
+
+.composer-kind-selector button.active {
+  background: var(--looma-primary);
+  color: #fff;
+}
+
+.feed-work-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.feed-work-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--looma-primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.feed-work-proposal {
+  min-height: 2.35rem;
+  border: 1px solid var(--looma-primary);
+  border-radius: 0.68rem;
+  padding: 0.38rem 0.74rem;
+  background: var(--looma-primary);
+  color: #fff;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.feed-work-proposal:hover,
+.feed-work-proposal:focus-visible {
+  background: var(--looma-primary-hover);
+  outline: 0;
+}
+
+.post-proposal-dialog {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.post-proposal-message {
+  min-height: 10rem;
+  width: 100%;
+  resize: vertical;
+  border: 1px solid var(--looma-rim);
+  border-radius: var(--looma-radius-sm);
+  padding: 0.8rem;
+  background: var(--looma-background);
+  color: var(--looma-text);
+  font: inherit;
+  line-height: 1.5;
+}
+
+.post-proposal-message:focus-visible {
+  border-color: var(--looma-primary);
+  outline: 0;
+}
+
+.post-proposal-count {
+  margin: -0.4rem 0 0;
+  color: var(--looma-muted);
+  font-size: 0.78rem;
+  text-align: right;
+}
+
+.post-proposal-dialog .post-delete-confirm {
+  background: var(--looma-primary);
+}
+
+.workspace-card-counterparty {
+  margin: 0.45rem 0 0;
+  color: var(--looma-muted);
+  font-size: 0.86rem;
+}
+
+.workspace-card-counterparty strong {
+  color: var(--looma-text);
+  font-weight: 650;
+}
+
+/* The Home eyebrow is a contextual sentence, not a section label. Keep its
+   spacing close to the wordmark-like heading beneath it. */
+.home-welcome-label {
+  margin-bottom: 0.62rem;
+  color: var(--looma-muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.3;
+  text-transform: none;
+}
+
+.workspace-person-profile-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.workspace-person-profile-link:hover h2,
+.workspace-person-profile-link:focus-visible h2 {
+  color: var(--looma-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.public-profile-actions-trigger {
+  flex: 0 0 auto;
+}
+
+.public-profile-actions-menu {
+  min-width: 15rem;
+}
+
+.public-profile-connection-error,
+.public-profile-connection-notice {
+  margin: -0.55rem 0 0;
+  border-radius: var(--looma-radius-sm);
+  padding: 0.7rem 0.85rem;
+  font-size: 0.84rem;
+}
+
+.public-profile-connection-error {
+  border: 1px solid rgba(180, 35, 24, 0.25);
+  background: rgba(180, 35, 24, 0.08);
+  color: #b42318;
+}
+
+.public-profile-connection-notice {
+  border: 1px solid rgba(99, 91, 255, 0.22);
+  background: var(--looma-primary-soft);
+  color: var(--looma-primary);
+}
+
+.dark .public-profile-connection-error {
+  border-color: rgba(255, 122, 111, 0.3);
+  background: rgba(180, 35, 24, 0.16);
+  color: #ffaca3;
+}
+
+/* These secondary Home surfaces render while independent requests are still
+   settling. They need explicit dark values too, otherwise their light
+   gradients briefly remain visible even though the page theme is dark. */
+.dark .home-trending-card,
+.dark .home-projects-section,
+.dark .workspace-state {
+  border-color: var(--looma-rim);
+  background: var(--looma-surface);
+  color: var(--looma-text);
+}
+
+.dark .home-projects-empty > svg,
+.dark .home-trending-list a,
+.dark .home-next-step-actions a,
+.dark .home-companion-link {
+  border-color: var(--looma-rim);
+  background: #0f0f14;
+  color: var(--looma-text);
+}
+
+.dark .home-trending-list a:hover,
+.dark .home-next-step-actions a:hover,
+.dark .home-companion-link:hover {
+  border-color: #3e376d;
+  background: var(--looma-primary-soft);
+  color: var(--looma-primary-hover);
+}
+
+.dark .home-command-header .home-welcome > p:last-child,
+.dark .home-next-steps > p:not(.home-section-kicker),
+.dark .home-feed-companion > p:not(.home-section-kicker),
+.dark .home-section-header > div > p:not(.home-section-kicker) {
+  color: var(--looma-muted);
+}
+
+.dark .home-trending-skeleton i,
+.dark .home-discovery-skeleton i,
+.dark .home-interest-skeleton i,
+.dark .home-feed-skeleton i,
+.dark .workspace-skeleton span {
+  background: #111119;
+}
+
+/* Publication bodies previously carried a fixed dark ink colour. Explicitly
+   set the content itself so text written by people stays legible in dark mode. */
+.dark .feed-post .post-body > p,
+.dark .public-profile-post p {
+  color: var(--looma-text);
+}
+
+.dark .feed-post .post-edit-form textarea {
+  border-color: var(--looma-rim);
+  background: #09090d;
+  color: var(--looma-text);
+}
+
+/* Keep the fixed sidebar compact and prevent sign-in/profile controls from
+   creating a horizontal page scrollbar. */
+.looma-sidebar {
+  max-width: var(--looma-sidebar-width);
+  overflow-x: hidden;
+}
+
+.looma-sidebar *,
+.looma-sidebar *::before,
+.looma-sidebar *::after {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.looma-sidebar .auth-control-sidebar {
+  width: auto;
+  max-width: calc(100% - (var(--looma-space-3) * 2));
+  margin-right: var(--looma-space-3);
+  margin-left: var(--looma-space-3);
+}
+
+.looma-sidebar .auth-login-options,
+.looma-sidebar .sidebar-google-login,
+.looma-sidebar .sidebar-email-login,
+.looma-sidebar .sidebar-profile {
+  width: 100%;
+  max-width: 100%;
 }

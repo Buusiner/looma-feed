@@ -37,14 +37,29 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
   const [code, setCode] = useState("");
 
   useEffect(() => {
-    const supabase = getSupabaseBrowserClient();
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    let unsubscribe: (() => void) | undefined;
+    try {
+      const supabase = getSupabaseBrowserClient();
+      void supabase.auth
+        .getUser()
+        .then(({ data, error: userError }) => {
+          if (userError && userError.name !== "AuthSessionMissingError") {
+            setError("Não foi possível verificar a sua sessão.");
+          }
+          setUser(data.user);
+        })
+        .catch(() => setError("Não foi possível verificar a sua sessão."));
 
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+      const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null);
+      });
+      unsubscribe = () => subscription.subscription.unsubscribe();
+    } catch (caught) {
+      console.error("[Looma] Não foi possível iniciar a autenticação.", caught);
+      setError("Não foi possível iniciar a autenticação.");
+    }
 
-    return () => subscription.subscription.unsubscribe();
+    return () => unsubscribe?.();
   }, []);
 
   useEffect(() => {
@@ -59,16 +74,19 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
   async function signInWithGoogle() {
     setIsWorking(true);
     setError(null);
+    try {
+      const { error: signInError } = await getSupabaseBrowserClient().auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
 
-    const { error: signInError } = await getSupabaseBrowserClient().auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-
-    if (signInError) {
+      if (signInError) setError("Não foi possível iniciar o login com Google.");
+    } catch (caught) {
+      console.error("[Looma] Não foi possível iniciar o login com Google.", caught);
       setError("Não foi possível iniciar o login com Google.");
+    } finally {
       setIsWorking(false);
     }
   }
@@ -84,55 +102,58 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
 
     setIsWorking(true);
     setError(null);
-    const credentialClient = createSupabaseCredentialClient();
+    try {
+      const credentialClient = createSupabaseCredentialClient();
 
-    if (authMode === "signup") {
-      const { data, error: signupError } = await credentialClient.auth.signUp({
-        email: normalizedEmail,
-        password,
-      });
+      if (authMode === "signup") {
+        const { data, error: signupError } = await credentialClient.auth.signUp({
+          email: normalizedEmail,
+          password,
+        });
 
-      if (signupError || !data.user || data.user.identities?.length === 0) {
-        setError(
-          signupError
-            ? translateAuthError(signupError.message)
-            : "Este email já está associado a uma conta.",
-        );
-        setIsWorking(false);
-        return;
+        if (signupError || !data.user || data.user.identities?.length === 0) {
+          setError(
+            signupError
+              ? translateAuthError(signupError.message)
+              : "Este e-mail já está associado a uma conta.",
+          );
+          return;
+        }
+      } else {
+        const { error: passwordError } = await credentialClient.auth.signInWithPassword({
+          email: normalizedEmail,
+          password,
+        });
+
+        if (passwordError) {
+          setError("E-mail ou senha incorretos.");
+          return;
+        }
+
+        await credentialClient.auth.signOut({ scope: "local" });
+
+        const { error: codeError } = await getSupabaseBrowserClient().auth.signInWithOtp({
+          email: normalizedEmail,
+          options: {
+            shouldCreateUser: false,
+          },
+        });
+
+        if (codeError) {
+          setError("A senha foi validada, mas não foi possível enviar o código.");
+          return;
+        }
       }
-    } else {
-      const { error: passwordError } = await credentialClient.auth.signInWithPassword({
-        email: normalizedEmail,
-        password,
-      });
 
-      if (passwordError) {
-        setError("Email ou password incorretos.");
-        setIsWorking(false);
-        return;
-      }
-
-      await credentialClient.auth.signOut({ scope: "local" });
-
-      const { error: codeError } = await getSupabaseBrowserClient().auth.signInWithOtp({
-        email: normalizedEmail,
-        options: {
-          shouldCreateUser: false,
-        },
-      });
-
-      if (codeError) {
-        setError("A password foi validada, mas não foi possível enviar o código.");
-        setIsWorking(false);
-        return;
-      }
+      setEmail(normalizedEmail);
+      setCode("");
+      setEmailStep("code");
+    } catch (caught) {
+      console.error("[Looma] Não foi possível continuar com o login por e-mail.", caught);
+      setError("Não foi possível continuar com o login por e-mail.");
+    } finally {
+      setIsWorking(false);
     }
-
-    setEmail(normalizedEmail);
-    setCode("");
-    setEmailStep("code");
-    setIsWorking(false);
   }
 
   async function verifyEmailCode(event: FormEvent<HTMLFormElement>) {
@@ -141,50 +162,63 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
 
     setIsWorking(true);
     setError(null);
+    try {
+      const { data, error: verificationError } = await getSupabaseBrowserClient().auth.verifyOtp({
+        email,
+        token: code,
+        type: "email",
+      });
 
-    const { data, error: verificationError } = await getSupabaseBrowserClient().auth.verifyOtp({
-      email,
-      token: code,
-      type: "email",
-    });
+      if (verificationError || !data.user) {
+        setError("O código é inválido ou expirou.");
+        return;
+      }
 
-    if (verificationError || !data.user) {
-      setError("O código é inválido ou expirou.");
+      closeEmailModal();
+    } catch (caught) {
+      console.error("[Looma] Não foi possível verificar o código de acesso.", caught);
+      setError("Não foi possível verificar o código agora.");
+    } finally {
       setIsWorking(false);
-      return;
     }
-
-    closeEmailModal();
-    setIsWorking(false);
   }
 
   async function resendEmailCode() {
     setIsWorking(true);
     setError(null);
+    try {
+      const { error: resendError } = await getSupabaseBrowserClient().auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: false,
+        },
+      });
 
-    const { error: resendError } = await getSupabaseBrowserClient().auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: false,
-      },
-    });
-
-    if (resendError) {
+      if (resendError) {
+        setError("Não foi possível reenviar o código.");
+      } else {
+        setCode("");
+      }
+    } catch (caught) {
+      console.error("[Looma] Não foi possível reenviar o código.", caught);
       setError("Não foi possível reenviar o código.");
-    } else {
-      setCode("");
+    } finally {
+      setIsWorking(false);
     }
-
-    setIsWorking(false);
   }
 
   async function signOut() {
     setIsWorking(true);
     setError(null);
-
-    const { error: signOutError } = await getSupabaseBrowserClient().auth.signOut();
-    if (signOutError) setError("Não foi possível encerrar sua sessão.");
-    setIsWorking(false);
+    try {
+      const { error: signOutError } = await getSupabaseBrowserClient().auth.signOut();
+      if (signOutError) setError("Não foi possível encerrar sua sessão.");
+    } catch (caught) {
+      console.error("[Looma] Não foi possível encerrar a sessão.", caught);
+      setError("Não foi possível encerrar sua sessão.");
+    } finally {
+      setIsWorking(false);
+    }
   }
 
   function openEmailModal() {
@@ -237,12 +271,12 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
                     </h1>
                     <p>
                       {authMode === "login"
-                        ? "Use o seu email e password para continuar."
-                        : "Crie a sua conta e confirme o email com um código."}
+                        ? "Use o seu e-mail e senha para continuar."
+                        : "Crie a sua conta e confirme o e-mail com um código."}
                     </p>
                   </header>
                   <form className="email-auth-form" onSubmit={submitCredentials}>
-                    <label htmlFor={`modal-auth-email-${variant}`}>Email</label>
+                    <label htmlFor={`modal-auth-email-${variant}`}>E-mail</label>
                     <input
                       id={`modal-auth-email-${variant}`}
                       type="email"
@@ -253,13 +287,13 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
                       required
                       autoFocus
                     />
-                    <label htmlFor={`modal-auth-password-${variant}`}>Password</label>
+                    <label htmlFor={`modal-auth-password-${variant}`}>Senha</label>
                     <input
                       id={`modal-auth-password-${variant}`}
                       type="password"
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
-                      placeholder="A sua password"
+                      placeholder="A sua senha"
                       autoComplete={authMode === "login" ? "current-password" : "new-password"}
                       minLength={authMode === "login" ? 6 : 8}
                       required

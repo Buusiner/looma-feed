@@ -1,5 +1,5 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { FileText, MoreHorizontal, Plus, Trash2 } from "lucide-react";
 import {
   WorkspaceEmpty,
@@ -9,28 +9,41 @@ import {
 import { WorkspaceLayout } from "@/components/looma/WorkspaceLayout";
 import { useCurrentProfile } from "@/lib/profile";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type Post = {
   id: string;
   content: string;
-  status: "published" | "draft";
+  kind: "post" | "work";
   likes_count: number;
   comments_count: number;
   created_at: string;
 };
-type Tab = "all" | "published" | "draft";
 
 export const Route = createFileRoute("/publicacoes")({ component: PostsPage });
 
 function PostsPage() {
   const { user } = useCurrentProfile();
   const [posts, setPosts] = useState<Post[]>([]);
-  const [tab, setTab] = useState<Tab>("all");
   const [content, setContent] = useState("");
   const [composerOpen, setComposerOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
+  const [editingContent, setEditingContent] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
+  const [postPendingDeletion, setPostPendingDeletion] = useState<Post | null>(null);
+  const [deletingPost, setDeletingPost] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const userId = user?.id;
@@ -43,8 +56,9 @@ function PostsPage() {
     setError(null);
     const { data, error: queryError } = await getSupabaseBrowserClient()
       .from("posts")
-      .select("id, content, status, likes_count, comments_count, created_at")
+      .select("id, content, kind, likes_count, comments_count, created_at")
       .eq("author_id", userId)
+      .eq("status", "published")
       .order("created_at", { ascending: false });
     if (queryError) setError(queryError.message);
     else setPosts((data ?? []) as Post[]);
@@ -58,11 +72,11 @@ function PostsPage() {
     event.preventDefault();
     if (!user || !content.trim()) return;
     setSaving(true);
-    setError(null);
+    setActionError(null);
     const { error: insertError } = await getSupabaseBrowserClient()
       .from("posts")
       .insert({ author_id: user.id, content: content.trim(), status: "published" });
-    if (insertError) setError(insertError.message);
+    if (insertError) setActionError(insertError.message);
     else {
       setContent("");
       setComposerOpen(false);
@@ -71,47 +85,86 @@ function PostsPage() {
     setSaving(false);
   }
 
-  async function editPost(post: Post) {
-    const nextContent = window.prompt("Edite sua publicação", post.content);
-    if (nextContent === null || !nextContent.trim()) return;
+  function openPostEditor(post: Post) {
+    setEditingPost(post);
+    setEditingContent(post.content);
+    setActionError(null);
+  }
+
+  function handleEditDialogChange(open: boolean) {
+    if (!open && !savingEdit) {
+      setEditingPost(null);
+      setEditingContent("");
+    }
+  }
+
+  async function savePostEdit() {
+    if (!user || !editingPost || savingEdit) return;
+    const content = editingContent.trim();
+    if (!content) {
+      setActionError("A publicação não pode ficar vazia.");
+      return;
+    }
+
+    setSavingEdit(true);
+    setActionError(null);
     const { error: updateError } = await getSupabaseBrowserClient()
       .from("posts")
-      .update({ content: nextContent.trim(), updated_at: new Date().toISOString() })
-      .eq("id", post.id);
-    if (updateError) setError(updateError.message);
-    else await load();
+      .update({ content, updated_at: new Date().toISOString() })
+      .eq("id", editingPost.id)
+      .eq("author_id", user.id);
+    if (updateError) {
+      setActionError(updateError.message);
+    } else {
+      setEditingPost(null);
+      setEditingContent("");
+      await load();
+    }
+    setSavingEdit(false);
   }
-  async function deletePost(id: string) {
-    if (!window.confirm("Excluir esta publicação? Esta ação não pode ser desfeita.")) return;
+
+  function handleDeleteDialogChange(open: boolean) {
+    if (!open && !deletingPost) setPostPendingDeletion(null);
+  }
+
+  async function deletePost() {
+    if (!user || !postPendingDeletion || deletingPost) return;
+    setDeletingPost(true);
+    setActionError(null);
     const { error: deleteError } = await getSupabaseBrowserClient()
       .from("posts")
       .delete()
-      .eq("id", id);
-    if (deleteError) setError(deleteError.message);
-    else await load();
+      .eq("id", postPendingDeletion.id)
+      .eq("author_id", user.id);
+    if (deleteError) {
+      setActionError(deleteError.message);
+    } else {
+      setPostPendingDeletion(null);
+      await load();
+    }
+    setDeletingPost(false);
   }
 
-  const visiblePosts = posts.filter((post) => tab === "all" || post.status === tab);
   const emptyDescription = !user
     ? "Entre com sua conta para gerenciar suas publicações."
-    : tab === "draft"
-      ? "Você não tem rascunhos salvos."
-      : "Você ainda não publicou nada.";
+    : "Você ainda não publicou nada.";
 
   return (
     <WorkspaceLayout
       title="Publicações"
       description="Gerencie as publicações criadas por você."
       action={
-        <button
-          className="workspace-primary-action"
-          onClick={() => setComposerOpen((open) => !open)}
-        >
-          <Plus size={17} /> Nova publicação
-        </button>
+        user ? (
+          <button
+            className="workspace-primary-action"
+            onClick={() => setComposerOpen((open) => !open)}
+          >
+            <Plus size={17} /> Nova publicação
+          </button>
+        ) : null
       }
     >
-      {composerOpen ? (
+      {user && composerOpen ? (
         <form className="workspace-composer" onSubmit={createPost}>
           <textarea
             value={content}
@@ -127,17 +180,11 @@ function PostsPage() {
           </div>
         </form>
       ) : null}
-      <div className="workspace-tabs">
-        {(["all", "published", "draft"] as Tab[]).map((value) => (
-          <button
-            key={value}
-            className={tab === value ? "active" : ""}
-            onClick={() => setTab(value)}
-          >
-            {value === "all" ? "Todas" : value === "published" ? "Publicadas" : "Rascunhos"}
-          </button>
-        ))}
-      </div>
+      {actionError ? (
+        <p className="workspace-notice" role="alert">
+          {actionError}
+        </p>
+      ) : null}
       {loading ? (
         <WorkspaceSkeleton cards={3} />
       ) : error ? (
@@ -147,11 +194,15 @@ function PostsPage() {
           description={error}
           onRetry={() => void load()}
         />
-      ) : visiblePosts.length === 0 ? (
+      ) : posts.length === 0 ? (
         <WorkspaceEmpty
           icon={FileText}
           title={emptyDescription}
-          description={user ? "Use “Nova publicação” para compartilhar algo com a comunidade." : ""}
+          description={
+            user
+              ? "Use “Nova publicação” para compartilhar algo com a comunidade."
+              : "Enquanto isso, explore oportunidades e descubra quem está criando na Looma."
+          }
           action={
             user ? (
               <button
@@ -161,17 +212,21 @@ function PostsPage() {
               >
                 Criar publicação
               </button>
-            ) : null
+            ) : (
+              <Link className="workspace-empty-action" to="/oportunidades">
+                Explorar oportunidades
+              </Link>
+            )
           }
         />
       ) : (
         <section className="workspace-card-list">
-          {visiblePosts.map((post) => (
+          {posts.map((post) => (
             <article className="workspace-card" key={post.id}>
               <div className="workspace-card-heading">
                 <div>
                   <span className="workspace-status">
-                    {post.status === "draft" ? "Rascunho" : "Publicada"}
+                    {post.kind === "work" ? "Trabalho aberto" : "Publicada"}
                   </span>
                   <time>
                     {new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium" }).format(
@@ -180,10 +235,16 @@ function PostsPage() {
                   </time>
                 </div>
                 <div className="workspace-inline-actions">
-                  <button onClick={() => void editPost(post)} aria-label="Editar publicação">
+                  <button onClick={() => openPostEditor(post)} aria-label="Editar publicação">
                     <MoreHorizontal size={17} />
                   </button>
-                  <button onClick={() => void deletePost(post.id)} aria-label="Excluir publicação">
+                  <button
+                    onClick={() => {
+                      setPostPendingDeletion(post);
+                      setActionError(null);
+                    }}
+                    aria-label="Excluir publicação"
+                  >
                     <Trash2 size={17} />
                   </button>
                 </div>
@@ -196,6 +257,73 @@ function PostsPage() {
           ))}
         </section>
       )}
+      <Dialog open={editingPost !== null} onOpenChange={handleEditDialogChange}>
+        <DialogContent showClose={!savingEdit} className="post-proposal-dialog">
+          <DialogHeader>
+            <DialogTitle>Editar publicação</DialogTitle>
+            <DialogDescription>Atualize o texto da sua publicação.</DialogDescription>
+          </DialogHeader>
+          <textarea
+            className="post-proposal-message"
+            value={editingContent}
+            onChange={(event) => setEditingContent(event.target.value)}
+            maxLength={300}
+            disabled={savingEdit}
+            autoFocus
+          />
+          <p className="post-proposal-count">{editingContent.length}/300</p>
+          {actionError ? (
+            <p className="post-delete-error" role="alert">
+              {actionError}
+            </p>
+          ) : null}
+          <DialogFooter className="post-delete-actions">
+            <DialogClose asChild>
+              <button type="button" className="post-delete-cancel" disabled={savingEdit}>
+                Cancelar
+              </button>
+            </DialogClose>
+            <button
+              type="button"
+              className="post-delete-confirm"
+              onClick={() => void savePostEdit()}
+              disabled={savingEdit || !editingContent.trim()}
+            >
+              {savingEdit ? "Salvando…" : "Salvar"}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={postPendingDeletion !== null} onOpenChange={handleDeleteDialogChange}>
+        <DialogContent showClose={!deletingPost} className="post-delete-dialog">
+          <DialogHeader>
+            <DialogTitle className="post-delete-title">Excluir esta publicação?</DialogTitle>
+            <DialogDescription className="post-delete-description">
+              Esta ação não pode ser desfeita.
+            </DialogDescription>
+          </DialogHeader>
+          {actionError ? (
+            <p className="post-delete-error" role="alert">
+              {actionError}
+            </p>
+          ) : null}
+          <DialogFooter className="post-delete-actions">
+            <DialogClose asChild>
+              <button type="button" className="post-delete-cancel" disabled={deletingPost}>
+                Cancelar
+              </button>
+            </DialogClose>
+            <button
+              type="button"
+              className="post-delete-confirm"
+              onClick={() => void deletePost()}
+              disabled={deletingPost}
+            >
+              {deletingPost ? "Excluindo…" : "Excluir"}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </WorkspaceLayout>
   );
 }

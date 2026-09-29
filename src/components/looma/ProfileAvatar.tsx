@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getInitials } from "@/lib/profile";
+import { UserRound } from "lucide-react";
 
 type ProfileAvatarProps = {
   fullName: string;
@@ -22,7 +22,7 @@ export function ProfileAvatar({ fullName, avatarUrl, className = "" }: ProfileAv
           onError={() => setImageFailed(true)}
         />
       ) : (
-        getInitials(fullName)
+        <UserRound className="looma-avatar-anonymous" aria-hidden="true" />
       )}
     </span>
   );

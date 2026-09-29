@@ -36,7 +36,7 @@ import {
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 export const Route = createFileRoute("/perfil/editar")({
-  head: () => ({ meta: [{ title: "Editar perfil — Looma" }] }),
+  head: () => ({ meta: [{ title: "Editar perfil | Looma" }] }),
   component: EditProfilePage,
 });
 
@@ -418,7 +418,7 @@ function EditProfilePage() {
     setNotice(null);
 
     try {
-      const updatedProfile = await saveProfileDetails({
+      await saveProfileDetails({
         user,
         profile,
         fullName: normalizedName,
@@ -435,10 +435,6 @@ function EditProfilePage() {
         replaceProfileLinks(user, linksToSave),
       ]);
 
-      console.info("[Looma] Perfil salvo pelo Supabase.", {
-        userId: updatedProfile.id,
-        username: updatedProfile.username,
-      });
       await refresh(user);
       setAvatarFile(null);
       if (avatarPreviewUrl) URL.revokeObjectURL(avatarPreviewUrl);

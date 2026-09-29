@@ -7,7 +7,8 @@ import {
   WorkspaceSkeleton,
 } from "@/components/looma/WorkspaceStates";
 import { WorkspaceLayout } from "@/components/looma/WorkspaceLayout";
-import { useCurrentProfile } from "@/lib/profile";
+import { AdminVerifiedBadge } from "@/components/looma/AdminVerifiedBadge";
+import { type Profile, useCurrentProfile } from "@/lib/profile";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 type Proposal = {
@@ -16,6 +17,7 @@ type Proposal = {
   recipient_id: string;
   title: string;
   message: string;
+  post_id: string | null;
   status: "pending" | "accepted" | "declined";
   created_at: string;
 };
@@ -26,37 +28,110 @@ function ProposalsPage() {
   const { user } = useCurrentProfile();
   const [tab, setTab] = useState<Tab>("sent");
   const [items, setItems] = useState<Proposal[]>([]);
+  const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [processingProposalId, setProcessingProposalId] = useState<string | null>(null);
+
   const load = useCallback(async () => {
     const userId = user?.id;
     if (!userId) {
       setItems([]);
+      setProfiles({});
+      setError(null);
       setLoading(false);
       return;
     }
     setLoading(true);
     setError(null);
-    const field = tab === "sent" ? "sender_id" : "recipient_id";
-    const { data, error: queryError } = await getSupabaseBrowserClient()
-      .from("proposals")
-      .select("id, sender_id, recipient_id, title, message, status, created_at")
-      .eq(field, userId)
-      .order("created_at", { ascending: false });
-    if (queryError) setError(queryError.message);
-    else setItems((data ?? []) as Proposal[]);
-    setLoading(false);
+    try {
+      const field = tab === "sent" ? "sender_id" : "recipient_id";
+      const { data, error: queryError } = await getSupabaseBrowserClient()
+        .from("proposals")
+        .select("id, sender_id, recipient_id, title, message, post_id, status, created_at")
+        .eq(field, userId)
+        .order("created_at", { ascending: false });
+      if (queryError) {
+        setError(queryError.message);
+        setProfiles({});
+        return;
+      }
+
+      const proposalRows = (data ?? []) as Proposal[];
+      const profileIds = [
+        ...new Set(
+          proposalRows
+            .map((proposal) => (tab === "sent" ? proposal.recipient_id : proposal.sender_id))
+            .filter((profileId) => profileId !== userId),
+        ),
+      ];
+      if (profileIds.length) {
+        const { data: profileRows, error: profileError } = await getSupabaseBrowserClient()
+          .from("profiles")
+          .select("id, username, full_name, avatar_url, bio, created_at, is_admin")
+          .in("id", profileIds);
+        if (profileError) {
+          setError(profileError.message);
+          setProfiles({});
+          return;
+        }
+        setProfiles(
+          Object.fromEntries(
+            ((profileRows ?? []) as Profile[]).map((profile) => [profile.id, profile]),
+          ),
+        );
+      } else {
+        setProfiles({});
+      }
+      setItems(proposalRows);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Não foi possível carregar propostas.");
+      setProfiles({});
+    } finally {
+      setLoading(false);
+    }
   }, [tab, user?.id]);
   useEffect(() => {
     void load();
   }, [load]);
   async function respond(id: string, status: "accepted" | "declined") {
-    const { error: updateError } = await getSupabaseBrowserClient()
-      .from("proposals")
-      .update({ status })
-      .eq("id", id);
-    if (updateError) setError(updateError.message);
-    else await load();
+    if (!user || processingProposalId) return;
+    setProcessingProposalId(id);
+    setError(null);
+    try {
+      const { error: updateError } = await getSupabaseBrowserClient()
+        .from("proposals")
+        .update({ status })
+        .eq("id", id)
+        .eq("recipient_id", user.id)
+        .eq("status", "pending");
+      if (updateError) setError(updateError.message);
+      else await load();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Não foi possível atualizar a proposta.");
+    } finally {
+      setProcessingProposalId(null);
+    }
+  }
+
+  async function cancel(id: string) {
+    if (!user || processingProposalId) return;
+    setProcessingProposalId(id);
+    setError(null);
+    try {
+      const { error: deleteError } = await getSupabaseBrowserClient()
+        .from("proposals")
+        .delete()
+        .eq("id", id)
+        .eq("sender_id", user.id)
+        .eq("status", "pending");
+      if (deleteError) setError(deleteError.message);
+      else await load();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Não foi possível cancelar a proposta.");
+    } finally {
+      setProcessingProposalId(null);
+    }
   }
   const statusLabel = { pending: "Pendente", accepted: "Aceita", declined: "Recusada" } as const;
   return (
@@ -84,7 +159,13 @@ function ProposalsPage() {
       ) : items.length === 0 ? (
         <WorkspaceEmpty
           icon={FileSignature}
-          title={tab === "sent" ? "Nenhuma proposta enviada" : "Nenhuma proposta recebida"}
+          title={
+            user
+              ? tab === "sent"
+                ? "Nenhuma proposta enviada"
+                : "Nenhuma proposta recebida"
+              : "Entre com sua conta"
+          }
           description={
             user
               ? "Quando houver propostas, elas aparecerão aqui."
@@ -95,7 +176,11 @@ function ProposalsPage() {
               <Link to="/conexoes" className="workspace-empty-action">
                 Explorar conexões
               </Link>
-            ) : null
+            ) : (
+              <Link to="/oportunidades" className="workspace-empty-action">
+                Explorar oportunidades
+              </Link>
+            )
           }
         />
       ) : (
@@ -108,6 +193,16 @@ function ProposalsPage() {
                     {statusLabel[item.status]}
                   </span>
                   <h2>{item.title}</h2>
+                  <p className="workspace-card-counterparty">
+                    {tab === "sent" ? "Enviada para " : "Recebida de "}
+                    <strong>
+                      {profiles[tab === "sent" ? item.recipient_id : item.sender_id]?.full_name ??
+                        "Usuário"}
+                      {profiles[tab === "sent" ? item.recipient_id : item.sender_id]?.is_admin ? (
+                        <AdminVerifiedBadge />
+                      ) : null}
+                    </strong>
+                  </p>
                 </div>
                 <time>
                   {new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium" }).format(
@@ -120,12 +215,27 @@ function ProposalsPage() {
                 <div className="workspace-card-actions">
                   <button
                     className="workspace-primary-action"
+                    disabled={processingProposalId !== null}
                     onClick={() => void respond(item.id, "accepted")}
                   >
-                    <Check size={16} /> Aceitar
+                    <Check size={16} />
+                    {processingProposalId === item.id ? "Atualizando…" : "Aceitar"}
                   </button>
-                  <button onClick={() => void respond(item.id, "declined")}>
+                  <button
+                    disabled={processingProposalId !== null}
+                    onClick={() => void respond(item.id, "declined")}
+                  >
                     <X size={16} /> Recusar
+                  </button>
+                </div>
+              ) : null}
+              {tab === "sent" && item.status === "pending" ? (
+                <div className="workspace-card-actions">
+                  <button
+                    disabled={processingProposalId !== null}
+                    onClick={() => void cancel(item.id)}
+                  >
+                    {processingProposalId === item.id ? "Cancelando…" : "Cancelar proposta"}
                   </button>
                 </div>
               ) : null}

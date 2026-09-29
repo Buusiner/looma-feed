@@ -5,13 +5,13 @@ import { useSplashState } from "@/lib/splash-state";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Looma — conexões que viram oportunidades" },
+      { title: "Looma: conexões que viram oportunidades" },
       {
         name: "description",
         content:
           "A Looma conecta profissionais, criadores e empresas a oportunidades reais no mercado digital.",
       },
-      { property: "og:title", content: "Looma — conexões que viram oportunidades" },
+      { property: "og:title", content: "Looma: conexões que viram oportunidades" },
       {
         property: "og:description",
         content: "Pessoas certas, projetos reais e oportunidades que acontecem.",

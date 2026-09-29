@@ -12,10 +12,29 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { SplashProvider, claimInitialSplash, shouldShowWelcome } from "../lib/splash-state";
+import { SplashProvider } from "../lib/splash-state";
 import { getSupabaseBrowserClient } from "../lib/supabase/browser";
 import { useCurrentProfile } from "../lib/profile";
 import { OnboardingGate } from "../components/looma/OnboardingGate";
+import { applyTheme, getStoredTheme } from "../lib/theme";
+
+const themeBootstrapScript = `
+  (function () {
+    var root = document.documentElement;
+    var theme = "light";
+
+    try {
+      theme = window.localStorage.getItem("looma-theme") === "dark" ? "dark" : "light";
+    } catch (_error) {
+      // Storage may be unavailable in private browser contexts. The light
+      // palette remains a reliable, fully rendered fallback in that case.
+    }
+
+    root.classList.toggle("dark", theme === "dark");
+    root.dataset.theme = theme;
+    root.classList.add("looma-theme-ready");
+  })();
+`;
 
 function NotFoundComponent() {
   return (
@@ -97,7 +116,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
       },
-      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "icon", type: "image/svg+xml", href: "/looma-logo-mark.svg" },
     ],
   }),
   shellComponent: RootShell,
@@ -108,8 +127,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
+        <style>{`
+          html { background-color: #050507; }
+          html:not(.looma-theme-ready) body { visibility: hidden; }
+          html.looma-theme-ready:not(.dark) { background-color: #f7f7fc; }
+        `}</style>
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
         <HeadContent />
       </head>
       <body>
@@ -124,8 +149,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const pathname = useLocation({ select: (location: { pathname: string }) => location.pathname });
-  const [shouldPlaySplash] = useState(claimInitialSplash);
-  const [isSplashActive, setIsSplashActive] = useState(shouldPlaySplash);
+  const [isSplashActive, setIsSplashActive] = useState(() => pathname === "/");
   const completeSplash = useCallback(() => setIsSplashActive(false), []);
   const startSplash = useCallback(() => setIsSplashActive(true), []);
   const { user, profile, refresh } = useCurrentProfile();
@@ -141,9 +165,24 @@ function RootComponent() {
   );
 
   useEffect(() => {
+    applyTheme(getStoredTheme());
+
+    function syncTheme(event: StorageEvent) {
+      if (event.key === "looma-theme") applyTheme(getStoredTheme());
+    }
+
+    window.addEventListener("storage", syncTheme);
+    return () => window.removeEventListener("storage", syncTheme);
+  }, []);
+
+  useEffect(() => {
+    if (pathname === "/") startSplash();
+  }, [pathname, startSplash]);
+
+  useEffect(() => {
     const supabase = getSupabaseBrowserClient();
     const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session?.user && shouldShowWelcome(session.user)) {
+      if (event === "SIGNED_IN" && session?.user) {
         startSplash();
         if (window.location.pathname !== "/") void router.navigate({ to: "/" });
       }
