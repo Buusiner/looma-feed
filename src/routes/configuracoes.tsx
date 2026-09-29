@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Bell, Lock, Moon, Settings, Sun, UserRound } from "lucide-react";
+import { Bell, Laptop, Lock, Moon, Settings, Sun, UserRound } from "lucide-react";
 import {
   WorkspaceEmpty,
   WorkspaceError,
@@ -379,6 +379,15 @@ function SettingsPage() {
                         onClick={() => updateTheme("dark")}
                       >
                         <Moon size={16} aria-hidden="true" /> Escuro
+                      </button>
+                      <button
+                        type="button"
+                        className={theme === "system" ? "active" : ""}
+                        role="radio"
+                        aria-checked={theme === "system"}
+                        onClick={() => updateTheme("system")}
+                      >
+                        <Laptop size={16} aria-hidden="true" /> Sistema
                       </button>
                     </div>
                   </div>

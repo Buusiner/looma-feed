@@ -1,15 +1,17 @@
 import {
   BarChart3,
+  BadgeCheck,
   ChevronsUpDown,
   CircleHelp,
   FileText,
   Home,
   LogOut,
+  Moon,
   Pencil,
   Send,
   Settings,
-  Sparkles,
   ShieldCheck,
+  Sun,
   TrendingUp,
   UserRound,
   BriefcaseBusiness,
@@ -23,6 +25,7 @@ import { ProfileAvatar } from "./ProfileAvatar";
 import { getProfileName, getProfileUsername, useCurrentProfile } from "@/lib/profile";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { useAdminAccess } from "@/lib/admin";
+import { applyTheme, getStoredTheme, saveTheme } from "@/lib/theme";
 
 const NAV_GROUPS = [
   {
@@ -47,7 +50,7 @@ const NAV_GROUPS = [
     items: [
       { icon: CircleHelp, label: "Comunidade e Ajuda", path: "/comunidade" },
       { icon: Settings, label: "Configurações", path: "/configuracoes" },
-      { icon: Sparkles, label: "Planos", path: "/planos" },
+      { icon: BadgeCheck, label: "Planos", path: "/planos" },
     ],
   },
 ];
@@ -67,6 +70,13 @@ export function LoomaSidebar() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState<string | null>(null);
   const [isLeavingForProfile, setIsLeavingForProfile] = useState(false);
+
+  function toggleTheme() {
+    const isDark = document.documentElement.classList.contains("dark");
+    const nextTheme = isDark ? "light" : "dark";
+    saveTheme(nextTheme);
+    applyTheme(getStoredTheme());
+  }
 
   function openProfileEditor(event: MouseEvent<HTMLAnchorElement>) {
     if (
@@ -137,33 +147,45 @@ export function LoomaSidebar() {
       <AuthButton variant="sidebar" />
 
       <div className="sidebar-profile-wrap">
-        <button
-          type="button"
-          className="sidebar-profile"
-          aria-label="Abrir menu do perfil"
-          aria-expanded={isProfileMenuOpen}
-          onClick={() => setIsProfileMenuOpen((open) => !open)}
-        >
-          {user ? (
-            <ProfileAvatar
-              className="profile-avatar"
-              fullName={displayName}
-              avatarUrl={profile?.avatar_url}
-            />
-          ) : (
-            <span className="profile-avatar profile-avatar-guest" aria-hidden="true">
-              <UserRound size={18} />
+        <div className="sidebar-footer-row">
+          <button
+            type="button"
+            className="sidebar-profile"
+            aria-label="Abrir menu do perfil"
+            aria-expanded={isProfileMenuOpen}
+            onClick={() => setIsProfileMenuOpen((open) => !open)}
+          >
+            {user ? (
+              <ProfileAvatar
+                className="profile-avatar"
+                fullName={displayName}
+                avatarUrl={profile?.avatar_url}
+              />
+            ) : (
+              <span className="profile-avatar profile-avatar-guest" aria-hidden="true">
+                <UserRound size={18} />
+              </span>
+            )}
+            <span>
+              <strong>
+                {displayName}
+                {isAdmin ? <AdminVerifiedBadge /> : null}
+              </strong>
+              {username ? <small>{username}</small> : null}
             </span>
-          )}
-          <span>
-            <strong>
-              {displayName}
-              {isAdmin ? <AdminVerifiedBadge /> : null}
-            </strong>
-            {username ? <small>{username}</small> : null}
-          </span>
-          <ChevronsUpDown size={16} aria-hidden="true" />
-        </button>
+            <ChevronsUpDown size={16} aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            className="sidebar-theme-toggle"
+            aria-label="Alternar tema"
+            title="Alternar tema"
+            onClick={toggleTheme}
+          >
+            <Sun className="theme-icon-light" size={17} aria-hidden="true" />
+            <Moon className="theme-icon-dark" size={17} aria-hidden="true" />
+          </button>
+        </div>
 
         {isProfileMenuOpen ? (
           <div className="sidebar-profile-menu" role="menu">

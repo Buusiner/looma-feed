@@ -9,7 +9,7 @@ export function AdminVerifiedBadge() {
         <path
           d="m6.4 10 2.14 2.14 5.06-5.06"
           fill="none"
-          stroke="white"
+          stroke="var(--verified-badge-check)"
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="1.9"

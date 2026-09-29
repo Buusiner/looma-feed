@@ -21,17 +21,33 @@ import { applyTheme, getStoredTheme } from "../lib/theme";
 const themeBootstrapScript = `
   (function () {
     var root = document.documentElement;
-    var theme = "light";
+    var theme = "dark";
 
     try {
-      theme = window.localStorage.getItem("looma-theme") === "dark" ? "dark" : "light";
+      var storedTheme = window.localStorage.getItem("looma-theme");
+      theme = storedTheme === "light" || storedTheme === "dark" || storedTheme === "system" ? storedTheme : "dark";
     } catch (_error) {
-      // Storage may be unavailable in private browser contexts. The light
-      // palette remains a reliable, fully rendered fallback in that case.
+      // Storage may be unavailable in private browser contexts. Dark remains
+      // the product default in that case.
     }
 
-    root.classList.toggle("dark", theme === "dark");
+    var resolvedTheme = theme;
+    if (theme === "system") {
+      resolvedTheme = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    }
+
+    var themeColor = resolvedTheme === "dark" ? "#0A0A0B" : "#FAFAFA";
+    var themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (!themeColorMeta) {
+      themeColorMeta = document.createElement("meta");
+      themeColorMeta.name = "theme-color";
+      document.head.appendChild(themeColorMeta);
+    }
+
+    themeColorMeta.content = themeColor;
+    root.classList.toggle("dark", resolvedTheme === "dark");
     root.dataset.theme = theme;
+    root.dataset.resolvedTheme = resolvedTheme;
     root.classList.add("looma-theme-ready");
   })();
 `;
@@ -130,9 +146,10 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <style>{`
-          html { background-color: #050507; }
+          html { background-color: #0A0A0B; color-scheme: dark; }
           html:not(.looma-theme-ready) body { visibility: hidden; }
-          html.looma-theme-ready:not(.dark) { background-color: #f7f7fc; }
+          html.looma-theme-ready:not(.dark) { background-color: #FAFAFA; color-scheme: light; }
+          html.looma-theme-ready.dark { color-scheme: dark; }
         `}</style>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
         <HeadContent />
@@ -149,9 +166,21 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const pathname = useLocation({ select: (location: { pathname: string }) => location.pathname });
-  const [isSplashActive, setIsSplashActive] = useState(() => pathname === "/");
+  const [isSplashActive, setIsSplashActive] = useState(() => {
+    if (typeof window === "undefined" || pathname !== "/") return false;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+    if (window.sessionStorage.getItem("looma-splash-played") === "true") return false;
+    window.sessionStorage.setItem("looma-splash-played", "true");
+    return true;
+  });
   const completeSplash = useCallback(() => setIsSplashActive(false), []);
-  const startSplash = useCallback(() => setIsSplashActive(true), []);
+  const startSplash = useCallback(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.sessionStorage.getItem("looma-splash-played") === "true") return;
+    window.sessionStorage.setItem("looma-splash-played", "true");
+    setIsSplashActive(true);
+  }, []);
   const { user, profile, refresh } = useCurrentProfile();
   const shouldShowOnboarding = Boolean(
     // Keep the gate mounted while the profile cache refreshes after a step is
@@ -171,25 +200,34 @@ function RootComponent() {
       if (event.key === "looma-theme") applyTheme(getStoredTheme());
     }
 
+    function syncSystemTheme() {
+      if (getStoredTheme() === "system") applyTheme("system");
+    }
+
+    const themeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     window.addEventListener("storage", syncTheme);
-    return () => window.removeEventListener("storage", syncTheme);
+    themeMediaQuery.addEventListener("change", syncSystemTheme);
+    return () => {
+      window.removeEventListener("storage", syncTheme);
+      themeMediaQuery.removeEventListener("change", syncSystemTheme);
+    };
   }, []);
 
   useEffect(() => {
-    if (pathname === "/") startSplash();
-  }, [pathname, startSplash]);
-
-  useEffect(() => {
     const supabase = getSupabaseBrowserClient();
+    let currentUserId = user?.id ?? null;
     const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
+      const nextUserId = session?.user?.id ?? null;
+      if (nextUserId === currentUserId && event !== "SIGNED_OUT") return;
+      currentUserId = nextUserId;
+
       if (event === "SIGNED_IN" && session?.user) {
-        startSplash();
         if (window.location.pathname !== "/") void router.navigate({ to: "/" });
       }
     });
 
     return () => subscription.subscription.unsubscribe();
-  }, [router, startSplash]);
+  }, [router, user?.id]);
 
   return (
     <QueryClientProvider client={queryClient}>

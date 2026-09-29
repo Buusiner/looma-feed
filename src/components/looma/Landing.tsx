@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
+  BadgeCheck,
   BriefcaseBusiness,
   Compass,
   FileText,
-  FilePenLine,
   LayoutGrid,
   MoreHorizontal,
   Pencil,
   Search,
   Send,
-  Sparkles,
   Trash2,
   UserRound,
   UsersRound,
@@ -111,11 +110,11 @@ const SEARCH_SPACE_TRANSITION_MS = 560;
 const SEARCH_REVEAL_MS = 820;
 const INTRO_BRAND_TEXT = "ooma";
 const INTRO_TAGLINE = "we are building connections";
-const INTRO_LOGO_MS = 640;
-const INTRO_WORD_FADE_MS = 640;
-const INTRO_LINE_DELAY_MS = 220;
-const INTRO_LINE_MS = 940;
-const INTRO_TAGLINE_HOLD_MS = 1080;
+const INTRO_LOGO_MS = 220;
+const INTRO_WORD_FADE_MS = 260;
+const INTRO_LINE_DELAY_MS = 80;
+const INTRO_LINE_MS = 320;
+const INTRO_TAGLINE_HOLD_MS = 300;
 const POST_EXIT_ANIMATION_MS = 220;
 const POST_PENDING_MINIMUM_MS = 1200;
 
@@ -790,13 +789,76 @@ export function LoomaLanding({
     setSearchPhase("returning");
   };
   const isSearchSpaceOpen = searchPhase !== "compact" && searchPhase !== "returning";
-  const focusComposer = () => composerInputRef.current?.focus();
   const focusPostFromSearch = (postId: string) => {
     const post = document.querySelector<HTMLElement>(`[data-feed-post-id="${postId}"]`);
     post?.scrollIntoView({ behavior: "smooth", block: "center" });
     closeSearch();
   };
   const hasSearchQuery = searchQuery.trim().length > 0;
+  const composerPanel = (
+    <section className="home-composer-panel">
+      <header className="home-panel-heading">
+        <div>
+          <p className="home-section-kicker">Para escrever</p>
+          <h2>Nova publicação</h2>
+        </div>
+      </header>
+      <section className="composer" aria-label="Criar publicação">
+        <ProfileAvatar
+          className="avatar avatar-coral"
+          fullName={displayName}
+          avatarUrl={profile?.avatar_url ?? null}
+        />
+        <div className="composer-body">
+          <div className="composer-kind-selector" role="radiogroup" aria-label="Tipo de publicação">
+            <button
+              type="button"
+              className={postKind === "post" ? "active" : ""}
+              role="radio"
+              aria-checked={postKind === "post"}
+              disabled={publishing}
+              onClick={() => setPostKind("post")}
+            >
+              Publicação
+            </button>
+            <button
+              type="button"
+              className={postKind === "work" ? "active" : ""}
+              role="radio"
+              aria-checked={postKind === "work"}
+              disabled={publishing}
+              onClick={() => setPostKind("work")}
+            >
+              Trabalho
+            </button>
+          </div>
+          <textarea
+            ref={composerInputRef}
+            value={message}
+            onChange={(event) => setMessage(event.target.value)}
+            placeholder="Escreva aqui sua ideia, oportunidade ou projeto..."
+            maxLength={1000}
+            disabled={publishing}
+          />
+          <div className="composer-actions">
+            <button
+              type="button"
+              className="publish-button"
+              disabled={!message.trim() || publishing}
+              onClick={() => void publish()}
+            >
+              {publishing ? "Publicando…" : "Publicar"} <Send size={15} />
+            </button>
+          </div>
+          {composerError ? (
+            <p className="home-inline-error" role="alert">
+              {composerError}
+            </p>
+          ) : null}
+        </div>
+      </section>
+    </section>
+  );
 
   return (
     <main
@@ -888,38 +950,18 @@ export function LoomaLanding({
                     <section className="home-feed-empty">
                       <div>
                         <p className="home-feed-empty-eyebrow">
-                          {feedTab === "following" ? "Sua rede" : "Seu espaço está pronto"}
+                          {feedTab === "following" ? "Sua rede" : "Seu feed"}
                         </p>
                         <h2>
                           {feedTab === "following"
                             ? "Comece pelas suas próximas conexões"
-                            : "Compartilhe o que está acontecendo"}
+                            : "Nenhuma publicação ainda"}
                         </h2>
                         <p>
                           {feedTab === "following"
                             ? "Conecte-se com pessoas da sua área para acompanhar projetos, ideias e oportunidades por aqui."
-                            : "Publique uma ideia, explore oportunidades ou deixe seu portfólio pronto para novas conversas."}
+                            : "Escreva uma nova publicação acima para iniciar o movimento."}
                         </p>
-                      </div>
-                      <div className="home-empty-actions">
-                        {feedTab === "for-you" ? (
-                          <button
-                            type="button"
-                            className="home-empty-primary"
-                            onClick={focusComposer}
-                          >
-                            <FilePenLine size={16} aria-hidden="true" /> Fazer uma publicação
-                          </button>
-                        ) : null}
-                        <Link to="/oportunidades" className="home-empty-link">
-                          <BriefcaseBusiness size={16} aria-hidden="true" /> Explorar oportunidades
-                        </Link>
-                        <Link to="/conexoes" className="home-empty-link">
-                          <UserRound size={16} aria-hidden="true" /> Conhecer pessoas
-                        </Link>
-                        <Link to="/perfil" className="home-empty-link">
-                          <Pencil size={16} aria-hidden="true" /> Completar portfólio
-                        </Link>
                       </div>
                     </section>
                   ) : (
@@ -1037,7 +1079,7 @@ export function LoomaLanding({
                                 <textarea
                                   value={editingPostContent}
                                   onChange={(event) => setEditingPostContent(event.target.value)}
-                                  maxLength={300}
+                                  maxLength={1000}
                                   aria-label="Editar publicação"
                                   autoFocus
                                 />
@@ -1089,6 +1131,8 @@ export function LoomaLanding({
                 </section>
               </section>
             </section>
+
+            {composerPanel}
           </div>
 
           <aside className="home-context-rail" aria-label="Atalhos e descobertas">
@@ -1246,77 +1290,10 @@ export function LoomaLanding({
               </section>
             </div>
 
-            <section className="home-composer-panel">
-              <header className="home-panel-heading">
-                <div>
-                  <p className="home-section-kicker">Sua vez</p>
-                  <h2>Compartilhe o que está em movimento.</h2>
-                </div>
-              </header>
-              <section className="composer" aria-label="Criar publicação">
-                <ProfileAvatar
-                  className="avatar avatar-coral"
-                  fullName={displayName}
-                  avatarUrl={profile?.avatar_url ?? null}
-                />
-                <div className="composer-body">
-                  <div
-                    className="composer-kind-selector"
-                    role="radiogroup"
-                    aria-label="Tipo de publicação"
-                  >
-                    <button
-                      type="button"
-                      className={postKind === "post" ? "active" : ""}
-                      role="radio"
-                      aria-checked={postKind === "post"}
-                      disabled={publishing}
-                      onClick={() => setPostKind("post")}
-                    >
-                      Publicação
-                    </button>
-                    <button
-                      type="button"
-                      className={postKind === "work" ? "active" : ""}
-                      role="radio"
-                      aria-checked={postKind === "work"}
-                      disabled={publishing}
-                      onClick={() => setPostKind("work")}
-                    >
-                      Trabalho
-                    </button>
-                  </div>
-                  <textarea
-                    ref={composerInputRef}
-                    value={message}
-                    onChange={(event) => setMessage(event.target.value)}
-                    placeholder="Compartilhe uma ideia, oportunidade ou projeto"
-                    maxLength={300}
-                    disabled={publishing}
-                  />
-                  <div className="composer-actions">
-                    <button
-                      type="button"
-                      className="publish-button"
-                      disabled={!message.trim() || publishing}
-                      onClick={() => void publish()}
-                    >
-                      {publishing ? "Publicando…" : "Publicar"} <Send size={15} />
-                    </button>
-                  </div>
-                  {composerError ? (
-                    <p className="home-inline-error" role="alert">
-                      {composerError}
-                    </p>
-                  ) : null}
-                </div>
-              </section>
-            </section>
-
             <section className="home-next-steps">
               <div className="home-context-heading">
                 <span className="home-context-icon" aria-hidden="true">
-                  <Sparkles size={17} />
+                  <BadgeCheck size={17} />
                 </span>
                 <div>
                   <p className="home-section-kicker">Próximo passo</p>

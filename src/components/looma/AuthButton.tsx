@@ -51,7 +51,9 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
         .catch(() => setError("Não foi possível verificar a sua sessão."));
 
       const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-        setUser(session?.user ?? null);
+        setUser((currentUser) =>
+          currentUser?.id === session?.user?.id ? currentUser : (session?.user ?? null),
+        );
       });
       unsubscribe = () => subscription.subscription.unsubscribe();
     } catch (caught) {

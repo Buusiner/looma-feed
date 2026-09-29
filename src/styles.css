@@ -10842,3 +10842,1402 @@ body {
   width: 100%;
   max-width: 100%;
 }
+
+/* UI refactor layer: calm product system, shared by the app and admin. */
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #f4f4f5;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.14);
+  --text: #18181b;
+  --text-muted: #52525b;
+  --text-subtle: #71717a;
+  --accent: #635bff;
+  --accent-hover: #5148df;
+  --accent-soft: rgba(99, 91, 255, 0.12);
+  --danger: #dc2626;
+  --success: #16a34a;
+  --verified-badge-check: #ffffff;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --looma-background: var(--bg);
+  --looma-surface: var(--surface);
+  --looma-sidebar: var(--bg);
+  --looma-primary: var(--accent);
+  --looma-primary-hover: var(--accent-hover);
+  --looma-primary-soft: var(--accent-soft);
+  --looma-text: var(--text);
+  --looma-muted: var(--text-muted);
+  --looma-rim: var(--border);
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--text);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--text-muted);
+  --accent-foreground: var(--text);
+  --input: var(--border);
+  --ring: var(--accent);
+}
+
+.dark {
+  --bg: #0a0a0b;
+  --surface: #111113;
+  --surface-2: #18181b;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text: #ececee;
+  --text-muted: #a1a1aa;
+  --text-subtle: #8b8b94;
+  --accent: #635bff;
+  --accent-hover: #827cff;
+  --accent-soft: rgba(99, 91, 255, 0.12);
+  --danger: #f87171;
+  --success: #4ade80;
+  --verified-badge-check: #ffffff;
+  --shadow-soft: none;
+  --looma-background: var(--bg);
+  --looma-surface: var(--surface);
+  --looma-sidebar: var(--bg);
+  --looma-primary: var(--accent);
+  --looma-primary-hover: var(--accent-hover);
+  --looma-primary-soft: var(--accent-soft);
+  --looma-text: var(--text);
+  --looma-muted: var(--text-muted);
+  --looma-rim: var(--border);
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--text);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--text-muted);
+  --accent-foreground: var(--text);
+  --input: var(--border);
+  --ring: var(--accent);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  overflow-x: clip;
+  scrollbar-color: var(--border-strong) transparent;
+  scrollbar-width: thin;
+}
+
+body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  font-size: 14px;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px;
+}
+
+.workspace-page,
+.protected-page,
+.plans-page,
+.workspace-content,
+.feed-column,
+.mobile-feed-nav {
+  min-height: 100dvh;
+  overflow: visible !important;
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+.feed-stage {
+  display: grid !important;
+  grid-template-columns: 248px minmax(0, 1fr);
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+.workspace-page {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+}
+
+.workspace-content {
+  width: min(1120px, 100%);
+  min-width: 0;
+  margin: 0 auto;
+  padding: 24px 32px 64px;
+}
+
+.workspace-header,
+.feed-header,
+.plans-hero {
+  margin: 0 0 24px;
+  border-color: var(--border) !important;
+  padding: 0 0 16px;
+}
+
+.workspace-heading-copy h1,
+.plans-hero h1,
+.admin-section-header h1,
+.feed-header h1 {
+  color: var(--text) !important;
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.25 !important;
+}
+
+.workspace-heading-copy span,
+.plans-hero p,
+.admin-section-header p,
+.workspace-helper {
+  color: var(--text-muted) !important;
+}
+
+.home-section-kicker,
+.plan-label,
+.plans-eyebrow,
+.home-welcome-label,
+.profile-section-kicker {
+  display: none !important;
+}
+
+.home-panel-heading h2,
+.home-section-header h2,
+.home-context-heading h2,
+.home-trending-card h2,
+.home-feed-companion h2 {
+  color: var(--text) !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+}
+
+.looma-sidebar {
+  position: sticky !important;
+  top: 0;
+  display: flex !important;
+  flex-direction: column;
+  width: 248px !important;
+  height: 100dvh !important;
+  border-right: 1px solid var(--border) !important;
+  padding: 24px 20px !important;
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  overflow-y: auto;
+  box-shadow: none !important;
+}
+
+.sidebar-nav {
+  width: 100%;
+  gap: 18px !important;
+  padding: 0 !important;
+}
+
+.sidebar-nav-group {
+  display: grid;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 14px;
+}
+
+.sidebar-nav-group:last-child {
+  border-bottom: 0;
+}
+
+.sidebar-nav a,
+.sidebar-nav button {
+  display: flex;
+  min-height: 40px !important;
+  align-items: center;
+  gap: 10px;
+  border: 0 !important;
+  border-radius: var(--radius-md) !important;
+  padding: 0 10px !important;
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.2;
+  text-decoration: none;
+  box-shadow: none !important;
+}
+
+.sidebar-nav a svg,
+.sidebar-nav button svg {
+  width: 20px !important;
+  min-width: 20px;
+  height: 18px !important;
+  stroke-width: 1.75;
+}
+
+.sidebar-nav a span,
+.sidebar-nav button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav button:hover {
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
+}
+
+.sidebar-nav a.active,
+.sidebar-nav button.active {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+}
+
+.sidebar-footer-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px;
+  gap: 8px;
+  width: 100%;
+}
+
+.sidebar-profile-wrap {
+  width: 100%;
+  margin-top: auto;
+}
+
+.sidebar-profile,
+.sidebar-theme-toggle {
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+}
+
+.sidebar-theme-toggle {
+  display: grid;
+  min-height: 48px;
+  place-items: center;
+  cursor: pointer;
+}
+
+.theme-icon-dark,
+.dark .theme-icon-light {
+  display: none;
+}
+
+.dark .theme-icon-dark {
+  display: block;
+}
+
+.sidebar-profile-menu,
+.looma-dropdown-menu,
+.post-menu,
+.email-auth-modal,
+.profile-discard-dialog {
+  border: 1px solid var(--border) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+button,
+.publish-button,
+.feed-work-proposal,
+.settings-password-trigger,
+.settings-password-actions button[type="submit"],
+.post-delete-confirm,
+.plan-pro-button,
+.plan-basic-button,
+.plan-free-button {
+  border-radius: var(--radius-md) !important;
+  box-shadow: none !important;
+}
+
+.publish-button,
+.feed-work-proposal,
+.settings-password-trigger,
+.settings-password-actions button[type="submit"],
+.post-delete-confirm {
+  border: 1px solid var(--accent) !important;
+  background: var(--accent) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.publish-button:disabled,
+.feed-work-proposal:disabled,
+.post-delete-confirm:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.post-delete-cancel,
+.settings-password-actions button,
+.workspace-state button,
+.workspace-filters button,
+.workspace-tabs button,
+.feed-tabs button,
+.plan-free-button,
+.plan-basic-button,
+.plan-pro-button:disabled {
+  border: 1px solid var(--border) !important;
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
+}
+
+input,
+textarea,
+select,
+.username-input,
+.composer,
+.aside-search,
+.workspace-search,
+.settings-field input,
+.profile-field input,
+.profile-field textarea,
+.workspace-form input,
+.workspace-form textarea {
+  border-color: var(--border) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.username-input:focus-within,
+.aside-search:focus-within,
+.workspace-search:focus-within {
+  border-color: var(--accent) !important;
+  box-shadow: none !important;
+}
+
+.username-input span {
+  background: transparent !important;
+  color: var(--text-muted) !important;
+}
+
+.feed-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 680px) 320px;
+  justify-content: center;
+  gap: 32px !important;
+  padding: 24px 32px 64px !important;
+}
+
+.feed-stage .home-shell {
+  display: grid !important;
+  grid-template-columns: minmax(0, 680px) 320px !important;
+  align-items: start;
+  justify-content: center;
+  gap: 32px !important;
+  width: auto !important;
+  min-height: 100dvh;
+  margin-left: 0 !important;
+  padding: 24px 32px 64px !important;
+}
+
+.home-main-scroll {
+  display: grid !important;
+  min-width: 0;
+  height: auto !important;
+  overflow: visible !important;
+  gap: 24px !important;
+  padding: 0 !important;
+}
+
+.home-main-scroll > .home-command-header {
+  padding-inline-start: 0 !important;
+}
+
+.home-context-rail {
+  position: sticky;
+  top: 24px;
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.home-feed-stream .home-feed-panel,
+.home-composer-panel,
+.home-next-steps,
+.home-feed-companion,
+.home-discovery-section,
+.home-trending-card,
+.home-projects-section,
+.aside-card,
+.workspace-card,
+.workspace-section,
+.workspace-chart,
+.settings-panel,
+.plan-card,
+.profile-edit-card,
+.workspace-state {
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+.dark .home-feed-stream .home-feed-panel,
+.dark .home-composer-panel,
+.dark .home-next-steps,
+.dark .home-feed-companion,
+.dark .home-discovery-section,
+.dark .home-trending-card,
+.dark .home-projects-section,
+.dark .aside-card,
+.dark .workspace-card,
+.dark .workspace-section,
+.dark .workspace-chart,
+.dark .settings-panel,
+.dark .plan-card,
+.dark .profile-edit-card,
+.dark .workspace-state {
+  box-shadow: none !important;
+}
+
+.feed-post {
+  border-color: var(--border) !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+}
+
+.feed-post .post-body > p,
+.public-profile-post p {
+  color: var(--text) !important;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.feed-tabs,
+.workspace-tabs,
+.workspace-filters {
+  border-bottom: 1px solid var(--border);
+  gap: 18px !important;
+}
+
+.feed-tabs button,
+.workspace-tabs button,
+.workspace-filters button,
+.settings-nav button {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  box-shadow: none !important;
+}
+
+.feed-tabs button.active,
+.workspace-tabs button.active,
+.workspace-filters button.active,
+.settings-nav button.active,
+.admin-filters button.active {
+  border-bottom: 2px solid var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+.home-context-icon,
+.home-opportunity-card-top svg,
+.home-trending-card header > svg {
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  box-shadow: none !important;
+}
+
+.plans-content {
+  max-width: 1120px;
+}
+
+.plans-back-link {
+  display: inline-flex;
+  margin-bottom: 16px;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.plans-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  align-items: stretch;
+}
+
+.plan-card {
+  display: flex;
+  min-height: 360px;
+  flex-direction: column;
+}
+
+.plan-card ul {
+  flex: 1;
+}
+
+.plan-card-current {
+  border-color: var(--accent) !important;
+}
+
+.plan-basic-button::before {
+  content: "Plano atual";
+}
+
+.plan-basic-button {
+  font-size: 0 !important;
+}
+
+.plan-basic-button::before {
+  font-size: 14px;
+}
+
+.workspace-metrics strong,
+.admin-kpi strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-shell {
+  display: grid;
+  min-height: 100dvh;
+  grid-template-columns: 232px minmax(0, 1fr);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.admin-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  border-right: 1px solid var(--border);
+  padding: 18px 14px;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  color: var(--text);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.admin-brand .looma-logo-mark {
+  width: 22px;
+  height: 22px;
+}
+
+.admin-sidebar nav {
+  display: grid;
+  gap: 2px;
+}
+
+.admin-sidebar nav a {
+  display: flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 9px;
+  border-radius: var(--radius-md);
+  padding: 0 9px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.admin-sidebar nav a:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.admin-sidebar nav a.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.admin-main {
+  min-width: 0;
+}
+
+.admin-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  background: var(--bg);
+}
+
+.admin-topbar > a {
+  color: var(--text-muted);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.admin-global-search,
+.admin-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0 10px;
+  background: var(--surface);
+}
+
+.admin-global-search {
+  width: min(360px, 100%);
+  margin-right: auto;
+}
+
+.admin-global-search input,
+.admin-search input {
+  min-height: 34px;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.admin-content {
+  display: grid;
+  gap: 20px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 32px 64px;
+}
+
+.admin-section-header,
+.admin-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-section-header h1,
+.admin-panel h2 {
+  margin: 0;
+  color: var(--text);
+}
+
+.admin-section-header p,
+.admin-panel-header p,
+.admin-table small,
+.admin-pagination-note {
+  color: var(--text-muted);
+}
+
+.admin-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-kpi,
+.admin-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.admin-kpi {
+  padding: 14px;
+}
+
+.admin-kpi span {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.admin-kpi strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--text);
+  font-size: 26px;
+  font-weight: 650;
+}
+
+.admin-panel {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.admin-panel-header button,
+.admin-table a {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 7px 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.admin-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-filters button {
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+
+.admin-table th {
+  position: sticky;
+  top: 56px;
+  z-index: 1;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-weight: 600;
+  text-align: left;
+}
+
+.admin-table th,
+.admin-table td {
+  max-width: 280px;
+  padding: 11px 10px;
+  vertical-align: top;
+}
+
+.admin-table tr:hover td {
+  background: var(--surface-2);
+}
+
+.admin-table strong,
+.admin-table small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-status-badge {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 8px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.intro-logo,
+.intro-brand-typed,
+.intro-underline,
+.intro-tagline {
+  transition-duration: 280ms !important;
+}
+
+@media (max-width: 1200px) {
+  .feed-layout {
+    grid-template-columns: minmax(0, 680px);
+  }
+
+  .feed-stage .home-shell {
+    grid-template-columns: minmax(0, 680px) !important;
+  }
+
+  .home-context-rail {
+    display: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .workspace-page,
+  .admin-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .looma-sidebar,
+  .admin-sidebar {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none;
+  }
+
+  .feed-stage .home-shell {
+    margin-left: 0 !important;
+  }
+
+  .feed-stage {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .workspace-content,
+  .feed-layout,
+  .admin-content {
+    padding: 16px 16px 64px !important;
+  }
+
+  .plans-grid,
+  .admin-kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .admin-topbar,
+  .admin-panel-header,
+  .admin-section-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Final layout guard: keep the feed content visible beside the fixed sidebar.
+   Older visual passes styled the sidebar both as a fixed panel and as a grid
+   column; this explicit layer prevents the Home from being pushed offscreen. */
+@media (min-width: 1024px) {
+  .feed-stage {
+    display: block !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    padding-left: var(--looma-sidebar-width) !important;
+  }
+
+  .feed-stage .looma-sidebar {
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    z-index: 35 !important;
+    width: var(--looma-sidebar-width) !important;
+    min-width: var(--looma-sidebar-width) !important;
+    max-width: var(--looma-sidebar-width) !important;
+  }
+
+  .feed-stage .home-shell {
+    display: grid !important;
+    grid-template-columns: minmax(0, 680px) 320px !important;
+    align-items: start !important;
+    justify-content: center !important;
+    gap: 32px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 24px 32px 64px !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (max-width: 1200px) and (min-width: 1024px) {
+  .feed-stage .home-shell {
+    grid-template-columns: minmax(0, 680px) !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .feed-stage {
+    display: block !important;
+    overflow-x: hidden !important;
+    padding-left: 0 !important;
+  }
+
+  .feed-stage .looma-sidebar {
+    display: none !important;
+  }
+
+  .feed-stage .home-shell {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 16px !important;
+  }
+}
+
+/* Home clipping/fill correction: one page scroll, no hidden columns, no large
+   empty gutter between the sidebar and the workspace. */
+@media (min-width: 1024px) {
+  .feed-stage {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  .feed-stage .home-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 20rem) !important;
+    justify-content: stretch !important;
+    align-items: start !important;
+    gap: clamp(1.5rem, 2vw, 2rem) !important;
+    min-height: 100dvh !important;
+    height: auto !important;
+    padding: clamp(1.5rem, 3vw, 3rem) clamp(1.5rem, 3vw, 3rem) 5rem !important;
+  }
+
+  .home-main-scroll,
+  .home-context-rail {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  .home-main-scroll > .home-command-header {
+    margin-bottom: 0 !important;
+    padding-inline-start: 0 !important;
+  }
+
+  .home-feed-stream .home-feed-panel,
+  .home-feed-stream .post-list,
+  .home-feed-stream .feed-column {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .home-context-rail {
+    position: static !important;
+    max-height: none !important;
+  }
+
+  .home-context-rail > * {
+    min-width: 0 !important;
+  }
+
+  .sidebar-footer-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .sidebar-theme-toggle {
+    min-height: 40px !important;
+  }
+
+  .sidebar-profile {
+    min-width: 0 !important;
+  }
+
+  .looma-sidebar .sidebar-nav a,
+  .looma-sidebar .sidebar-nav button {
+    height: auto !important;
+  }
+
+  .looma-sidebar .sidebar-nav a span,
+  .looma-sidebar .sidebar-nav button span {
+    display: block !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+  }
+
+  .sidebar-profile strong,
+  .sidebar-profile small {
+    white-space: normal !important;
+  }
+}
+
+@media (max-width: 1280px) and (min-width: 1024px) {
+  .feed-stage .home-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .home-context-rail {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .home-context-rail > *:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .home-context-rail {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Feed polish: the composer is the main action, centered under the greeting. */
+.home-main-scroll > .home-command-header {
+  order: 0 !important;
+}
+
+.home-main-scroll > .feed-search-expand-slot {
+  order: 1 !important;
+}
+
+.home-main-scroll > .home-feed-stream {
+  order: 2 !important;
+}
+
+.home-main-scroll > .home-composer-panel {
+  order: 3 !important;
+  width: min(100%, 64rem) !important;
+  justify-self: center !important;
+  padding: 1rem 1.25rem !important;
+}
+
+.home-main-scroll > .home-composer-panel .home-panel-heading {
+  justify-content: center !important;
+  margin-bottom: 0.75rem !important;
+  text-align: center !important;
+}
+
+.home-main-scroll > .home-composer-panel .home-section-kicker {
+  display: block !important;
+  margin-bottom: 0.15rem !important;
+}
+
+.home-main-scroll > .home-composer-panel .composer {
+  display: grid !important;
+  grid-template-columns: 2.75rem minmax(0, 1fr) !important;
+  gap: 0.85rem !important;
+  border: 1px solid var(--border) !important;
+  background: var(--bg) !important;
+}
+
+.home-main-scroll > .home-composer-panel .composer textarea {
+  min-height: 4.25rem !important;
+  text-align: center !important;
+}
+
+.home-main-scroll > .home-composer-panel .composer textarea::placeholder {
+  text-align: center !important;
+}
+
+.home-main-scroll > .home-composer-panel .composer-actions {
+  justify-content: center !important;
+  margin-top: 0.45rem !important;
+  padding-top: 0.45rem !important;
+}
+
+.home-feed-stream .home-feed-panel {
+  min-height: 0 !important;
+}
+
+.home-feed-empty {
+  min-height: 8rem !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 2rem !important;
+  text-align: center !important;
+}
+
+.home-feed-empty h2 {
+  font-size: clamp(1.35rem, 2vw, 1.8rem) !important;
+}
+
+.home-feed-empty > div > p:not(.home-feed-empty-eyebrow) {
+  margin-inline: auto !important;
+}
+
+@media (max-width: 640px) {
+  .home-main-scroll > .home-composer-panel .composer {
+    grid-template-columns: 1fr !important;
+  }
+
+  .home-main-scroll > .home-composer-panel .composer > .avatar {
+    justify-self: center !important;
+  }
+}
+
+/* Dark monochrome pass: remove the purple/neon contrast while keeping the UI
+   genuinely dark. Highlights become white/soft gray instead of violet. */
+.dark {
+  --accent: #f5f5f7;
+  --accent-hover: #ffffff;
+  --accent-soft: rgba(255, 255, 255, 0.1);
+  --looma-primary: #f5f5f7;
+  --looma-primary-hover: #ffffff;
+  --looma-primary-soft: rgba(255, 255, 255, 0.1);
+  --primary: #f5f5f7;
+  --ring: rgba(255, 255, 255, 0.55);
+}
+
+.dark body,
+.dark .feed-stage,
+.dark .looma-sidebar,
+.dark .home-shell {
+  background: #050505 !important;
+}
+
+.dark .workspace-card,
+.dark .workspace-section,
+.dark .workspace-chart,
+.dark .settings-panel,
+.dark .plan-card,
+.dark .profile-edit-card,
+.dark .home-feed-stream .home-feed-panel,
+.dark .home-composer-panel,
+.dark .home-discovery-section,
+.dark .home-next-steps,
+.dark .home-trending-card,
+.dark .home-feed-companion,
+.dark .home-opportunity-card,
+.dark .sidebar-profile,
+.dark .sidebar-theme-toggle,
+.dark .auth-control-sidebar .sidebar-email-login {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: #0b0b0c !important;
+}
+
+.dark .home-main-scroll > .home-composer-panel,
+.dark .composer,
+.dark .composer textarea,
+.dark .composer-actions {
+  background: #080809 !important;
+}
+
+.dark .home-section-kicker,
+.dark .home-panel-heading .home-section-kicker,
+.dark .home-section-header .home-section-kicker,
+.dark .home-context-heading .home-section-kicker,
+.dark .home-trending-card .home-section-kicker,
+.dark .home-feed-companion .home-section-kicker,
+.dark .plans-eyebrow,
+.dark .plan-label {
+  color: #f5f5f7 !important;
+}
+
+.dark .looma-sidebar .sidebar-nav a.active,
+.dark .looma-sidebar .sidebar-nav a.active:hover,
+.dark .looma-sidebar .sidebar-nav button.active,
+.dark .looma-sidebar .sidebar-nav button.active:hover,
+.dark .feed-tabs button.active,
+.dark .home-feed-heading .feed-tabs button.active,
+.dark .composer-kind-selector button.active,
+.dark .publish-button,
+.dark .workspace-composer button,
+.dark .settings-password-actions button[type="submit"],
+.dark .home-empty-primary,
+.dark .home-empty-link:hover {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  background: #f5f5f7 !important;
+  color: #050505 !important;
+  box-shadow: none !important;
+}
+
+.dark .looma-sidebar .sidebar-nav a.active svg,
+.dark .looma-sidebar .sidebar-nav button.active svg,
+.dark .publish-button svg,
+.dark .home-feed-heading .feed-tabs button.active svg {
+  color: #050505 !important;
+  stroke: currentColor !important;
+}
+
+.dark .feed-tabs button.active::after,
+.dark .home-feed-heading .feed-tabs button.active::after {
+  background: #f5f5f7 !important;
+}
+
+.dark a,
+.dark .home-section-header > a,
+.dark .home-opportunity-card a,
+.dark .home-trending-list a,
+.dark .home-companion-link,
+.dark .home-next-step-actions a {
+  color: #f5f5f7 !important;
+}
+
+.dark .home-trending-list a,
+.dark .home-opportunity-card-top span,
+.dark .feed-work-badge {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #f5f5f7 !important;
+}
+
+.dark .home-opportunity-card:hover,
+.dark .home-trending-list a:hover,
+.dark .looma-sidebar .sidebar-nav a:not(.active):hover,
+.dark .looma-sidebar .sidebar-nav button:not(.active):hover,
+.dark .composer-kind-selector button:hover:not(:disabled),
+.dark .composer-kind-selector button:focus-visible {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.dark *:focus-visible {
+  outline-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Absolute dark cleanup: no neon glows, no colored gradients, no colored halos. */
+.dark *,
+.dark *::before,
+.dark *::after {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.dark .feed-stage,
+.dark .home-shell,
+.dark .workspace-page,
+.dark .workspace-content,
+.dark .protected-page,
+.dark .plans-page,
+.dark .admin-shell,
+.dark .home-composer-panel,
+.dark .home-feed-stream .home-feed-panel,
+.dark .home-discovery-section,
+.dark .home-next-steps,
+.dark .home-trending-card,
+.dark .home-feed-companion,
+.dark .home-opportunity-card,
+.dark .composer,
+.dark .composer textarea,
+.dark .composer-actions,
+.dark .looma-sidebar,
+.dark .sidebar-profile,
+.dark .sidebar-theme-toggle,
+.dark .sidebar-profile-menu,
+.dark .looma-dropdown-menu,
+.dark .post-menu,
+.dark .aside-search,
+.dark .workspace-card,
+.dark .settings-panel,
+.dark .profile-edit-card,
+.dark .plan-card,
+.dark .admin-card,
+.dark .admin-panel {
+  background-image: none !important;
+}
+
+.dark .feed-stage,
+.dark .workspace-page,
+.dark .protected-page,
+.dark .plans-page,
+.dark .admin-shell {
+  background-color: #050505 !important;
+}
+
+.dark .home-composer-panel,
+.dark .home-feed-stream .home-feed-panel,
+.dark .home-discovery-section,
+.dark .home-next-steps,
+.dark .home-trending-card,
+.dark .home-feed-companion,
+.dark .home-opportunity-card,
+.dark .composer,
+.dark .looma-sidebar,
+.dark .workspace-card,
+.dark .settings-panel,
+.dark .profile-edit-card,
+.dark .plan-card,
+.dark .admin-card,
+.dark .admin-panel {
+  background-color: #0a0a0a !important;
+}
+
+.dark .composer textarea,
+.dark .composer-actions,
+.dark .aside-search,
+.dark .sidebar-profile,
+.dark .sidebar-theme-toggle,
+.dark .home-trending-list a,
+.dark .home-opportunity-card-top span,
+.dark .feed-work-badge,
+.dark .composer-kind-selector {
+  background-color: #070707 !important;
+}
+
+.dark .home-composer-panel,
+.dark .home-feed-stream .home-feed-panel,
+.dark .home-discovery-section,
+.dark .home-next-steps,
+.dark .home-trending-card,
+.dark .home-feed-companion,
+.dark .home-opportunity-card,
+.dark .composer,
+.dark .aside-search,
+.dark .sidebar-profile,
+.dark .sidebar-theme-toggle,
+.dark .home-trending-list a,
+.dark .home-opportunity-card-top span,
+.dark .feed-work-badge,
+.dark .composer-kind-selector {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.dark .admin-verified-badge {
+  filter: none !important;
+}
+
+.dark .home-composer-panel::before,
+.dark .home-composer-panel::after,
+.dark .home-next-steps::before,
+.dark .home-next-steps::after,
+.dark .home-feed-companion::before,
+.dark .home-feed-companion::after,
+.dark .home-discovery-section::before,
+.dark .home-discovery-section::after,
+.dark .home-feed-stream .home-feed-panel::before,
+.dark .home-feed-stream .home-feed-panel::after {
+  display: none !important;
+  background: none !important;
+  background-image: none !important;
+  content: none !important;
+}
+
+.dark .home-main-scroll > .home-composer-panel,
+.dark .home-composer-panel,
+.dark .home-composer-panel > *,
+.dark .home-composer-panel .composer,
+.dark .home-composer-panel .composer-body,
+.dark .home-composer-panel textarea,
+.dark .home-composer-panel .composer-actions {
+  background-image: none !important;
+}
+
+.dark .home-main-scroll > .home-composer-panel,
+.dark .home-composer-panel {
+  background: #0a0a0a !important;
+}
+
+.dark .home-composer-panel .composer {
+  background: #050505 !important;
+}
+
+.dark .home-composer-panel textarea {
+  background: #0b0b0b !important;
+}
+
+/* Global no-gradient rule: keep surfaces as solid colors only. */
+*,
+*::before,
+*::after {
+  background-image: none !important;
+  border-image: none !important;
+}
