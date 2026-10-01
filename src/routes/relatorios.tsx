@@ -34,6 +34,7 @@ const CARD_DEFINITIONS: Array<[string, keyof ActivityMetricResults]> = [
   ["Propostas enviadas", "proposalsSent"],
   ["Oportunidades vistas", "opportunityViews"],
   ["Publicações", "posts"],
+  ["Visitas no site", "trafficEvents"],
 ];
 
 export const Route = createFileRoute("/relatorios")({ component: ReportsPage });
@@ -53,6 +54,7 @@ function emptyMetricResults(): ActivityMetricResults {
     posts: { value: 0, error: null },
     opportunitySaves: { value: 0, error: null },
     opportunityViews: { value: 0, error: null },
+    trafficEvents: { value: 0, error: null },
   };
 }
 
@@ -135,6 +137,7 @@ function ReportsPage() {
         ["Propostas recebidas", metricResults.proposalsReceived.value],
         ["Publicações", metricResults.posts.value],
         ["Oportunidades salvas", metricResults.opportunitySaves.value],
+        ["Visitas no site", metricResults.trafficEvents.value],
       ] as Array<[string, number]>)
     : [];
   const hasData = tableMetrics.some(([, value]) => value > 0);
@@ -225,7 +228,7 @@ function ReportsPage() {
                   <XAxis dataKey="label" />
                   <YAxis allowDecimals={false} />
                   <Tooltip />
-                  <Bar dataKey="posts" fill="#635bff" radius={[8, 8, 0, 0]} />
+                  <Bar dataKey="posts" fill="var(--accent)" radius={[8, 8, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}

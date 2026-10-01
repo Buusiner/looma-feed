@@ -27,6 +27,15 @@ create table if not exists public.opportunity_views (
   primary key (opportunity_id, user_id)
 );
 
+create table if not exists public.user_traffic_events (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  path text not null check (char_length(trim(path)) > 0),
+  referrer text,
+  user_agent text,
+  created_at timestamptz not null default now()
+);
+
 create table if not exists public.posts (
   id uuid primary key default gen_random_uuid(),
   author_id uuid not null references public.profiles(id) on delete cascade,
@@ -79,6 +88,7 @@ create table if not exists public.user_settings (
 alter table public.opportunities enable row level security;
 alter table public.opportunity_saves enable row level security;
 alter table public.opportunity_views enable row level security;
+alter table public.user_traffic_events enable row level security;
 alter table public.posts enable row level security;
 alter table public.connections enable row level security;
 alter table public.proposals enable row level security;
@@ -94,6 +104,11 @@ drop policy if exists "Users manage their opportunity saves" on public.opportuni
 create policy "Users manage their opportunity saves" on public.opportunity_saves for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 drop policy if exists "Users manage their opportunity views" on public.opportunity_views;
 create policy "Users manage their opportunity views" on public.opportunity_views for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+drop policy if exists "Users insert own traffic events" on public.user_traffic_events;
+create policy "Users insert own traffic events" on public.user_traffic_events for insert with check (auth.uid() = user_id);
+drop policy if exists "Users read own traffic events" on public.user_traffic_events;
+create policy "Users read own traffic events" on public.user_traffic_events for select using (auth.uid() = user_id);
 
 drop policy if exists "Published posts are readable" on public.posts;
 create policy "Published posts are readable" on public.posts for select using (status = 'published' or auth.uid() = author_id);
@@ -126,5 +141,6 @@ create policy "Users manage own settings" on public.user_settings for all using 
 
 create index if not exists opportunities_created_at_idx on public.opportunities(created_at desc);
 create index if not exists posts_author_status_created_idx on public.posts(author_id, status, created_at desc);
+create index if not exists user_traffic_events_user_created_idx on public.user_traffic_events(user_id, created_at desc);
 create index if not exists connections_participants_idx on public.connections(requester_id, addressee_id, status);
 create index if not exists proposals_participants_idx on public.proposals(sender_id, recipient_id, status);

@@ -1,23 +1,29 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  type KeyboardEvent as ReactKeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ArrowRight,
   BadgeCheck,
   BriefcaseBusiness,
   Compass,
   FileText,
-  LayoutGrid,
   MoreHorizontal,
   Pencil,
   Search,
   Send,
   Trash2,
-  UserRound,
   UsersRound,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { LoomaSidebar } from "./Sidebar";
 import { AdminVerifiedBadge } from "./AdminVerifiedBadge";
 import { ProfileAvatar } from "./ProfileAvatar";
+import { ComposerTypeToggle } from "./ComposerTypeToggle";
 import { getProfileName, getProfileUsername, type Profile, useCurrentProfile } from "@/lib/profile";
 import { useAdminAccess } from "@/lib/admin";
 import { getConnectionRows, getPeerIds, type ConnectionRow } from "@/lib/activity-metrics";
@@ -56,8 +62,6 @@ type FeedListItem = FeedPost | PendingFeedPost;
 
 type FeedTab = "for-you" | "following";
 type IntroStage = "logo" | "word" | "line" | "tagline";
-type SearchPhase = "compact" | "opening-space" | "revealing" | "expanded" | "returning";
-type SearchPosition = { left: number; top: number; width: number };
 type PersonRecommendation = Pick<Profile, "avatar_url" | "full_name" | "username"> & {
   id: string;
   recommendation_reason: string;
@@ -92,6 +96,8 @@ type HomeSearchResult =
       title: string;
       detail: string;
       username: string;
+      avatarUrl: string | null;
+      isVerified: boolean;
     }
   | {
       id: string;
@@ -106,8 +112,6 @@ type HomeSearchResult =
       detail: string;
     };
 
-const SEARCH_SPACE_TRANSITION_MS = 560;
-const SEARCH_REVEAL_MS = 820;
 const INTRO_BRAND_TEXT = "ooma";
 const INTRO_TAGLINE = "we are building connections";
 const INTRO_LOGO_MS = 220;
@@ -117,8 +121,24 @@ const INTRO_LINE_MS = 320;
 const INTRO_TAGLINE_HOLD_MS = 300;
 const POST_EXIT_ANIMATION_MS = 220;
 const POST_PENDING_MINIMUM_MS = 1200;
-
 function formatPostDate(value: string) {
+  const date = new Date(value);
+  const diffMs = Date.now() - date.getTime();
+  const diffMinutes = Math.max(0, Math.floor(diffMs / 60000));
+
+  if (diffMinutes < 1) return "agora";
+  if (diffMinutes < 60) return `há ${diffMinutes} min`;
+
+  const diffHours = Math.floor(diffMinutes / 60);
+  if (diffHours < 24) return `há ${diffHours} h`;
+
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 7) return `há ${diffDays} d`;
+
+  return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short" }).format(date);
+}
+
+function formatPostDateTitle(value: string) {
   return new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium", timeStyle: "short" }).format(
     new Date(value),
   );
@@ -134,6 +154,263 @@ function searchKey(value: string) {
 
 function isPendingFeedPost(post: FeedListItem): post is PendingFeedPost {
   return "pending" in post;
+}
+
+function getSearchResultKey(result: HomeSearchResult) {
+  return `${result.type}-${result.id}`;
+}
+
+function SearchBox({
+  query,
+  results,
+  isLoading,
+  onQueryChange,
+  onPostSelect,
+}: {
+  query: string;
+  results: HomeSearchResult[];
+  isLoading: boolean;
+  onQueryChange: (value: string) => void;
+  onPostSelect: (postId: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const panelId = "looma-search-results";
+  const normalizedQuery = query.trim();
+  const peopleResults = results.filter((result) => result.type === "profile").slice(0, 4);
+  const postResults = results.filter((result) => result.type === "post").slice(0, 4);
+  const opportunityResults = results.filter((result) => result.type === "opportunity").slice(0, 4);
+  const visibleResults = [...peopleResults, ...postResults, ...opportunityResults];
+  const activeResult = visibleResults[activeIndex] ?? null;
+
+  const closePanel = useCallback(() => {
+    setIsOpen(false);
+    setActiveIndex(0);
+  }, []);
+
+  const closeAndRestoreFocus = useCallback(() => {
+    closePanel();
+    window.requestAnimationFrame(() => inputRef.current?.focus());
+  }, [closePanel]);
+
+  useEffect(() => {
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!wrapRef.current?.contains(event.target as Node)) closePanel();
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [closePanel]);
+
+  useEffect(() => {
+    const handleSlashShortcut = (event: KeyboardEvent) => {
+      if (event.key !== "/" || event.defaultPrevented) return;
+      const activeElement = document.activeElement;
+      if (
+        activeElement instanceof HTMLInputElement ||
+        activeElement instanceof HTMLTextAreaElement ||
+        activeElement instanceof HTMLSelectElement ||
+        activeElement?.getAttribute("contenteditable") === "true"
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      inputRef.current?.focus();
+      setIsOpen(true);
+    };
+
+    window.addEventListener("keydown", handleSlashShortcut);
+    return () => window.removeEventListener("keydown", handleSlashShortcut);
+  }, []);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [normalizedQuery, results]);
+
+  function selectResult(result: HomeSearchResult) {
+    closePanel();
+    if (result.type === "post") {
+      onPostSelect(result.id);
+      window.requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }
+
+  function handleKeyDown(event: ReactKeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeAndRestoreFocus();
+      return;
+    }
+
+    if (!isOpen && ["ArrowDown", "ArrowUp", "Enter"].includes(event.key)) {
+      setIsOpen(true);
+      return;
+    }
+
+    if (!visibleResults.length) return;
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActiveIndex((current) => (current + 1) % visibleResults.length);
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActiveIndex((current) => (current - 1 + visibleResults.length) % visibleResults.length);
+      return;
+    }
+
+    if (event.key === "Enter") {
+      event.preventDefault();
+      const result = visibleResults[activeIndex];
+      if (result) selectResult(result);
+    }
+  }
+
+  const renderResult = (result: HomeSearchResult, index: number) => {
+    const optionId = `looma-search-option-${getSearchResultKey(result)}`;
+    const isActive = activeIndex === index;
+    const optionContent = (
+      <>
+        <span className="search-result-icon" aria-hidden="true">
+          {result.type === "profile" ? (
+            <ProfileAvatar
+              className="avatar"
+              fullName={result.title}
+              avatarUrl={result.avatarUrl}
+            />
+          ) : result.type === "opportunity" ? (
+            <BriefcaseBusiness size={16} />
+          ) : (
+            <FileText size={16} />
+          )}
+        </span>
+        <span className="search-result-copy">
+          <strong>
+            {result.title}
+            {result.type === "profile" && result.isVerified ? <AdminVerifiedBadge /> : null}
+          </strong>
+          <small>{result.detail}</small>
+        </span>
+      </>
+    );
+
+    if (result.type === "profile") {
+      return (
+        <Link
+          id={optionId}
+          key={getSearchResultKey(result)}
+          role="option"
+          aria-selected={isActive}
+          className={isActive ? "is-active" : ""}
+          to="/perfil/$username"
+          params={{ username: result.username }}
+          onMouseEnter={() => setActiveIndex(index)}
+          onClick={() => closePanel()}
+        >
+          {optionContent}
+        </Link>
+      );
+    }
+
+    if (result.type === "opportunity") {
+      return (
+        <Link
+          id={optionId}
+          key={getSearchResultKey(result)}
+          role="option"
+          aria-selected={isActive}
+          className={isActive ? "is-active" : ""}
+          to="/oportunidades"
+          onMouseEnter={() => setActiveIndex(index)}
+          onClick={() => closePanel()}
+        >
+          {optionContent}
+        </Link>
+      );
+    }
+
+    return (
+      <button
+        id={optionId}
+        key={getSearchResultKey(result)}
+        type="button"
+        role="option"
+        aria-selected={isActive}
+        className={isActive ? "is-active" : ""}
+        onMouseEnter={() => setActiveIndex(index)}
+        onClick={() => selectResult(result)}
+      >
+        {optionContent}
+      </button>
+    );
+  };
+
+  const renderGroup = (label: string, groupResults: HomeSearchResult[], offset: number) =>
+    groupResults.length ? (
+      <section className="search-result-group" key={label}>
+        <h3>{label}</h3>
+        <div>{groupResults.map((result, index) => renderResult(result, offset + index))}</div>
+      </section>
+    ) : null;
+
+  return (
+    <div ref={wrapRef} className="search-wrap">
+      <label className="looma-search">
+        <Search size={17} aria-hidden="true" />
+        <input
+          ref={inputRef}
+          role="combobox"
+          aria-label="Buscar na Looma"
+          aria-expanded={isOpen}
+          aria-controls={panelId}
+          aria-activedescendant={
+            isOpen && activeResult
+              ? `looma-search-option-${getSearchResultKey(activeResult)}`
+              : undefined
+          }
+          value={query}
+          onFocus={() => setIsOpen(true)}
+          onChange={(event) => {
+            onQueryChange(event.target.value);
+            setIsOpen(true);
+          }}
+          onKeyDown={handleKeyDown}
+          placeholder="Buscar na Looma"
+          autoComplete="off"
+        />
+      </label>
+      {isOpen ? (
+        <section id={panelId} className="looma-search-results" role="listbox">
+          {!normalizedQuery ? (
+            <p className="search-results-state">Busque por pessoas, publicações e oportunidades</p>
+          ) : isLoading ? (
+            <div className="search-results-skeleton" aria-label="Carregando resultados">
+              <i />
+              <i />
+              <i />
+            </div>
+          ) : visibleResults.length ? (
+            <>
+              {renderGroup("Pessoas", peopleResults, 0)}
+              {renderGroup("Publicações", postResults, peopleResults.length)}
+              {renderGroup(
+                "Oportunidades",
+                opportunityResults,
+                peopleResults.length + postResults.length,
+              )}
+            </>
+          ) : (
+            <p className="search-results-state">Nenhum resultado para “{normalizedQuery}”</p>
+          )}
+        </section>
+      ) : null}
+    </div>
+  );
 }
 
 export function LoomaLanding({
@@ -175,19 +452,16 @@ export function LoomaLanding({
   const [removingPostId, setRemovingPostId] = useState<string | null>(null);
   const [recentlyAddedPostId, setRecentlyAddedPostId] = useState<string | null>(null);
   const [postActionError, setPostActionError] = useState<string | null>(null);
+  const [expandedPostIds, setExpandedPostIds] = useState<Set<string>>(() => new Set());
   const [proposalPost, setProposalPost] = useState<FeedPost | null>(null);
   const [proposalMessage, setProposalMessage] = useState("");
   const [proposalError, setProposalError] = useState<string | null>(null);
   const [sendingProposal, setSendingProposal] = useState(false);
-  const [searchPhase, setSearchPhase] = useState<SearchPhase>("compact");
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchPosition, setSearchPosition] = useState<SearchPosition | null>(null);
-  const [searchInversion, setSearchInversion] = useState<SearchPosition | null>(null);
-  const feedStageRef = useRef<HTMLElement>(null);
-  const compactSearchAnchorRef = useRef<HTMLDivElement>(null);
-  const expandedSearchSlotRef = useRef<HTMLDivElement>(null);
-  const searchOverlayRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const [isSearchSettling, setIsSearchSettling] = useState(false);
+  const [profileSearchResults, setProfileSearchResults] = useState<Profile[]>([]);
+  const [profilesSearchLoading, setProfilesSearchLoading] = useState(false);
   const composerInputRef = useRef<HTMLTextAreaElement>(null);
   const splashWasActiveRef = useRef(showSplash);
   const postRemovalTimerRef = useRef<number | null>(null);
@@ -196,15 +470,82 @@ export function LoomaLanding({
   const displayName = getProfileName(profile, user);
   const username = getProfileUsername(profile, user);
   const firstName = user ? displayName.trim().split(/\s+/)[0] || "você" : "você";
-  const searchResults = useMemo(() => {
-    const query = searchKey(searchQuery);
-    if (query.length < 2) return [];
 
-    const matches = (value: string | null | undefined) => searchKey(value ?? "").includes(query);
+  useEffect(() => {
+    const query = searchQuery.trim();
+    setIsSearchSettling(query.length > 0);
+    const sequenceController = new AbortController();
+    const timer = window.setTimeout(() => {
+      if (sequenceController.signal.aborted) return;
+      setDebouncedSearchQuery(searchQuery);
+      setIsSearchSettling(false);
+    }, 250);
+
+    return () => {
+      sequenceController.abort();
+      window.clearTimeout(timer);
+    };
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const rawQuery = debouncedSearchQuery.trim();
+    const profileQuery = rawQuery.replace(/^@+/, "").trim();
+
+    if (profileQuery.length < 2) {
+      setProfileSearchResults([]);
+      setProfilesSearchLoading(false);
+      return;
+    }
+
+    let isCurrent = true;
+    setProfilesSearchLoading(true);
+
+    const loadProfiles = async () => {
+      try {
+        const supabase = getSupabaseBrowserClient();
+        const profileResult = await supabase
+          .from("profiles")
+          .select(
+            "id, username, full_name, avatar_url, bio, created_at, onboarding_completed_at, experience_level, is_admin",
+          )
+          .or(`username.ilike.%${profileQuery}%,full_name.ilike.%${profileQuery}%`)
+          .limit(6);
+
+        if (!isCurrent) return;
+        if (profileResult.error) throw profileResult.error;
+        setProfileSearchResults((profileResult.data ?? []) as Profile[]);
+      } catch (caught) {
+        if (!isCurrent) return;
+        setProfileSearchResults([]);
+      } finally {
+        if (isCurrent) setProfilesSearchLoading(false);
+      }
+    };
+
+    void loadProfiles();
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [debouncedSearchQuery]);
+
+  const searchResults = useMemo(() => {
+    const query = searchKey(debouncedSearchQuery);
+    const usernameQuery = searchKey(debouncedSearchQuery.replace(/^@+/, ""));
+    if (!query) return [];
+
+    const matches = (value: string | null | undefined) => {
+      const valueKey = searchKey(value ?? "");
+      return valueKey.includes(query) || (!!usernameQuery && valueKey.includes(usernameQuery));
+    };
     const results: HomeSearchResult[] = [];
     const seenProfileIds = new Set<string>();
 
-    for (const candidate of [...Object.values(postProfiles), ...suggestions]) {
+    for (const candidate of [
+      ...profileSearchResults,
+      ...Object.values(postProfiles),
+      ...suggestions,
+    ]) {
       if (!candidate.username || seenProfileIds.has(candidate.id)) continue;
       if (!matches(candidate.full_name) && !matches(candidate.username)) continue;
       seenProfileIds.add(candidate.id);
@@ -214,6 +555,8 @@ export function LoomaLanding({
         title: candidate.full_name?.trim() || `@${candidate.username}`,
         detail: `@${candidate.username.replace(/^@/, "")}`,
         username: candidate.username.replace(/^@/, ""),
+        avatarUrl: candidate.avatar_url,
+        isVerified: "is_admin" in candidate ? Boolean(candidate.is_admin) : false,
       });
     }
 
@@ -239,7 +582,7 @@ export function LoomaLanding({
     }
 
     return results.slice(0, 8);
-  }, [opportunities, postProfiles, posts, searchQuery, suggestions]);
+  }, [debouncedSearchQuery, opportunities, postProfiles, posts, profileSearchResults, suggestions]);
 
   useEffect(() => {
     if (showSplash && !splashWasActiveRef.current) {
@@ -461,72 +804,6 @@ export function LoomaLanding({
     },
     [],
   );
-
-  const toStagePosition = (rect: DOMRect): SearchPosition | null => {
-    const stage = feedStageRef.current;
-    const stageRect = stage?.getBoundingClientRect();
-    if (!stage || !stageRect) return null;
-    return {
-      left: rect.left - stageRect.left + stage.scrollLeft,
-      top: rect.top - stageRect.top + stage.scrollTop,
-      width: rect.width,
-    };
-  };
-
-  useEffect(() => {
-    if (searchPhase !== "compact") return;
-    const syncCompactPosition = () => {
-      const anchor = compactSearchAnchorRef.current?.getBoundingClientRect();
-      if (!anchor) return;
-      const nextPosition = toStagePosition(anchor);
-      if (nextPosition) setSearchPosition(nextPosition);
-    };
-    const initialFrame = window.requestAnimationFrame(syncCompactPosition);
-    window.addEventListener("resize", syncCompactPosition);
-    return () => {
-      window.cancelAnimationFrame(initialFrame);
-      window.removeEventListener("resize", syncCompactPosition);
-    };
-  }, [searchPhase]);
-
-  useEffect(() => {
-    if (searchPhase !== "opening-space") return;
-    const revealTimer = window.setTimeout(() => {
-      const target = expandedSearchSlotRef.current?.getBoundingClientRect();
-      if (!target) return setSearchPhase("expanded");
-      const targetPosition = toStagePosition(target);
-      if (!targetPosition) return setSearchPhase("expanded");
-      setSearchPosition(targetPosition);
-      setSearchInversion(null);
-      setSearchPhase("revealing");
-    }, SEARCH_SPACE_TRANSITION_MS);
-    return () => window.clearTimeout(revealTimer);
-  }, [searchPhase]);
-
-  useEffect(() => {
-    if (searchPhase !== "revealing") return;
-    const revealTimer = window.setTimeout(() => setSearchPhase("expanded"), SEARCH_REVEAL_MS);
-    return () => window.clearTimeout(revealTimer);
-  }, [searchPhase]);
-
-  useEffect(() => {
-    if (searchPhase !== "returning" || !searchInversion) return;
-    const playFrame = window.requestAnimationFrame(() =>
-      window.requestAnimationFrame(() => setSearchInversion(null)),
-    );
-    return () => {
-      window.cancelAnimationFrame(playFrame);
-    };
-  }, [searchInversion, searchPhase]);
-
-  useEffect(() => {
-    if (searchPhase !== "returning") return;
-    const finishTimer = window.setTimeout(
-      () => setSearchPhase("compact"),
-      SEARCH_SPACE_TRANSITION_MS + 34,
-    );
-    return () => window.clearTimeout(finishTimer);
-  }, [searchPhase]);
 
   async function publish() {
     const content = message.trim();
@@ -765,36 +1042,10 @@ export function LoomaLanding({
     }
   }
 
-  const openSearch = () => {
-    if (searchPhase === "compact") setSearchPhase("opening-space");
-  };
-  const closeSearch = () => {
-    if (searchPhase === "compact" || searchPhase === "returning") return;
-    const source = searchOverlayRef.current?.getBoundingClientRect();
-    const target = compactSearchAnchorRef.current?.getBoundingClientRect();
-    const targetPosition = target ? toStagePosition(target) : null;
-
-    if (!source || !target || !targetPosition) {
-      setSearchInversion(null);
-      setSearchPhase("compact");
-      return;
-    }
-
-    setSearchPosition(targetPosition);
-    setSearchInversion({
-      left: source.left - target.left,
-      top: source.top - target.top,
-      width: source.width / target.width,
-    });
-    setSearchPhase("returning");
-  };
-  const isSearchSpaceOpen = searchPhase !== "compact" && searchPhase !== "returning";
   const focusPostFromSearch = (postId: string) => {
     const post = document.querySelector<HTMLElement>(`[data-feed-post-id="${postId}"]`);
     post?.scrollIntoView({ behavior: "smooth", block: "center" });
-    closeSearch();
   };
-  const hasSearchQuery = searchQuery.trim().length > 0;
   const composerPanel = (
     <section className="home-composer-panel">
       <header className="home-panel-heading">
@@ -810,37 +1061,17 @@ export function LoomaLanding({
           avatarUrl={profile?.avatar_url ?? null}
         />
         <div className="composer-body">
-          <div className="composer-kind-selector" role="radiogroup" aria-label="Tipo de publicação">
-            <button
-              type="button"
-              className={postKind === "post" ? "active" : ""}
-              role="radio"
-              aria-checked={postKind === "post"}
-              disabled={publishing}
-              onClick={() => setPostKind("post")}
-            >
-              Publicação
-            </button>
-            <button
-              type="button"
-              className={postKind === "work" ? "active" : ""}
-              role="radio"
-              aria-checked={postKind === "work"}
-              disabled={publishing}
-              onClick={() => setPostKind("work")}
-            >
-              Trabalho
-            </button>
-          </div>
           <textarea
             ref={composerInputRef}
+            rows={2}
             value={message}
             onChange={(event) => setMessage(event.target.value)}
-            placeholder="Escreva aqui sua ideia, oportunidade ou projeto..."
+            placeholder="O que está acontecendo?"
             maxLength={1000}
             disabled={publishing}
           />
           <div className="composer-actions">
+            <ComposerTypeToggle disabled={publishing} value={postKind} onChange={setPostKind} />
             <button
               type="button"
               className="publish-button"
@@ -881,7 +1112,7 @@ export function LoomaLanding({
         </div>
       </section>
 
-      <section ref={feedStageRef} className="feed-stage" aria-hidden={!feedReady}>
+      <section className="feed-stage" aria-hidden={!feedReady}>
         <LoomaSidebar />
         <div className="home-shell">
           <div className="home-main-scroll">
@@ -891,20 +1122,7 @@ export function LoomaLanding({
                 <h1>Bom dia, {firstName}</h1>
                 <p>O que você quer construir hoje?</p>
               </div>
-              <div
-                className={`aside-search-compact home-search-compact home-header-search ${searchPhase !== "compact" && searchPhase !== "returning" ? "is-collapsed" : ""}`}
-              >
-                <div
-                  ref={compactSearchAnchorRef}
-                  className="aside-search-anchor"
-                  aria-hidden="true"
-                />
-              </div>
             </header>
-            <div
-              ref={expandedSearchSlotRef}
-              className={`feed-search-expand-slot ${isSearchSpaceOpen ? "is-expanded" : ""}`}
-            />
 
             <section className="home-feed-stream" aria-label="Atualizações">
               <section className="feed-column home-feed-panel" aria-label="Feed da Looma">
@@ -930,6 +1148,7 @@ export function LoomaLanding({
                     </button>
                   </div>
                 </header>
+                {composerPanel}
                 <section className="post-list" aria-label="Publicações recentes">
                   {postActionError ? (
                     <p className="home-inline-error post-action-error" role="alert">
@@ -950,11 +1169,11 @@ export function LoomaLanding({
                     <section className="home-feed-empty">
                       <div>
                         <p className="home-feed-empty-eyebrow">
-                          {feedTab === "following" ? "Sua rede" : "Seu feed"}
+                          {feedTab === "following" ? "" : "Seu feed"}
                         </p>
                         <h2>
                           {feedTab === "following"
-                            ? "Comece pelas suas próximas conexões"
+                            ? "Nenhuma publicação ainda"
                             : "Nenhuma publicação ainda"}
                         </h2>
                         <p>
@@ -962,6 +1181,9 @@ export function LoomaLanding({
                             ? "Conecte-se com pessoas da sua área para acompanhar projetos, ideias e oportunidades por aqui."
                             : "Escreva uma nova publicação acima para iniciar o movimento."}
                         </p>
+                        <Link className="home-empty-secondary" to="/conexoes">
+                          Explorar conexões
+                        </Link>
                       </div>
                     </section>
                   ) : (
@@ -984,6 +1206,14 @@ export function LoomaLanding({
                         author?.is_admin === true ||
                         ((isAuthor || isPending) && (profile?.is_admin === true || isAdmin));
                       const postKey = isPending ? `pending-${post.client_id}` : post.id;
+                      const isLongPost =
+                        post.content.length > 520 || post.content.split(/\r?\n/).length > 8;
+                      const isExpanded =
+                        !isPending && isLongPost ? expandedPostIds.has(post.id) : true;
+                      const visibleContent =
+                        isLongPost && !isExpanded
+                          ? `${post.content.slice(0, 520).trimEnd()}…`
+                          : post.content;
                       return (
                         <article
                           className={`feed-post ${isPending ? "is-pending" : ""} ${isEntering ? "is-entering" : ""} ${isRemoving ? "is-removing" : ""}`}
@@ -1025,7 +1255,12 @@ export function LoomaLanding({
                                 ) : (
                                   <>
                                     {authorUsername ? `${authorUsername} · ` : ""}
-                                    {formatPostDate(post.created_at)}
+                                    <time
+                                      dateTime={post.created_at}
+                                      title={formatPostDateTitle(post.created_at)}
+                                    >
+                                      {formatPostDate(post.created_at)}
+                                    </time>
                                   </>
                                 )}
                               </span>
@@ -1105,7 +1340,25 @@ export function LoomaLanding({
                                 </div>
                               </div>
                             ) : (
-                              <p>{post.content}</p>
+                              <>
+                                <p>{visibleContent}</p>
+                                {!isPending && isLongPost ? (
+                                  <button
+                                    type="button"
+                                    className="post-see-more"
+                                    onClick={() =>
+                                      setExpandedPostIds((current) => {
+                                        const next = new Set(current);
+                                        if (next.has(post.id)) next.delete(post.id);
+                                        else next.add(post.id);
+                                        return next;
+                                      })
+                                    }
+                                  >
+                                    {isExpanded ? "Ver menos" : "Ver mais"}
+                                  </button>
+                                ) : null}
+                              </>
                             )}
                             {!isPending && post.kind === "work" ? (
                               <div className="feed-work-actions">
@@ -1131,11 +1384,18 @@ export function LoomaLanding({
                 </section>
               </section>
             </section>
-
-            {composerPanel}
           </div>
 
           <aside className="home-context-rail" aria-label="Atalhos e descobertas">
+            <div className="home-search-area">
+              <SearchBox
+                query={searchQuery}
+                results={searchResults}
+                isLoading={isSearchSettling || profilesSearchLoading}
+                onQueryChange={setSearchQuery}
+                onPostSelect={focusPostFromSearch}
+              />
+            </div>
             <div className="home-discovery-board">
               <section
                 className="home-discovery-section home-opportunities-section"
@@ -1144,7 +1404,7 @@ export function LoomaLanding({
                 <header className="home-section-header">
                   <div>
                     <p className="home-section-kicker">Descubra possibilidades</p>
-                    <h2 id="home-opportunities-title">Oportunidades para você</h2>
+                    <h2 id="home-opportunities-title">Oportunidades</h2>
                     <p>Vagas, projetos e pedidos publicados pela comunidade.</p>
                   </div>
                   <Link to="/oportunidades">Ver todas</Link>
@@ -1163,7 +1423,11 @@ export function LoomaLanding({
                 ) : opportunities.length ? (
                   <div className="home-opportunity-grid">
                     {opportunities.map((opportunity) => (
-                      <article className="home-opportunity-card" key={opportunity.id}>
+                      <Link
+                        className="home-opportunity-card"
+                        key={opportunity.id}
+                        to="/oportunidades"
+                      >
                         <div className="home-opportunity-card-top">
                           <BriefcaseBusiness size={18} aria-hidden="true" />
                           {opportunity.category ? <span>{opportunity.category}</span> : null}
@@ -1178,8 +1442,7 @@ export function LoomaLanding({
                           {opportunity.type ? <span>{opportunity.type}</span> : null}
                           {opportunity.work_mode ? <span>{opportunity.work_mode}</span> : null}
                         </div>
-                        <Link to="/oportunidades">Ver oportunidade</Link>
-                      </article>
+                      </Link>
                     ))}
                   </div>
                 ) : (
@@ -1200,7 +1463,7 @@ export function LoomaLanding({
                     <h2 id="home-people-title">Pessoas para conhecer</h2>
                     <p>Profissionais que podem somar ao que você está construindo.</p>
                   </div>
-                  <Link to="/conexoes">Abrir conexões</Link>
+                  <Link to="/conexoes">Ver todas</Link>
                 </header>
                 {suggestionsLoading ? (
                   <div
@@ -1255,7 +1518,7 @@ export function LoomaLanding({
                 ) : (
                   <section className="home-discovery-empty">
                     <div>
-                      <h3>Amplie sua rede com intenção.</h3>
+                      <h3>Sem sugestões por enquanto</h3>
                       <p>
                         Conexões recomendadas aparecerão aqui quando a sua conta estiver pronta.
                       </p>
@@ -1263,30 +1526,6 @@ export function LoomaLanding({
                     <Link to="/conexoes">Explorar conexões</Link>
                   </section>
                 )}
-              </section>
-
-              <section
-                className="home-discovery-section home-projects-section"
-                aria-labelledby="home-projects-title"
-              >
-                <header className="home-section-header">
-                  <div>
-                    <p className="home-section-kicker">Em construção</p>
-                    <h2 id="home-projects-title">Projetos e portfólios para explorar</h2>
-                    <p>Um espaço para descobrir trabalhos que a comunidade decidir compartilhar.</p>
-                  </div>
-                  <Link to="/perfil">Meu portfólio</Link>
-                </header>
-                <section className="home-discovery-empty home-projects-empty">
-                  <LayoutGrid size={22} aria-hidden="true" />
-                  <div>
-                    <h3>Seu trabalho pode abrir a próxima conversa.</h3>
-                    <p>
-                      Projetos em destaque aparecerão aqui quando forem publicados pela comunidade.
-                    </p>
-                  </div>
-                  <Link to="/perfil">Completar portfólio</Link>
-                </section>
               </section>
             </div>
 
@@ -1357,90 +1596,6 @@ export function LoomaLanding({
             </section>
           </aside>
         </div>
-        {searchPosition ? (
-          <div
-            ref={searchOverlayRef}
-            className={`feed-search-overlay ${searchPhase === "compact" ? "is-compact" : ""} ${searchPhase === "opening-space" ? "is-leaving" : ""} ${searchPhase === "revealing" ? "is-revealing" : ""} ${searchPhase === "returning" ? "is-returning" : ""} ${searchInversion ? "is-inverted" : ""}`}
-            style={{
-              left: searchPosition.left,
-              top: searchPosition.top,
-              width: searchPosition.width,
-              transform: searchInversion
-                ? `translate(${searchInversion.left}px, ${searchInversion.top}px) scaleX(${searchInversion.width})`
-                : undefined,
-            }}
-          >
-            <label className="aside-search">
-              <Search size={17} aria-hidden="true" />
-              <input
-                ref={searchInputRef}
-                value={searchQuery}
-                onClick={openSearch}
-                onFocus={openSearch}
-                onBlur={() => {
-                  window.setTimeout(() => {
-                    if (!searchOverlayRef.current?.contains(document.activeElement)) closeSearch();
-                  }, 0);
-                }}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Escape") closeSearch();
-                }}
-                placeholder="Buscar na Looma"
-                aria-label="Buscar na Looma"
-              />
-            </label>
-            {hasSearchQuery ? (
-              <section className="home-search-results" aria-label="Resultados da busca">
-                {searchQuery.trim().length < 2 ? (
-                  <p>Digite pelo menos 2 caracteres para buscar.</p>
-                ) : searchResults.length ? (
-                  <ul>
-                    {searchResults.map((result) =>
-                      result.type === "profile" ? (
-                        <li key={`profile-${result.id}`}>
-                          <Link
-                            to="/perfil/$username"
-                            params={{ username: result.username }}
-                            onClick={closeSearch}
-                          >
-                            <UserRound size={16} aria-hidden="true" />
-                            <span>
-                              <strong>{result.title}</strong>
-                              <small>{result.detail}</small>
-                            </span>
-                          </Link>
-                        </li>
-                      ) : result.type === "opportunity" ? (
-                        <li key={`opportunity-${result.id}`}>
-                          <Link to="/oportunidades" onClick={closeSearch}>
-                            <BriefcaseBusiness size={16} aria-hidden="true" />
-                            <span>
-                              <strong>{result.title}</strong>
-                              <small>{result.detail}</small>
-                            </span>
-                          </Link>
-                        </li>
-                      ) : (
-                        <li key={`post-${result.id}`}>
-                          <button type="button" onClick={() => focusPostFromSearch(result.id)}>
-                            <FileText size={16} aria-hidden="true" />
-                            <span>
-                              <strong>{result.title}</strong>
-                              <small>{result.detail}</small>
-                            </span>
-                          </button>
-                        </li>
-                      ),
-                    )}
-                  </ul>
-                ) : (
-                  <p>Nenhum resultado foi encontrado no conteúdo carregado.</p>
-                )}
-              </section>
-            ) : null}
-          </div>
-        ) : null}
         <nav className="mobile-feed-nav" aria-label="Looma">
           <span className="looma-logo-mark mobile-logo" role="img" aria-label="Looma" />
         </nav>

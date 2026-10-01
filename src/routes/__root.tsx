@@ -8,9 +8,10 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { recordUserTrafficEvent } from "../lib/activity-metrics";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SplashProvider } from "../lib/splash-state";
 import { getSupabaseBrowserClient } from "../lib/supabase/browser";
@@ -166,6 +167,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const pathname = useLocation({ select: (location: { pathname: string }) => location.pathname });
+  const lastTrafficEventRef = useRef<string | null>(null);
   const [isSplashActive, setIsSplashActive] = useState(() => {
     if (typeof window === "undefined" || pathname !== "/") return false;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
@@ -228,6 +230,24 @@ function RootComponent() {
 
     return () => subscription.subscription.unsubscribe();
   }, [router, user?.id]);
+
+  useEffect(() => {
+    if (!user?.id || typeof window === "undefined") return;
+
+    const trafficEventKey = `${user.id}:${pathname}`;
+    if (lastTrafficEventRef.current === trafficEventKey) return;
+    lastTrafficEventRef.current = trafficEventKey;
+
+    void recordUserTrafficEvent(getSupabaseBrowserClient(), user.id, {
+      path: pathname,
+      referrer: document.referrer || null,
+      userAgent: navigator.userAgent || null,
+    }).then(({ error }) => {
+      if (error) {
+        console.error("Não foi possível registrar o tráfego real do usuário:", error.message);
+      }
+    });
+  }, [pathname, user?.id]);
 
   return (
     <QueryClientProvider client={queryClient}>

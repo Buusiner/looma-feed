@@ -73,7 +73,7 @@
   --looma-background: #f8f8fa;
   --looma-surface: #ffffff;
   --looma-sidebar: #ffffff;
-  --looma-primary: #635bff;
+  --looma-primary: var(--yellow);
   --looma-primary-hover: #5148df;
   --looma-primary-soft: #f0efff;
   --looma-institutional: #0b1020;
@@ -2288,7 +2288,7 @@ body::-webkit-scrollbar,
 .avatar.blue {
   background: linear-gradient(135deg, #b6d9ff, #3f7bc3 55%, #172e52);
 }
-.avatar.purple {
+.avatar.alt {
   background: linear-gradient(135deg, #e0c6ff, #8856be 55%, #351759);
 }
 .avatar.pink {
@@ -2717,7 +2717,7 @@ body::-webkit-scrollbar,
 
 .avatar,
 .avatar.blue,
-.avatar.purple,
+.avatar.alt,
 .avatar.pink,
 .avatar.green {
   background: var(--looma-muted);
@@ -6643,7 +6643,7 @@ select {
 }
 
 :where(button, a, input, textarea, select):focus-visible {
-  outline: 3px solid rgba(99, 91, 255, 0.24);
+  outline: 3px solid rgba(var(--yellow-rgb), 0.24);
   outline-offset: 2px;
 }
 
@@ -6785,7 +6785,7 @@ button,
 
 .sidebar-profile:hover,
 .sidebar-profile[aria-expanded="true"] {
-  border-color: rgba(99, 91, 255, 0.32);
+  border-color: rgba(var(--yellow-rgb), 0.32);
   background: #fbfaff;
   box-shadow: var(--looma-shadow-sm);
 }
@@ -6940,9 +6940,9 @@ button,
 }
 
 .composer:focus-within {
-  border-color: rgba(99, 91, 255, 0.4);
+  border-color: rgba(var(--yellow-rgb), 0.4);
   box-shadow:
-    0 0 0 3px rgba(99, 91, 255, 0.09),
+    0 0 0 3px rgba(var(--yellow-rgb), 0.09),
     var(--looma-shadow-sm);
 }
 
@@ -6987,7 +6987,7 @@ button,
 .workspace-state button:hover,
 .plan-pro-button:hover:not(:disabled) {
   background: var(--looma-primary-hover);
-  box-shadow: 0 5px 14px rgba(99, 91, 255, 0.2);
+  box-shadow: 0 5px 14px rgba(var(--yellow-rgb), 0.2);
   transform: translateY(-1px);
 }
 
@@ -7066,7 +7066,7 @@ button,
 .aside-search:focus-within,
 .workspace-search:focus-within {
   border-color: var(--looma-primary);
-  box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(var(--yellow-rgb), 0.12);
 }
 
 .aside-search input,
@@ -7140,7 +7140,7 @@ button,
 
 .person button {
   min-height: 2.15rem;
-  border: 1px solid rgba(99, 91, 255, 0.22);
+  border: 1px solid rgba(var(--yellow-rgb), 0.22);
   border-radius: 0.5rem;
   background: var(--looma-primary-soft);
   color: var(--looma-primary);
@@ -7251,7 +7251,7 @@ button,
 }
 
 .home-empty-link:hover {
-  border-color: rgba(99, 91, 255, 0.3);
+  border-color: rgba(var(--yellow-rgb), 0.3);
   background: var(--looma-primary-soft);
   color: var(--looma-primary);
 }
@@ -7356,7 +7356,7 @@ button,
 
 .workspace-filters button:hover,
 .workspace-tabs button:hover {
-  border-color: rgba(99, 91, 255, 0.3);
+  border-color: rgba(var(--yellow-rgb), 0.3);
   color: var(--looma-primary);
 }
 
@@ -7440,7 +7440,7 @@ button,
 .icon-action:hover,
 .workspace-inline-actions button:hover,
 .workspace-danger-action:hover {
-  border-color: rgba(99, 91, 255, 0.38);
+  border-color: rgba(var(--yellow-rgb), 0.38);
   background: var(--looma-primary-soft);
   color: var(--looma-primary);
 }
@@ -7474,7 +7474,7 @@ button,
 .profile-edit-card input:focus,
 .profile-edit-card textarea:focus {
   border-color: var(--looma-primary);
-  box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(var(--yellow-rgb), 0.12);
 }
 
 .workspace-metrics {
@@ -7571,7 +7571,7 @@ button,
 }
 
 .plan-card-pro {
-  border-color: rgba(99, 91, 255, 0.4);
+  border-color: rgba(var(--yellow-rgb), 0.4);
   background: linear-gradient(145deg, #ffffff, #f5f4ff);
 }
 
@@ -7753,7 +7753,7 @@ button,
   }
 }
 
-/* Account and onboarding flows use the same indigo product language. */
+/* Account and onboarding flows use the shared product language. */
 :root {
   --looma-sidebar-width: 15.25rem;
   --looma-font-base: 1rem;
@@ -7810,7 +7810,7 @@ button,
 .profile-field textarea:focus,
 .username-input:focus-within {
   border-color: var(--looma-primary);
-  box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(var(--yellow-rgb), 0.12);
 }
 
 .avatar-upload-button,
@@ -7824,7 +7824,7 @@ button,
 }
 
 .profile-form-actions > a:hover {
-  border-color: rgba(99, 91, 255, 0.32);
+  border-color: rgba(var(--yellow-rgb), 0.32);
   background: var(--looma-primary-soft);
   color: var(--looma-primary);
 }
@@ -7857,7 +7857,7 @@ button,
 .onboarding-step-preview,
 .onboarding-skill-chip.is-selected,
 .onboarding-experience-option.is-selected {
-  border-color: rgba(99, 91, 255, 0.3);
+  border-color: rgba(var(--yellow-rgb), 0.3);
   background: var(--looma-primary-soft);
   color: var(--looma-primary);
 }
@@ -7871,7 +7871,7 @@ button,
 .onboarding-skill-search:focus-within,
 .onboarding-custom-skill input:focus {
   border-color: var(--looma-primary);
-  box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(var(--yellow-rgb), 0.12);
 }
 
 .onboarding-primary-action,
@@ -7900,7 +7900,7 @@ button,
 }
 
 .onboarding-experience-option:hover {
-  border-color: rgba(99, 91, 255, 0.52);
+  border-color: rgba(var(--yellow-rgb), 0.52);
 }
 
 .onboarding-skip-action:hover:not(:disabled) {
@@ -7919,13 +7919,13 @@ button,
 }
 
 .email-auth-close:hover:not(:disabled) {
-  border-color: rgba(99, 91, 255, 0.32);
+  border-color: rgba(var(--yellow-rgb), 0.32);
   background: var(--looma-primary-soft);
   color: var(--looma-primary);
 }
 
 .email-auth-form input:focus {
-  box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(var(--yellow-rgb), 0.12);
 }
 
 .email-auth-submit:hover:not(:disabled) {
@@ -7980,7 +7980,7 @@ button,
   display: inline-flex;
   align-items: center;
   min-height: 2.2rem;
-  border: 1px solid rgba(99, 91, 255, 0.2);
+  border: 1px solid rgba(var(--yellow-rgb), 0.2);
   border-radius: 999px;
   padding: 0.25rem 0.72rem;
   background: var(--looma-primary-soft);
@@ -8018,7 +8018,7 @@ button,
   align-items: center;
   justify-content: center;
   min-height: 2.35rem;
-  border: 1px solid rgba(99, 91, 255, 0.26);
+  border: 1px solid rgba(var(--yellow-rgb), 0.26);
   border-radius: var(--looma-radius-sm);
   padding: 0.35rem 0.75rem;
   color: var(--looma-primary);
@@ -8230,7 +8230,7 @@ button,
 
 .home-next-step-actions a:hover,
 .home-companion-link:hover {
-  border-color: rgba(99, 91, 255, 0.34);
+  border-color: rgba(var(--yellow-rgb), 0.34);
   background: var(--looma-primary-soft);
   color: var(--looma-primary);
 }
@@ -8328,7 +8328,7 @@ button,
 
 .home-opportunity-card:hover,
 .home-person-card:hover {
-  border-color: rgba(99, 91, 255, 0.28);
+  border-color: rgba(var(--yellow-rgb), 0.28);
   background: #ffffff;
 }
 
@@ -8425,7 +8425,7 @@ button,
 .home-person-card button {
   grid-column: 1 / -1;
   min-height: 2.45rem;
-  border: 1px solid rgba(99, 91, 255, 0.24);
+  border: 1px solid rgba(var(--yellow-rgb), 0.24);
   border-radius: var(--looma-radius-sm);
   background: var(--looma-primary-soft);
   color: var(--looma-primary);
@@ -8461,7 +8461,7 @@ button,
   min-height: 2.5rem;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(99, 91, 255, 0.26);
+  border: 1px solid rgba(var(--yellow-rgb), 0.26);
   border-radius: var(--looma-radius-sm);
   padding: 0.4rem 0.7rem;
   color: var(--looma-primary);
@@ -8503,7 +8503,7 @@ button,
 }
 
 .home-interest-grid a:hover {
-  border-color: rgba(99, 91, 255, 0.28);
+  border-color: rgba(var(--yellow-rgb), 0.28);
   background: var(--looma-primary-soft);
   color: var(--looma-primary);
 }
@@ -8689,7 +8689,7 @@ body {
 
 .sidebar-nav-group + .sidebar-nav-group {
   margin-top: 0.82rem;
-  border-top-color: rgba(99, 91, 255, 0.42);
+  border-top-color: rgba(var(--yellow-rgb), 0.42);
   padding-top: 0.82rem;
 }
 
@@ -8712,7 +8712,7 @@ body {
 .looma-sidebar .sidebar-nav a.active:hover,
 .looma-sidebar .sidebar-nav button.active,
 .looma-sidebar .sidebar-nav button.active:hover {
-  border: 1px solid rgba(99, 91, 255, 0.1);
+  border: 1px solid rgba(var(--yellow-rgb), 0.1);
   background: linear-gradient(135deg, #f5f3ff, #eeecff);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
 }
@@ -8726,7 +8726,7 @@ body {
 
 .sidebar-profile:hover,
 .sidebar-profile[aria-expanded="true"] {
-  border-color: rgba(99, 91, 255, 0.26);
+  border-color: rgba(var(--yellow-rgb), 0.26);
   background: #faf9ff;
   box-shadow: 0 6px 18px rgba(11, 16, 32, 0.045);
 }
@@ -8807,9 +8807,9 @@ body {
 
 .composer:focus-within,
 .workspace-composer:focus-within {
-  border-color: rgba(99, 91, 255, 0.38);
+  border-color: rgba(var(--yellow-rgb), 0.38);
   box-shadow:
-    0 0 0 4px rgba(99, 91, 255, 0.08),
+    0 0 0 4px rgba(var(--yellow-rgb), 0.08),
     var(--looma-shadow-sm);
 }
 
@@ -8875,7 +8875,7 @@ body {
 .onboarding-custom-skill input:focus,
 .email-auth-form input:focus {
   border-color: var(--looma-primary);
-  box-shadow: 0 0 0 4px rgba(99, 91, 255, 0.1);
+  box-shadow: 0 0 0 4px rgba(var(--yellow-rgb), 0.1);
 }
 
 .publish-button,
@@ -8982,8 +8982,8 @@ body {
 .feed-stage,
 .workspace-page {
   background:
-    radial-gradient(circle at 75% -10%, rgba(99, 91, 255, 0.11), transparent 32rem),
-    radial-gradient(circle at 12% 20%, rgba(164, 157, 255, 0.075), transparent 28rem),
+    radial-gradient(circle at 75% -10%, rgba(var(--yellow-rgb), 0.11), transparent 32rem),
+    radial-gradient(circle at 12% 20%, rgba(var(--yellow-rgb), 0.075), transparent 28rem),
     var(--looma-background);
 }
 
@@ -8998,7 +8998,7 @@ body {
 
 .looma-sidebar .sidebar-nav a:not(.active):hover,
 .looma-sidebar .sidebar-nav button:not(.active):hover {
-  box-shadow: inset 0 0 0 1px rgba(99, 91, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(var(--yellow-rgb), 0.06);
 }
 
 .looma-sidebar .sidebar-nav a.active,
@@ -9007,7 +9007,7 @@ body {
 .looma-sidebar .sidebar-nav button.active:hover {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 5px 14px rgba(99, 91, 255, 0.08);
+    0 5px 14px rgba(var(--yellow-rgb), 0.08);
 }
 
 .home-topbar {
@@ -9042,7 +9042,7 @@ body {
   width: 17rem;
   height: 17rem;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(99, 91, 255, 0.115), transparent 68%);
+  background: radial-gradient(circle, rgba(var(--yellow-rgb), 0.115), transparent 68%);
   content: "";
   pointer-events: none;
 }
@@ -9100,7 +9100,7 @@ body {
 .home-interest-grid a:hover {
   border-color: #d5d0fb;
   background: #ffffff;
-  box-shadow: 0 9px 20px rgba(99, 91, 255, 0.08);
+  box-shadow: 0 9px 20px rgba(var(--yellow-rgb), 0.08);
 }
 
 .home-next-step-actions a,
@@ -9109,7 +9109,7 @@ body {
 }
 
 .home-next-step-actions a:first-child {
-  box-shadow: 0 8px 16px rgba(99, 91, 255, 0.19);
+  box-shadow: 0 8px 16px rgba(var(--yellow-rgb), 0.19);
 }
 
 .home-feed-heading .feed-tabs button,
@@ -9261,7 +9261,7 @@ body {
   border-radius: 0.8rem;
   background: var(--looma-primary);
   color: #ffffff;
-  box-shadow: 0 7px 14px rgba(99, 91, 255, 0.17);
+  box-shadow: 0 7px 14px rgba(var(--yellow-rgb), 0.17);
 }
 
 .home-next-steps > p:not(.home-section-kicker),
@@ -9293,7 +9293,7 @@ body {
 }
 
 .home-next-step-actions a:first-child {
-  background: #635bff;
+  background: var(--yellow);
 }
 
 .home-trending-card {
@@ -9624,7 +9624,7 @@ body {
 .home-feed-heading .feed-tabs button.active,
 .workspace-filters button.active,
 .workspace-tabs button.active {
-  border-color: rgba(99, 91, 255, 0.12);
+  border-color: rgba(var(--yellow-rgb), 0.12);
   background: #eeecff;
 }
 
@@ -10245,7 +10245,7 @@ body {
   --looma-background: #050507;
   --looma-surface: #0c0c10;
   --looma-sidebar: #050507;
-  --looma-primary: #635bff;
+  --looma-primary: var(--yellow);
   --looma-primary-hover: #827cff;
   --looma-primary-soft: #17142f;
   --looma-institutional: #f4f3fb;
@@ -10307,7 +10307,7 @@ body {
 .dark .looma-sidebar .sidebar-nav a.active:hover,
 .dark .looma-sidebar .sidebar-nav button.active,
 .dark .looma-sidebar .sidebar-nav button.active:hover {
-  border-color: rgba(99, 91, 255, 0.45);
+  border-color: rgba(var(--yellow-rgb), 0.45);
   background: var(--looma-primary-soft);
   box-shadow: none;
 }
@@ -10421,7 +10421,7 @@ body {
 .dark .workspace-filters button.active,
 .dark .workspace-tabs button.active,
 .dark .settings-nav button.active {
-  border-color: rgba(99, 91, 255, 0.52);
+  border-color: rgba(var(--yellow-rgb), 0.52);
   background: var(--looma-primary-soft);
   color: var(--looma-primary);
 }
@@ -10747,7 +10747,7 @@ body {
 }
 
 .public-profile-connection-notice {
-  border: 1px solid rgba(99, 91, 255, 0.22);
+  border: 1px solid rgba(var(--yellow-rgb), 0.22);
   background: var(--looma-primary-soft);
   color: var(--looma-primary);
 }
@@ -10853,9 +10853,9 @@ body {
   --text: #18181b;
   --text-muted: #52525b;
   --text-subtle: #71717a;
-  --accent: #635bff;
+  --accent: var(--yellow);
   --accent-hover: #5148df;
-  --accent-soft: rgba(99, 91, 255, 0.12);
+  --accent-soft: rgba(var(--yellow-rgb), 0.12);
   --danger: #dc2626;
   --success: #16a34a;
   --verified-badge-check: #ffffff;
@@ -10898,9 +10898,9 @@ body {
   --text: #ececee;
   --text-muted: #a1a1aa;
   --text-subtle: #8b8b94;
-  --accent: #635bff;
+  --accent: var(--yellow);
   --accent-hover: #827cff;
-  --accent-soft: rgba(99, 91, 255, 0.12);
+  --accent-soft: rgba(var(--yellow-rgb), 0.12);
   --danger: #f87171;
   --success: #4ade80;
   --verified-badge-check: #ffffff;
@@ -11954,10 +11954,14 @@ select:focus,
 
 .home-feed-empty h2 {
   font-size: clamp(1.35rem, 2vw, 1.8rem) !important;
+  margin-inline: auto !important;
+  text-align: center !important;
 }
 
 .home-feed-empty > div > p:not(.home-feed-empty-eyebrow) {
   margin-inline: auto !important;
+  max-width: 34rem !important;
+  text-align: center !important;
 }
 
 @media (max-width: 640px) {
@@ -11970,8 +11974,8 @@ select:focus,
   }
 }
 
-/* Dark monochrome pass: remove the purple/neon contrast while keeping the UI
-   genuinely dark. Highlights become white/soft gray instead of violet. */
+/* Dark monochrome pass: remove saturated contrast while keeping the UI
+   genuinely dark. Highlights become white/soft gray. */
 .dark {
   --accent: #f5f5f7;
   --accent-hover: #ffffff;
@@ -12240,4 +12244,3253 @@ select:focus,
 *::after {
   background-image: none !important;
   border-image: none !important;
+}
+
+/* Feed timeline: compact composer first, then posts in a continuous stream. */
+.home-main-scroll > .home-composer-panel {
+  order: 2 !important;
+}
+
+.home-main-scroll > .home-feed-stream {
+  order: 3 !important;
+}
+
+.home-main-scroll > .home-composer-panel,
+.home-main-scroll > .home-feed-stream {
+  width: min(100%, 52rem) !important;
+  margin-inline: auto !important;
+}
+
+.home-main-scroll > .home-composer-panel {
+  padding: 0 !important;
+  overflow: hidden !important;
+  border-radius: 0 !important;
+  border-width: 0 !important;
+  background: #050505 !important;
+}
+
+.home-main-scroll > .home-composer-panel .home-panel-heading {
+  display: none !important;
+}
+
+.home-main-scroll > .home-composer-panel .composer {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  gap: 0.75rem !important;
+  align-items: start !important;
+  padding: 1rem 1rem 0.75rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #050505 !important;
+}
+
+.home-main-scroll > .home-composer-panel .avatar {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  margin-top: 0.125rem !important;
+}
+
+.home-main-scroll > .home-composer-panel .composer-body {
+  min-width: 0 !important;
+}
+
+.home-main-scroll > .home-composer-panel textarea {
+  min-height: 3.25rem !important;
+  padding: 0.9rem 1rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 1rem !important;
+  background: #050505 !important;
+  color: #f5f5f7 !important;
+  font-size: 1.125rem !important;
+  font-weight: 500 !important;
+  line-height: 1.45 !important;
+  text-align: left !important;
+  resize: none !important;
+}
+
+.home-main-scroll > .home-composer-panel textarea::placeholder {
+  color: #6f737a !important;
+  opacity: 1 !important;
+}
+
+.home-main-scroll > .home-composer-panel .composer-kind-selector {
+  width: fit-content !important;
+  margin: 0 0 0.65rem !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: #050505 !important;
+}
+
+.home-main-scroll > .home-composer-panel .composer-kind-selector button {
+  min-height: 2rem !important;
+  padding: 0 0.85rem !important;
+  border-radius: 999px !important;
+}
+
+.home-main-scroll > .home-composer-panel .composer-actions {
+  justify-content: flex-end !important;
+  margin-top: 0.15rem !important;
+  padding-top: 0.35rem !important;
+  border-top: 0 !important;
+  background: #050505 !important;
+}
+
+.home-main-scroll > .home-composer-panel .publish-button {
+  min-height: 2.35rem !important;
+  padding: 0 1.1rem !important;
+  border-radius: 999px !important;
+  font-weight: 800 !important;
+}
+
+.home-main-scroll > .home-feed-stream .home-feed-panel {
+  overflow: hidden !important;
+  border-radius: 0 !important;
+  border-width: 1px 0 0 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: #050505 !important;
+}
+
+.home-main-scroll > .home-feed-stream .home-feed-heading {
+  padding: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.home-main-scroll > .home-feed-stream .feed-tabs {
+  width: 100% !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: #050505 !important;
+}
+
+.home-main-scroll > .home-feed-stream .feed-tabs button {
+  flex: 1 1 0 !important;
+  justify-content: center !important;
+  min-height: 3.25rem !important;
+  border-radius: 0 !important;
+  background: #050505 !important;
+  color: #a7abb3 !important;
+}
+
+.home-main-scroll > .home-feed-stream .feed-tabs button.active {
+  background: #050505 !important;
+  color: #ffffff !important;
+}
+
+.home-main-scroll > .home-feed-stream .post-list {
+  gap: 0 !important;
+}
+
+.home-main-scroll > .home-feed-stream .feed-post {
+  padding: 1rem !important;
+  border-width: 0 0 1px !important;
+  border-radius: 0 !important;
+  background: #050505 !important;
+}
+
+.home-main-scroll > .home-feed-stream .feed-post:hover {
+  background: #080808 !important;
+}
+
+.home-main-scroll > .home-feed-stream .post-body > p {
+  font-size: 0.96rem !important;
+  line-height: 1.45 !important;
+}
+
+@media (max-width: 760px) {
+  .home-main-scroll > .home-composer-panel,
+  .home-main-scroll > .home-feed-stream {
+    width: 100% !important;
+  }
+
+  .home-main-scroll > .home-composer-panel .composer,
+  .home-main-scroll > .home-feed-stream .feed-post {
+    padding-inline: 0.85rem !important;
+  }
+}
+
+/* Home timeline rebuild: one compact continuous feed column. */
+:root {
+  --home-timeline-border: rgba(0, 0, 0, 0.08);
+  --home-timeline-hover: rgba(0, 0, 0, 0.03);
+}
+
+.dark {
+  --home-timeline-border: rgba(255, 255, 255, 0.08);
+  --home-timeline-hover: rgba(255, 255, 255, 0.03);
+}
+
+.feed-stage {
+  width: min(100%, 1200px) !important;
+  min-height: 100dvh !important;
+  margin-inline: auto !important;
+  display: grid !important;
+  grid-template-columns: 240px 920px !important;
+  overflow: visible !important;
+}
+
+.feed-stage .looma-sidebar {
+  width: 240px !important;
+  border-right: 0 !important;
+  padding-inline: 16px !important;
+}
+
+.feed-stage .home-shell {
+  display: grid !important;
+  grid-template-columns: 600px 320px !important;
+  gap: 0 !important;
+  width: 920px !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.home-main-scroll {
+  width: 600px !important;
+  min-width: 0 !important;
+  min-height: 100dvh !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.home-main-scroll > .home-command-header,
+.home-main-scroll > .feed-search-expand-slot {
+  display: none !important;
+}
+
+.home-main-scroll > .home-feed-stream {
+  width: 600px !important;
+  margin: 0 !important;
+  order: 0 !important;
+}
+
+.home-main-scroll > .home-feed-stream .home-feed-panel {
+  width: 600px !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  border-width: 0 1px !important;
+  border-style: solid !important;
+  border-color: var(--home-timeline-border) !important;
+  border-radius: 0 !important;
+  background: var(--bg) !important;
+  box-shadow: none !important;
+}
+
+.home-feed-stream .home-feed-heading {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20 !important;
+  padding: 0 !important;
+  border-bottom: 1px solid var(--home-timeline-border) !important;
+  background: var(--bg) !important;
+}
+
+.home-feed-stream .feed-tabs {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  width: 100% !important;
+  min-height: 52px !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: var(--bg) !important;
+}
+
+.home-feed-stream .feed-tabs button {
+  position: relative !important;
+  justify-content: center !important;
+  min-height: 52px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+}
+
+.home-feed-stream .feed-tabs button:hover {
+  background: var(--home-timeline-hover) !important;
+  color: var(--text) !important;
+}
+
+.home-feed-stream .feed-tabs button.active {
+  background: transparent !important;
+  color: var(--text) !important;
+  font-weight: 600 !important;
+}
+
+.home-feed-stream .feed-tabs button.active::after {
+  position: absolute !important;
+  right: auto !important;
+  bottom: 0 !important;
+  left: 50% !important;
+  width: 72px !important;
+  height: 2px !important;
+  transform: translateX(-50%) !important;
+  border-radius: 999px !important;
+  background: var(--accent) !important;
+  content: "" !important;
+}
+
+.home-feed-panel > .home-composer-panel {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--home-timeline-border) !important;
+  border-radius: 0 !important;
+  background: var(--bg) !important;
+  box-shadow: none !important;
+}
+
+.home-feed-panel > .home-composer-panel .home-panel-heading {
+  display: none !important;
+}
+
+.home-feed-panel > .home-composer-panel .composer {
+  display: grid !important;
+  grid-template-columns: 40px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: start !important;
+  padding: 16px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: var(--bg) !important;
+}
+
+.home-feed-panel > .home-composer-panel .avatar {
+  width: 40px !important;
+  height: 40px !important;
+  margin: 0 !important;
+}
+
+.home-feed-panel > .home-composer-panel .composer-body {
+  min-width: 0 !important;
+}
+
+.home-feed-panel > .home-composer-panel textarea {
+  field-sizing: content;
+  min-height: 3.25rem !important;
+  max-height: 18rem !important;
+  padding: 0.2rem 0 0.55rem !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  line-height: 1.45 !important;
+  text-align: left !important;
+  resize: none !important;
+}
+
+.home-feed-panel > .home-composer-panel textarea::placeholder {
+  color: var(--text-subtle) !important;
+  opacity: 1 !important;
+  text-align: left !important;
+}
+
+.home-feed-panel > .home-composer-panel .composer-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-top: 0 !important;
+  padding-top: 0.65rem !important;
+  border-top: 1px solid var(--home-timeline-border) !important;
+  background: transparent !important;
+}
+
+.home-feed-panel > .home-composer-panel .composer-kind-selector {
+  width: fit-content !important;
+  height: 32px !important;
+  margin: 0 !important;
+  border-color: var(--home-timeline-border) !important;
+  background: var(--bg) !important;
+}
+
+.home-feed-panel > .home-composer-panel .composer-kind-selector button {
+  min-height: 30px !important;
+  padding: 0 0.8rem !important;
+  border-radius: 999px !important;
+  font-size: 13px !important;
+}
+
+.home-feed-panel > .home-composer-panel .publish-button {
+  min-height: 34px !important;
+  padding: 0 1rem !important;
+  border-radius: 999px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+.home-feed-stream .post-list {
+  gap: 0 !important;
+}
+
+.home-feed-stream .feed-post {
+  display: grid !important;
+  grid-template-columns: 40px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  padding: 12px 16px !important;
+  border-width: 0 0 1px !important;
+  border-style: solid !important;
+  border-color: var(--home-timeline-border) !important;
+  border-radius: 0 !important;
+  background: var(--bg) !important;
+  box-shadow: none !important;
+}
+
+.home-feed-stream .feed-post:hover {
+  background: var(--home-timeline-hover) !important;
+}
+
+.home-feed-stream .feed-post > .avatar {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.home-feed-stream .post-body {
+  min-width: 0 !important;
+}
+
+.home-feed-stream .post-meta {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto !important;
+  gap: 0.35rem !important;
+  align-items: center !important;
+  min-width: 0 !important;
+}
+
+.home-feed-stream .post-author-link,
+.home-feed-stream .post-meta strong {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  color: var(--text) !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.home-feed-stream .post-meta span {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  color: var(--text-muted) !important;
+  font-size: 14px !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.home-feed-stream .post-menu-wrap {
+  justify-self: end !important;
+}
+
+.home-feed-stream .post-body > p {
+  margin-top: 0.2rem !important;
+  color: var(--text) !important;
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+  overflow-wrap: anywhere !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}
+
+.post-see-more {
+  margin-top: 0.25rem !important;
+  border: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: var(--accent) !important;
+  font: inherit !important;
+  font-weight: 600 !important;
+}
+
+.home-feed-empty {
+  min-height: 0 !important;
+  padding: 48px 32px !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--home-timeline-border) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  text-align: center !important;
+  box-shadow: none !important;
+}
+
+.home-feed-empty-eyebrow:empty {
+  display: none !important;
+}
+
+.home-feed-empty h2 {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+}
+
+.home-feed-empty > div > p:not(.home-feed-empty-eyebrow) {
+  max-width: 360px !important;
+  margin: 0.55rem auto 0 !important;
+  color: var(--text-muted) !important;
+}
+
+.home-empty-secondary {
+  display: inline-flex !important;
+  min-height: 36px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 1rem !important;
+  border: 1px solid var(--home-timeline-border) !important;
+  border-radius: 999px !important;
+  padding: 0 1rem !important;
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+}
+
+.home-context-rail {
+  position: sticky !important;
+  top: 0 !important;
+  align-self: start !important;
+  width: 320px !important;
+  max-height: 100dvh !important;
+  padding: 12px 0 32px 24px !important;
+  overflow-y: auto !important;
+}
+
+.home-rail-search {
+  min-height: 40px !important;
+  margin: 0 0 12px !important;
+}
+
+.home-rail-search .aside-search-anchor {
+  display: block !important;
+  width: 100% !important;
+  height: 40px !important;
+}
+
+.feed-search-overlay .aside-search {
+  min-height: 40px !important;
+  border-color: var(--home-timeline-border) !important;
+  border-radius: 999px !important;
+  background: var(--surface) !important;
+  box-shadow: none !important;
+}
+
+.home-context-rail .home-discovery-board,
+.home-context-rail .home-opportunity-grid,
+.home-context-rail .home-people-grid {
+  display: grid !important;
+  gap: 12px !important;
+}
+
+.home-context-rail .home-discovery-section,
+.home-context-rail .home-next-steps,
+.home-context-rail .home-trending-card,
+.home-context-rail .home-feed-companion {
+  padding: 16px !important;
+  border: 1px solid var(--home-timeline-border) !important;
+  border-radius: 12px !important;
+  background: var(--surface) !important;
+  box-shadow: none !important;
+}
+
+.home-context-rail .home-section-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin: 0 0 8px !important;
+}
+
+.home-context-rail .home-section-header h2 {
+  overflow: hidden !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.home-context-rail .home-section-header p,
+.home-context-rail .home-section-kicker {
+  display: none !important;
+}
+
+.home-context-rail .home-section-header a {
+  flex: none !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+}
+
+.home-context-rail .home-opportunity-card,
+.home-context-rail .home-person-card,
+.home-context-rail .home-discovery-empty {
+  margin: 0 !important;
+  padding: 12px 0 !important;
+  border: 0 !important;
+  border-top: 1px solid var(--home-timeline-border) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.home-context-rail .home-opportunity-card:hover,
+.home-context-rail .home-person-card:hover {
+  background: var(--home-timeline-hover) !important;
+}
+
+.home-context-rail .home-opportunity-card-top svg {
+  display: none !important;
+}
+
+.home-context-rail .home-opportunity-card-top span {
+  margin-left: auto !important;
+  border: 1px solid var(--home-timeline-border) !important;
+  background: var(--surface-2) !important;
+  color: var(--text-muted) !important;
+  font-size: 11px !important;
+}
+
+@media (max-width: 1200px) {
+  .feed-stage {
+    width: min(100%, 840px) !important;
+    grid-template-columns: 240px 600px !important;
+  }
+
+  .feed-stage .home-shell {
+    width: 600px !important;
+    grid-template-columns: 600px !important;
+  }
+
+  .home-context-rail {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .feed-stage {
+    width: min(100%, 600px) !important;
+    grid-template-columns: minmax(0, 600px) !important;
+  }
+
+  .feed-stage .looma-sidebar {
+    display: none !important;
+  }
+
+  .feed-stage .home-shell,
+  .home-main-scroll,
+  .home-main-scroll > .home-feed-stream,
+  .home-main-scroll > .home-feed-stream .home-feed-panel {
+    width: min(100vw, 600px) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .feed-stage,
+  .feed-stage .home-shell,
+  .home-main-scroll,
+  .home-main-scroll > .home-feed-stream,
+  .home-main-scroll > .home-feed-stream .home-feed-panel {
+    width: 100% !important;
+  }
+
+  .home-main-scroll > .home-feed-stream .home-feed-panel {
+    border-right: 0 !important;
+    border-left: 0 !important;
+  }
+
+  .home-feed-panel > .home-composer-panel .composer {
+    grid-template-columns: 40px minmax(0, 1fr) !important;
+    padding: 14px !important;
+  }
+
+  .home-feed-panel > .home-composer-panel .composer-actions {
+    flex-wrap: wrap !important;
+  }
+}
+
+/* Final home scale/dark refinement: pure black surfaces and larger rhythm. */
+.dark {
+  --bg: #000000 !important;
+  --surface: #000000 !important;
+  --surface-2: #0b0b0b !important;
+  --border: #242424 !important;
+  --border-strong: #333333 !important;
+  --text: #f2f2f2 !important;
+  --text-muted: #a3a3a3 !important;
+  --text-subtle: #8f8f8f !important;
+  --home-timeline-border: #242424 !important;
+  --home-timeline-hover: rgba(255, 255, 255, 0.035) !important;
+  --looma-background: #000000 !important;
+  --looma-surface: #000000 !important;
+  --looma-sidebar: #000000 !important;
+  --background: #000000 !important;
+  --card: #000000 !important;
+  --popover: #000000 !important;
+  --secondary: #0b0b0b !important;
+  --muted: #0b0b0b !important;
+  color-scheme: dark;
+}
+
+.dark html,
+.dark body,
+.dark #root,
+.dark .looma-transition,
+.dark .feed-stage,
+.dark .feed-stage .home-shell,
+.dark .home-main-scroll,
+.dark .looma-sidebar,
+.dark .workspace-page,
+.dark .workspace-content,
+.dark .protected-page,
+.dark .plans-page,
+.dark .workspace-card,
+.dark .workspace-section,
+.dark .settings-panel,
+.dark .plan-card,
+.dark .profile-edit-card,
+.dark .home-feed-stream .home-feed-panel,
+.dark .home-feed-stream .home-feed-heading,
+.dark .home-feed-stream .feed-tabs,
+.dark .home-feed-panel > .home-composer-panel,
+.dark .home-feed-panel > .home-composer-panel .composer,
+.dark .home-feed-panel > .home-composer-panel textarea,
+.dark .home-feed-stream .feed-post,
+.dark .home-feed-empty,
+.dark .home-context-rail,
+.dark .home-context-rail .home-discovery-section,
+.dark .home-context-rail .home-next-steps,
+.dark .home-context-rail .home-trending-card,
+.dark .home-context-rail .home-feed-companion,
+.dark .home-context-rail .home-opportunity-card,
+.dark .home-context-rail .home-person-card,
+.dark .home-context-rail .home-discovery-empty,
+.dark .sidebar-profile,
+.dark .sidebar-theme-toggle,
+.dark .aside-search,
+.dark .feed-search-overlay .aside-search {
+  background: #000000 !important;
+  background-color: #000000 !important;
+}
+
+.dark .sidebar-upgrade.hidden,
+.dark .sidebar-email-login,
+.dark .auth-control-sidebar .sidebar-email-login,
+.dark .feed-tabs button:not(.active),
+.dark .home-trending-list a,
+.dark .workspace-state,
+.dark .workspace-state span,
+.dark .workspace-empty,
+.dark .workspace-empty span,
+.dark .plans-feedback,
+.dark .settings-field span,
+.dark .workspace-card span:not(.admin-verified-badge):not(.profile-avatar) {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.dark .composer-kind-selector,
+.dark .composer-kind-selector button:not(.active),
+.dark .home-context-rail .home-opportunity-card-top span,
+.dark .feed-work-badge,
+.dark input,
+.dark textarea,
+.dark select {
+  background: #0b0b0b !important;
+  background-color: #0b0b0b !important;
+}
+
+html,
+body,
+#root {
+  background: var(--bg) !important;
+  font-size: 16px !important;
+}
+
+.feed-stage {
+  width: min(100%, 1360px) !important;
+  grid-template-columns: 264px minmax(0, 1068px) !important;
+}
+
+.feed-stage .looma-sidebar {
+  width: 264px !important;
+  padding: 24px 20px !important;
+}
+
+.feed-stage .home-shell {
+  width: 1068px !important;
+  grid-template-columns: 680px 388px !important;
+}
+
+.home-main-scroll,
+.home-main-scroll > .home-feed-stream,
+.home-main-scroll > .home-feed-stream .home-feed-panel {
+  width: 680px !important;
+}
+
+.home-main-scroll > .home-feed-stream .home-feed-panel {
+  border-color: var(--border) !important;
+}
+
+.sidebar-nav {
+  gap: 16px !important;
+}
+
+.sidebar-nav-group {
+  gap: 4px !important;
+  padding-bottom: 16px !important;
+  border-color: var(--border) !important;
+}
+
+.sidebar-nav a,
+.sidebar-nav button {
+  min-height: 48px !important;
+  gap: 12px !important;
+  border-radius: 10px !important;
+  padding: 0 14px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+}
+
+.sidebar-nav a svg,
+.sidebar-nav button svg {
+  width: 22px !important;
+  min-width: 24px !important;
+  height: 22px !important;
+  stroke-width: 1.75 !important;
+}
+
+.sidebar-profile-wrap {
+  margin-top: auto !important;
+}
+
+.sidebar-footer-row {
+  grid-template-columns: minmax(0, 1fr) 44px !important;
+  gap: 8px !important;
+  align-items: stretch !important;
+}
+
+.sidebar-profile {
+  min-width: 0 !important;
+  min-height: 56px !important;
+  display: grid !important;
+  grid-template-columns: 44px minmax(0, 1fr) 18px !important;
+  gap: 10px !important;
+  align-items: center !important;
+  padding: 6px 10px !important;
+  border-radius: 14px !important;
+}
+
+.sidebar-profile .profile-avatar {
+  width: 44px !important;
+  height: 44px !important;
+}
+
+.sidebar-profile span:not(.profile-avatar):not(.profile-avatar-guest) {
+  min-width: 0 !important;
+}
+
+.sidebar-profile strong,
+.sidebar-profile small {
+  display: block !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.sidebar-profile strong {
+  font-size: 14px !important;
+  line-height: 1.15 !important;
+}
+
+.sidebar-profile small {
+  color: var(--text-muted) !important;
+  font-size: 12px !important;
+}
+
+.sidebar-theme-toggle {
+  width: 44px !important;
+  min-width: 44px !important;
+  min-height: 56px !important;
+  border-radius: 14px !important;
+}
+
+.home-feed-stream .feed-tabs {
+  min-height: 56px !important;
+}
+
+.home-feed-stream .feed-tabs button {
+  min-height: 56px !important;
+  font-size: 16px !important;
+}
+
+.home-feed-panel > .home-composer-panel .composer {
+  grid-template-columns: 48px minmax(0, 1fr) !important;
+  gap: 14px !important;
+  padding: 16px 20px !important;
+}
+
+.home-feed-panel > .home-composer-panel .avatar {
+  width: 48px !important;
+  height: 48px !important;
+}
+
+.home-feed-panel > .home-composer-panel textarea {
+  min-height: 3.875rem !important;
+  padding: 0.15rem 0 0.4rem !important;
+  font-size: 20px !important;
+}
+
+.home-feed-panel > .home-composer-panel .composer-actions {
+  min-height: 40px !important;
+  margin-top: 0.15rem !important;
+  padding-top: 0 !important;
+  border-top: 0 !important;
+}
+
+.home-feed-panel > .home-composer-panel .composer-kind-selector {
+  height: 36px !important;
+}
+
+.home-feed-panel > .home-composer-panel .composer-kind-selector button {
+  min-height: 34px !important;
+  font-size: 14px !important;
+}
+
+.home-feed-panel > .home-composer-panel .publish-button {
+  min-height: 40px !important;
+  border-radius: 10px !important;
+}
+
+.home-feed-stream .feed-post {
+  grid-template-columns: 48px minmax(0, 1fr) !important;
+  gap: 14px !important;
+  padding: 16px 20px !important;
+}
+
+.home-feed-stream .feed-post > .avatar {
+  width: 48px !important;
+  height: 48px !important;
+}
+
+.home-feed-stream .post-author-link,
+.home-feed-stream .post-meta strong {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+.home-feed-stream .post-meta span {
+  font-size: 15px !important;
+}
+
+.home-feed-stream .post-body > p {
+  margin-top: 4px !important;
+  font-size: 16px !important;
+  line-height: 1.55 !important;
+}
+
+.home-feed-empty {
+  padding: 56px 32px !important;
+}
+
+.home-feed-empty h2 {
+  font-size: 22px !important;
+  font-weight: 700 !important;
+}
+
+.home-feed-empty > div > p:not(.home-feed-empty-eyebrow) {
+  max-width: 380px !important;
+  font-size: 16px !important;
+}
+
+.home-context-rail {
+  width: 388px !important;
+  padding: 12px 0 32px 28px !important;
+  scrollbar-width: none !important;
+}
+
+.home-context-rail::-webkit-scrollbar {
+  display: none !important;
+}
+
+.home-rail-search,
+.home-rail-search .aside-search-anchor,
+.feed-search-overlay .aside-search {
+  min-height: 44px !important;
+  height: 44px !important;
+}
+
+.feed-search-overlay .aside-search {
+  border-radius: 999px !important;
+  font-size: 16px !important;
+}
+
+.home-context-rail .home-discovery-board,
+.home-context-rail .home-opportunity-grid,
+.home-context-rail .home-people-grid {
+  gap: 16px !important;
+}
+
+.home-context-rail .home-discovery-section,
+.home-context-rail .home-next-steps,
+.home-context-rail .home-trending-card,
+.home-context-rail .home-feed-companion {
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  padding: 20px !important;
+  border-color: var(--border) !important;
+  border-radius: 16px !important;
+  gap: 12px !important;
+}
+
+.home-context-rail .home-section-header,
+.home-trending-card header,
+.home-context-heading {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+
+.home-context-rail .home-section-header > div,
+.home-trending-card header > div,
+.home-context-heading > div {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+}
+
+.home-context-rail .home-section-header h2,
+.home-trending-card h2,
+.home-context-heading h2 {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.home-context-rail .home-section-header a {
+  flex-shrink: 0 !important;
+  color: var(--accent) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.home-context-rail .home-opportunity-card,
+.home-context-rail .home-person-card,
+.home-context-rail .home-discovery-empty {
+  display: grid !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  gap: 6px !important;
+  padding: 14px 0 !important;
+}
+
+.home-context-rail .home-opportunity-card {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-areas:
+    "title badge"
+    "description description"
+    "link link" !important;
+  align-items: center !important;
+}
+
+.home-context-rail .home-opportunity-card-top {
+  display: contents !important;
+}
+
+.home-context-rail .home-opportunity-card h3 {
+  grid-area: title !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.home-context-rail .home-opportunity-card p {
+  grid-area: description !important;
+  margin: 0 !important;
+  display: -webkit-box !important;
+  overflow: hidden !important;
+  color: var(--text-muted) !important;
+  font-size: 15px !important;
+  line-height: 1.45 !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+.home-context-rail .home-opportunity-card-top span {
+  grid-area: badge !important;
+  align-self: center !important;
+  justify-self: end !important;
+  max-width: 7rem !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.home-context-rail .home-opportunity-card > a {
+  grid-area: link !important;
+  margin-top: 0 !important;
+  font-size: 14px !important;
+}
+
+.home-context-rail .home-opportunity-meta {
+  display: none !important;
+}
+
+.home-context-rail .home-discovery-empty {
+  grid-template-columns: 1fr !important;
+  align-items: start !important;
+}
+
+.home-context-rail .home-discovery-empty h3,
+.home-context-rail .home-projects-empty h3 {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+.home-context-rail .home-discovery-empty p,
+.home-context-rail .home-projects-empty p,
+.home-context-rail .home-next-steps > p,
+.home-feed-companion > p:not(.home-section-kicker) {
+  width: 100% !important;
+  color: var(--text-muted) !important;
+  font-size: 15px !important;
+  line-height: 1.45 !important;
+}
+
+.home-context-rail .home-discovery-empty > a,
+.home-context-rail .home-projects-empty > a,
+.home-next-step-actions a,
+.home-companion-link {
+  width: 100% !important;
+  min-height: 40px !important;
+  justify-content: center !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
+}
+
+.home-context-rail .home-projects-empty svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.home-feed-skeleton {
+  display: grid !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.home-feed-skeleton i {
+  display: block !important;
+  width: 100% !important;
+  height: 84px !important;
+  border-bottom: 1px solid var(--border) !important;
+  border-radius: 0 !important;
+  background: var(--surface-2) !important;
+}
+
+.home-discovery-skeleton {
+  display: grid !important;
+  gap: 10px !important;
+  padding: 12px 0 0 !important;
+  background: transparent !important;
+}
+
+.home-discovery-skeleton i,
+.home-trending-skeleton i {
+  display: block !important;
+  width: 100% !important;
+  height: 14px !important;
+  border-radius: 999px !important;
+  background: var(--surface-2) !important;
+}
+
+@media (min-width: 1201px) and (max-width: 1360px) {
+  .feed-stage {
+    width: min(100%, 1292px) !important;
+    grid-template-columns: 264px minmax(0, 1028px) !important;
+  }
+
+  .feed-stage .home-shell {
+    width: 1028px !important;
+    grid-template-columns: 680px 348px !important;
+  }
+
+  .home-context-rail {
+    width: 348px !important;
+  }
+}
+
+@media (max-width: 1200px) {
+  .feed-stage {
+    width: min(100%, 944px) !important;
+    grid-template-columns: 264px 680px !important;
+  }
+
+  .feed-stage .home-shell {
+    width: 680px !important;
+    grid-template-columns: 680px !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .feed-stage {
+    width: min(100%, 680px) !important;
+    grid-template-columns: minmax(0, 680px) !important;
+  }
+
+  .feed-stage .home-shell,
+  .home-main-scroll,
+  .home-main-scroll > .home-feed-stream,
+  .home-main-scroll > .home-feed-stream .home-feed-panel {
+    width: min(100vw, 680px) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-feed-panel > .home-composer-panel .composer {
+    grid-template-columns: 48px minmax(0, 1fr) !important;
+  }
+
+  .home-feed-panel > .home-composer-panel .composer-actions {
+    flex-wrap: nowrap !important;
+  }
+}
+
+/* Width/border normalization after all responsive overrides. */
+.feed-stage > .looma-sidebar,
+.feed-stage .looma-sidebar {
+  box-sizing: border-box !important;
+  width: 264px !important;
+  min-width: 264px !important;
+  border-color: var(--border) !important;
+  border-right: 0 !important;
+}
+
+.home-main-scroll > .home-feed-stream .home-feed-panel,
+.home-feed-panel > .home-composer-panel,
+.home-feed-stream .post-list,
+.home-feed-stream .feed-post {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: none !important;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.home-main-scroll > .home-feed-stream .home-feed-panel,
+.home-feed-panel > .home-composer-panel,
+.home-feed-stream .feed-post {
+  border-color: var(--border) !important;
+}
+
+.home-feed-panel > .home-composer-panel .composer,
+.home-feed-stream .feed-post {
+  padding-right: 20px !important;
+  padding-left: 20px !important;
+}
+
+@media (max-width: 1024px) {
+  .feed-stage > .looma-sidebar,
+  .feed-stage .looma-sidebar {
+    display: none !important;
+  }
+}
+
+/* Correction pass: pure dark surfaces, clean borders, no clipped timeline UI. */
+.dark {
+  --surface-2: #000000 !important;
+  --secondary: #000000 !important;
+  --muted: #000000 !important;
+  --feed-px: 20px;
+}
+
+.dark body *,
+.dark body *::before,
+.dark body *::after {
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.dark .looma-sidebar,
+.dark .home-feed-stream .home-feed-panel,
+.dark .home-feed-stream .home-feed-heading,
+.dark .home-feed-stream .feed-tabs,
+.dark .home-feed-panel > .home-composer-panel,
+.dark .home-feed-panel > .home-composer-panel .composer,
+.dark .home-feed-panel > .home-composer-panel textarea,
+.dark .home-feed-panel > .home-composer-panel .composer-actions,
+.dark .home-feed-stream .feed-post,
+.dark .home-feed-empty,
+.dark .home-context-rail,
+.dark .home-context-rail .home-discovery-section,
+.dark .home-context-rail .home-next-steps,
+.dark .home-context-rail .home-trending-card,
+.dark .home-context-rail .home-feed-companion,
+.dark .home-context-rail .home-opportunity-card,
+.dark .home-context-rail .home-person-card,
+.dark .home-context-rail .home-discovery-empty,
+.dark .sidebar-profile,
+.dark .sidebar-theme-toggle,
+.dark .sidebar-theme-item,
+.dark .feed-search-overlay .aside-search {
+  background: #000000 !important;
+  background-color: #000000 !important;
+}
+
+.dark input,
+.dark textarea,
+.dark select,
+.dark button {
+  background: transparent;
+  background-color: transparent;
+}
+
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark textarea,
+.dark select {
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  appearance: none;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text) !important;
+  box-shadow: 0 0 0 1000px #000000 inset !important;
+  transition: background-color 9999s ease-out 0s !important;
+}
+
+.dark .feed-search-overlay .aside-search input,
+.dark .aside-search input {
+  width: 100% !important;
+  border: 0 !important;
+  background: transparent !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  appearance: none !important;
+}
+
+.dark .feed-search-overlay .aside-search:focus-within,
+.dark .aside-search:focus-within {
+  border-color: var(--accent) !important;
+}
+
+.dark .feed-search-overlay .aside-search svg,
+.dark .aside-search svg,
+.dark .feed-search-overlay .aside-search input::placeholder,
+.dark .aside-search input::placeholder {
+  color: var(--text-muted) !important;
+}
+
+.home-feed-stream .home-feed-panel {
+  --feed-px: 20px;
+  overflow: visible !important;
+}
+
+.feed-stage {
+  align-items: start !important;
+}
+
+.feed-stage > .looma-sidebar,
+.feed-stage .looma-sidebar {
+  z-index: 0 !important;
+  overflow-x: visible !important;
+}
+
+.feed-stage .home-shell {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.home-main-scroll,
+.home-main-scroll > .home-feed-stream,
+.home-main-scroll > .home-feed-stream .home-feed-panel {
+  overflow: visible !important;
+}
+
+.home-main-scroll > .home-feed-stream .home-feed-panel {
+  border-left: 1px solid var(--border) !important;
+  border-right: 1px solid var(--border) !important;
+}
+
+.home-feed-stream .home-feed-heading {
+  top: 0 !important;
+  border-bottom-color: var(--border) !important;
+}
+
+.home-feed-stream .feed-tabs button {
+  padding-right: var(--feed-px) !important;
+  padding-left: var(--feed-px) !important;
+}
+
+.home-feed-panel > .home-composer-panel .composer,
+.home-feed-stream .feed-post {
+  padding-right: var(--feed-px) !important;
+  padding-left: var(--feed-px) !important;
+}
+
+.home-feed-stream .feed-post {
+  border-bottom-color: var(--border) !important;
+}
+
+.dark .home-feed-stream .feed-post:hover,
+.dark .home-context-rail .home-opportunity-card:hover,
+.dark .home-context-rail .home-person-card:hover,
+.dark .looma-sidebar .sidebar-nav a:not(.active):hover,
+.dark .looma-sidebar .sidebar-nav button:not(.active):hover,
+.dark .sidebar-theme-item:hover,
+.dark .home-empty-secondary:hover,
+.dark .home-context-rail .home-discovery-empty > a:hover,
+.dark .home-context-rail .home-projects-empty > a:hover,
+.dark .home-next-step-actions a:hover,
+.dark .home-companion-link:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark .composer-kind-selector {
+  border-color: var(--border) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.dark .composer-kind-selector button:not(.active),
+.dark .home-context-rail .home-opportunity-card-top span,
+.dark .feed-work-badge {
+  border-color: var(--border) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--text-muted) !important;
+}
+
+.dark .home-context-rail .home-projects-empty svg,
+.dark .home-context-icon {
+  border: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.dark .home-empty-secondary,
+.dark .home-context-rail .home-discovery-empty > a,
+.dark .home-context-rail .home-projects-empty > a,
+.dark .home-next-step-actions a,
+.dark .home-companion-link,
+.dark .post-edit-cancel,
+.dark .post-delete-cancel {
+  border-color: #2a2a2a !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--text) !important;
+}
+
+.sidebar-nav {
+  gap: 12px !important;
+  justify-content: flex-start !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.sidebar-nav-group {
+  gap: 4px !important;
+  margin: 0 !important;
+  padding: 12px 0 !important;
+  border-bottom: 1px solid var(--border) !important;
+  overflow: visible !important;
+}
+
+.sidebar-nav-group:first-child {
+  padding-top: 0 !important;
+}
+
+.sidebar-nav a,
+.sidebar-nav button,
+.sidebar-theme-item {
+  display: flex !important;
+  width: 100% !important;
+  min-height: 48px !important;
+  align-items: center !important;
+  gap: 10px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  padding: 0 12px !important;
+  color: var(--text) !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  text-align: left !important;
+}
+
+.sidebar-nav a svg,
+.sidebar-nav button svg,
+.sidebar-theme-item svg {
+  width: 22px !important;
+  min-width: 24px !important;
+  height: 22px !important;
+  stroke-width: 1.75 !important;
+}
+
+.sidebar-nav a span,
+.sidebar-nav button span,
+.sidebar-theme-item span {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  line-height: 1.25 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.sidebar-profile-wrap {
+  display: grid !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin-top: auto !important;
+}
+
+.sidebar-footer-row {
+  display: block !important;
+  width: 100% !important;
+}
+
+.sidebar-theme-toggle {
+  display: none !important;
+}
+
+.sidebar-profile {
+  width: 100% !important;
+  min-height: 58px !important;
+  border-color: var(--border) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.sidebar-profile strong {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.home-context-rail {
+  max-height: 100dvh !important;
+  padding-bottom: 32px !important;
+  overflow-y: auto !important;
+}
+
+.home-context-rail .home-discovery-section,
+.home-context-rail .home-next-steps,
+.home-context-rail .home-trending-card,
+.home-context-rail .home-feed-companion {
+  align-self: start !important;
+  overflow: visible !important;
+}
+
+.home-context-rail .home-opportunity-card {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.home-context-rail .home-opportunity-card > a {
+  display: none !important;
+}
+
+.looma-sidebar {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+}
+
+.looma-sidebar::-webkit-scrollbar {
+  display: none !important;
+}
+
+.looma-sidebar .sidebar-nav,
+.looma-sidebar .auth-control-sidebar,
+.looma-sidebar .sidebar-profile-wrap {
+  position: static !important;
+  flex: 0 0 auto !important;
+}
+
+.looma-sidebar .auth-control-sidebar {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 4px 0 0 !important;
+}
+
+.looma-sidebar .auth-login-options {
+  gap: 8px !important;
+}
+
+.looma-sidebar .sidebar-profile-wrap {
+  margin-top: 0 !important;
+}
+
+.looma-sidebar .sidebar-nav {
+  gap: 8px !important;
+}
+
+.looma-sidebar .sidebar-nav-group {
+  gap: 2px !important;
+  padding: 8px 0 !important;
+}
+
+.looma-sidebar .sidebar-nav a,
+.looma-sidebar .sidebar-nav button,
+.looma-sidebar .sidebar-theme-item {
+  min-height: 42px !important;
+}
+
+.looma-sidebar .sidebar-google-login,
+.looma-sidebar .sidebar-email-login {
+  min-height: 40px !important;
+}
+
+.looma-sidebar .auth-login-divider {
+  line-height: 1 !important;
+}
+
+.looma-sidebar .sidebar-profile {
+  min-height: 54px !important;
+}
+
+.home-context-rail .home-opportunity-card,
+.home-context-rail .home-person-card,
+.home-context-rail .home-discovery-empty {
+  margin: 0 !important;
+}
+
+@media (max-width: 640px) {
+  .home-feed-stream .feed-tabs button,
+  .home-feed-panel > .home-composer-panel .composer,
+  .home-feed-stream .feed-post {
+    padding-right: 16px !important;
+    padding-left: 16px !important;
+  }
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.dark
+  span:not(.looma-logo-mark):not(.intro-underline):not(.admin-verified-badge):not(
+    .profile-avatar
+  ):not(.profile-avatar-guest) {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Yellow accent + light theme repair pass.
+   This final layer intentionally overrides older visual experiments without
+   changing page structure or data behavior. */
+:root {
+  --yellow: #f3f700;
+  --yellow-rgb: 243, 247, 0;
+  --on-yellow: #000000;
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #ffffff;
+  --border: rgba(0, 0, 0, 0.12);
+  --border-strong: rgba(0, 0, 0, 0.22);
+  --text: #0a0a0a;
+  --text-muted: #52525b;
+  --text-subtle: #3f3f46;
+  --accent: var(--yellow);
+  --accent-hover: var(--yellow);
+  --accent-soft: transparent;
+  --on-accent: var(--on-yellow);
+  --hover: rgba(0, 0, 0, 0.04);
+  --ring: #000000;
+  --verified-badge-check: var(--on-yellow);
+  --looma-background: var(--bg);
+  --looma-surface: var(--surface);
+  --looma-sidebar: var(--surface);
+  --looma-primary: var(--accent);
+  --looma-primary-hover: var(--accent);
+  --looma-primary-soft: transparent;
+  --looma-text: var(--text);
+  --looma-muted: var(--text-muted);
+  --looma-rim: var(--border);
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: var(--accent);
+  --primary-foreground: var(--on-accent);
+  --secondary: var(--surface);
+  --secondary-foreground: var(--text);
+  --muted: var(--surface);
+  --muted-foreground: var(--text-muted);
+  --input: var(--border);
+  --feed-px: 20px;
+}
+
+.dark {
+  --bg: #000000;
+  --surface: #000000;
+  --surface-2: #000000;
+  --border: rgba(255, 255, 255, 0.14);
+  --border-strong: rgba(255, 255, 255, 0.22);
+  --text: #ffffff;
+  --text-muted: #d4d4d8;
+  --text-subtle: #a1a1aa;
+  --accent: var(--yellow);
+  --accent-hover: var(--yellow);
+  --accent-soft: transparent;
+  --on-accent: var(--on-yellow);
+  --hover: rgba(255, 255, 255, 0.06);
+  --ring: var(--yellow);
+  --verified-badge-check: var(--on-yellow);
+  --looma-background: var(--bg);
+  --looma-surface: var(--surface);
+  --looma-sidebar: var(--surface);
+  --looma-primary: var(--accent);
+  --looma-primary-hover: var(--accent);
+  --looma-primary-soft: transparent;
+  --looma-text: var(--text);
+  --looma-muted: var(--text-muted);
+  --looma-rim: var(--border);
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: var(--surface);
+  --secondary-foreground: var(--text);
+  --muted: var(--surface);
+  --muted-foreground: var(--text-muted);
+  --input: var(--border);
+}
+
+html:not(.dark),
+html:not(.dark) body,
+html:not(.dark) #root,
+html:not(.dark) .app-shell,
+html:not(.dark) .feed-stage,
+html:not(.dark) .home-shell,
+html:not(.dark) .home-main-scroll,
+html:not(.dark) .looma-sidebar,
+html:not(.dark) .home-feed-stream .home-feed-panel,
+html:not(.dark) .home-feed-stream .home-feed-heading,
+html:not(.dark) .home-feed-stream .feed-tabs,
+html:not(.dark) .home-feed-panel > .home-composer-panel,
+html:not(.dark) .home-feed-panel > .home-composer-panel .composer,
+html:not(.dark) .home-feed-panel > .home-composer-panel .composer-actions,
+html:not(.dark) .home-feed-stream .feed-post,
+html:not(.dark) .home-feed-empty,
+html:not(.dark) .home-context-rail,
+html:not(.dark) .home-context-rail .home-discovery-section,
+html:not(.dark) .home-context-rail .home-next-steps,
+html:not(.dark) .home-context-rail .home-trending-card,
+html:not(.dark) .home-context-rail .home-feed-companion,
+html:not(.dark) .home-context-rail .home-opportunity-card,
+html:not(.dark) .home-context-rail .home-person-card,
+html:not(.dark) .home-context-rail .home-discovery-empty,
+html:not(.dark) .workspace-shell,
+html:not(.dark) .workspace-card,
+html:not(.dark) .settings-card,
+html:not(.dark) .plan-card,
+html:not(.dark) .profile-panel,
+html:not(.dark) .profile-card,
+html:not(.dark) .admin-shell,
+html:not(.dark) .admin-card,
+html:not(.dark) .sidebar-profile,
+html:not(.dark) .sidebar-theme-item,
+html:not(.dark) .sidebar-theme-toggle {
+  background: var(--surface) !important;
+  background-color: var(--surface) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.dark,
+.dark body,
+.dark #root,
+.dark .app-shell,
+.dark .feed-stage,
+.dark .home-shell,
+.dark .home-main-scroll,
+.dark .looma-sidebar,
+.dark .home-feed-stream .home-feed-panel,
+.dark .home-feed-stream .home-feed-heading,
+.dark .home-feed-stream .feed-tabs,
+.dark .home-feed-panel > .home-composer-panel,
+.dark .home-feed-panel > .home-composer-panel .composer,
+.dark .home-feed-panel > .home-composer-panel .composer-actions,
+.dark .home-feed-stream .feed-post,
+.dark .home-feed-empty,
+.dark .home-context-rail,
+.dark .home-context-rail .home-discovery-section,
+.dark .home-context-rail .home-next-steps,
+.dark .home-context-rail .home-trending-card,
+.dark .home-context-rail .home-feed-companion,
+.dark .home-context-rail .home-opportunity-card,
+.dark .home-context-rail .home-person-card,
+.dark .home-context-rail .home-discovery-empty,
+.dark .workspace-shell,
+.dark .workspace-card,
+.dark .settings-card,
+.dark .plan-card,
+.dark .profile-panel,
+.dark .profile-card,
+.dark .admin-shell,
+.dark .admin-card,
+.dark .sidebar-profile,
+.dark .sidebar-theme-item,
+.dark .sidebar-theme-toggle {
+  background: var(--bg) !important;
+  background-color: var(--bg) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+html:not(.dark) *:not(.avatar):not(.profile-avatar):not(.profile-avatar-guest),
+.dark *:not(.avatar):not(.profile-avatar):not(.profile-avatar-guest) {
+  text-shadow: none !important;
+}
+
+.admin-verified-badge {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  width: 16px !important;
+  height: 16px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-left: 0.28em !important;
+  border: 1px solid rgba(0, 0, 0, 0.25) !important;
+  border-radius: 999px !important;
+  background: var(--yellow) !important;
+  background-color: var(--yellow) !important;
+  color: var(--on-yellow) !important;
+  line-height: 1 !important;
+  vertical-align: -0.12em !important;
+  box-shadow: none !important;
+}
+
+.admin-verified-badge svg {
+  width: 12px !important;
+  height: 12px !important;
+  color: var(--on-yellow) !important;
+}
+
+.admin-verified-badge svg path {
+  fill: var(--yellow) !important;
+  stroke: var(--on-yellow) !important;
+}
+
+.profile-hero .admin-verified-badge,
+.profile-heading .admin-verified-badge,
+h1 .admin-verified-badge {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.profile-hero .admin-verified-badge svg,
+.profile-heading .admin-verified-badge svg,
+h1 .admin-verified-badge svg {
+  width: 13px !important;
+  height: 13px !important;
+}
+
+.post-author-link,
+.post-meta strong,
+.sidebar-profile strong,
+.profile-title,
+.profile-heading,
+.connection-card h3,
+.proposal-card h3 {
+  min-width: 0 !important;
+}
+
+.post-meta,
+.sidebar-profile strong {
+  align-items: center !important;
+}
+
+a,
+button,
+input,
+textarea,
+select,
+[role="button"],
+[tabindex]:not([tabindex="-1"]) {
+  box-shadow: none !important;
+}
+
+html:not(.dark) a:focus-visible,
+html:not(.dark) button:focus-visible,
+html:not(.dark) input:focus-visible,
+html:not(.dark) textarea:focus-visible,
+html:not(.dark) select:focus-visible,
+html:not(.dark) [role="button"]:focus-visible,
+html:not(.dark) [tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 2px solid #000000 !important;
+  outline-offset: 2px !important;
+}
+
+.dark a:focus-visible,
+.dark button:focus-visible,
+.dark input:focus-visible,
+.dark textarea:focus-visible,
+.dark select:focus-visible,
+.dark [role="button"]:focus-visible,
+.dark [tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 2px solid var(--yellow) !important;
+  outline-offset: 2px !important;
+}
+
+html:not(.dark) input,
+html:not(.dark) textarea,
+html:not(.dark) select,
+.dark input,
+.dark textarea,
+.dark select {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+}
+
+html:not(.dark) input::placeholder,
+html:not(.dark) textarea::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 1 !important;
+}
+
+html:not(.dark) .aside-search,
+html:not(.dark) .feed-search-overlay .aside-search,
+html:not(.dark) .search-field,
+html:not(.dark) .field-control {
+  border: 1px solid var(--border) !important;
+  background: var(--surface) !important;
+  background-color: var(--surface) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+html:not(.dark) .aside-search:focus-within,
+html:not(.dark) .feed-search-overlay .aside-search:focus-within,
+html:not(.dark) .search-field:focus-within,
+html:not(.dark) .field-control:focus-within {
+  border-color: #000000 !important;
+  outline: 2px solid #000000 !important;
+  outline-offset: 2px !important;
+}
+
+html:not(.dark) .publish-button,
+html:not(.dark) .primary-button,
+html:not(.dark) .button-primary,
+html:not(.dark) .home-empty-secondary.primary,
+html:not(.dark) button[type="submit"],
+html:not(.dark) .save-button,
+html:not(.dark) .accept-button {
+  border: 1px solid rgba(0, 0, 0, 0.85) !important;
+  background: var(--yellow) !important;
+  background-color: var(--yellow) !important;
+  background-image: none !important;
+  color: var(--on-yellow) !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+html:not(.dark) .publish-button:hover,
+html:not(.dark) .primary-button:hover,
+html:not(.dark) .button-primary:hover,
+html:not(.dark) .save-button:hover,
+html:not(.dark) .accept-button:hover {
+  filter: brightness(0.94) !important;
+}
+
+html:not(.dark) .publish-button:disabled,
+html:not(.dark) .primary-button:disabled,
+html:not(.dark) .button-primary:disabled,
+html:not(.dark) button[type="submit"]:disabled {
+  opacity: 0.45 !important;
+}
+
+.dark .publish-button,
+.dark .primary-button,
+.dark .button-primary,
+.dark .save-button,
+.dark .accept-button {
+  border: 1px solid #ffffff !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+}
+
+html:not(.dark) .looma-sidebar .sidebar-nav a.active,
+html:not(.dark) .looma-sidebar .sidebar-nav button.active {
+  border: 0 !important;
+  background: var(--yellow) !important;
+  background-color: var(--yellow) !important;
+  background-image: none !important;
+  color: var(--on-yellow) !important;
+  box-shadow: none !important;
+}
+
+.dark .looma-sidebar .sidebar-nav a.active,
+.dark .looma-sidebar .sidebar-nav button.active {
+  border: 0 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+}
+
+html:not(.dark) .looma-sidebar .sidebar-nav a:not(.active),
+html:not(.dark) .looma-sidebar .sidebar-nav button:not(.active),
+html:not(.dark) .sidebar-theme-item {
+  background: transparent !important;
+  color: var(--text) !important;
+}
+
+html:not(.dark) .looma-sidebar .sidebar-nav a:not(.active) svg,
+html:not(.dark) .looma-sidebar .sidebar-nav button:not(.active) svg,
+html:not(.dark) .sidebar-theme-item svg {
+  color: var(--text-subtle) !important;
+  stroke: currentColor !important;
+}
+
+html:not(.dark) .looma-sidebar .sidebar-nav a:not(.active):hover,
+html:not(.dark) .looma-sidebar .sidebar-nav button:not(.active):hover,
+html:not(.dark) .sidebar-theme-item:hover {
+  background: var(--hover) !important;
+}
+
+.composer-kind-selector {
+  border: 1px solid var(--border) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+html:not(.dark) .composer-kind-selector button,
+html:not(.dark) .feed-work-badge,
+html:not(.dark) .home-context-rail .home-opportunity-card-top span,
+html:not(.dark) .badge,
+html:not(.dark) .tag,
+html:not(.dark) .chip {
+  border: 1px solid var(--border) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  color: var(--text-subtle) !important;
+  box-shadow: none !important;
+}
+
+html:not(.dark) .composer-kind-selector button.active {
+  border-color: rgba(0, 0, 0, 0.85) !important;
+  background: var(--yellow) !important;
+  background-color: var(--yellow) !important;
+  color: var(--on-yellow) !important;
+}
+
+.dark .composer-kind-selector button.active {
+  border-color: #ffffff !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.home-feed-stream .feed-tabs {
+  border-bottom: 1px solid var(--border) !important;
+  background: var(--surface) !important;
+  background-color: var(--surface) !important;
+  background-image: none !important;
+}
+
+.home-feed-stream .feed-tabs button {
+  color: var(--text-muted) !important;
+  background: transparent !important;
+}
+
+html:not(.dark) .home-feed-stream .feed-tabs button.active {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.dark .home-feed-stream .feed-tabs button.active {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.home-feed-stream .feed-tabs button.active::after {
+  height: 3px !important;
+  background: var(--yellow) !important;
+  background-color: var(--yellow) !important;
+  background-image: none !important;
+}
+
+html:not(.dark) .home-main-scroll > .home-feed-stream .home-feed-heading,
+html:not(.dark) .home-main-scroll > .home-feed-stream .feed-tabs,
+html:not(.dark) .home-main-scroll > .home-feed-stream .feed-tabs button,
+html:not(.dark) .home-main-scroll > .home-feed-stream .feed-tabs button.active {
+  background: var(--surface) !important;
+  background-color: var(--surface) !important;
+  background-image: none !important;
+}
+
+.dark .home-main-scroll > .home-feed-stream .home-feed-heading,
+.dark .home-main-scroll > .home-feed-stream .feed-tabs,
+.dark .home-main-scroll > .home-feed-stream .feed-tabs button,
+.dark .home-main-scroll > .home-feed-stream .feed-tabs button.active {
+  background: var(--bg) !important;
+  background-color: var(--bg) !important;
+  background-image: none !important;
+}
+
+html:not(.dark)
+  a:not(.looma-logo):not(.home-opportunity-card):not(.sidebar-nav a):not(.profile-link):not(
+    .post-author-link
+  ),
+html:not(.dark) .home-context-rail .home-section-header a,
+html:not(.dark) .home-companion-link,
+html:not(.dark) .home-next-step-actions a {
+  color: var(--text) !important;
+  font-weight: 600 !important;
+  text-decoration: underline !important;
+  text-decoration-color: var(--yellow) !important;
+  text-decoration-thickness: 3px !important;
+  text-underline-offset: 3px !important;
+}
+
+html:not(.dark)
+  a:not(.looma-logo):not(.home-opportunity-card):not(.sidebar-nav a):not(.profile-link):not(
+    .post-author-link
+  ):hover,
+html:not(.dark) .home-context-rail .home-section-header a:hover,
+html:not(.dark) .home-companion-link:hover,
+html:not(.dark) .home-next-step-actions a:hover {
+  background: var(--yellow) !important;
+  background-color: var(--yellow) !important;
+  color: var(--on-yellow) !important;
+}
+
+.dark
+  a:not(.looma-logo):not(.home-opportunity-card):not(.sidebar-nav a):not(.profile-link):not(
+    .post-author-link
+  ),
+.dark .home-context-rail .home-section-header a,
+.dark .post-see-more {
+  color: var(--yellow) !important;
+}
+
+html:not(.dark) svg:not(.admin-verified-badge svg) {
+  filter: none !important;
+}
+
+html:not(.dark) .home-context-icon,
+html:not(.dark) .home-context-rail .home-projects-empty svg,
+html:not(.dark) .plan-icon,
+html:not(.dark) .settings-icon {
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--text-subtle) !important;
+}
+
+html:not(.dark) .home-empty-secondary,
+html:not(.dark) .post-edit-cancel,
+html:not(.dark) .post-delete-cancel,
+html:not(.dark) .secondary-button,
+html:not(.dark) .button-secondary,
+html:not(.dark) .cancel-button,
+html:not(.dark) .decline-button {
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+}
+
+html:not(.dark) .home-empty-secondary:hover,
+html:not(.dark) .post-edit-cancel:hover,
+html:not(.dark) .post-delete-cancel:hover,
+html:not(.dark) .secondary-button:hover,
+html:not(.dark) .button-secondary:hover,
+html:not(.dark) .cancel-button:hover,
+html:not(.dark) .decline-button:hover {
+  background: var(--hover) !important;
+  background-color: var(--hover) !important;
+}
+
+html:not(.dark) .plan-card.current,
+html:not(.dark) .plan-card.is-current,
+html:not(.dark) [data-current-plan="true"] {
+  border: 1.5px solid #000000 !important;
+}
+
+html:not(.dark) .plan-current-badge,
+html:not(.dark) .current-plan-badge {
+  border: 1px solid rgba(0, 0, 0, 0.25) !important;
+  background: var(--yellow) !important;
+  color: var(--on-yellow) !important;
+}
+
+.home-feed-stream .home-feed-panel,
+.home-feed-panel > .home-composer-panel,
+.home-feed-stream .feed-post,
+.home-context-rail .home-discovery-section,
+.home-context-rail .home-next-steps,
+.home-context-rail .home-trending-card,
+.home-context-rail .home-feed-companion,
+.sidebar-profile,
+.workspace-card,
+.settings-card,
+.plan-card,
+.profile-card,
+.admin-card {
+  border-color: var(--border) !important;
+}
+
+.home-feed-panel > .home-composer-panel .composer,
+.home-feed-stream .feed-post {
+  padding-right: var(--feed-px) !important;
+  padding-left: var(--feed-px) !important;
+}
+
+.home-feed-panel > .home-composer-panel textarea {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.home-context-rail {
+  max-height: 100dvh !important;
+  padding-bottom: 32px !important;
+  overflow-y: auto !important;
+}
+
+.home-context-rail .home-opportunity-card {
+  cursor: pointer !important;
+}
+
+.home-context-rail .home-opportunity-card > a {
+  display: none !important;
+}
+
+html:not(.dark) .home-context-rail a.home-opportunity-card,
+html:not(.dark) .home-context-rail .home-opportunity-card,
+html:not(.dark) .home-context-rail .home-opportunity-card:hover,
+html:not(.dark) .home-context-rail .home-person-card,
+html:not(.dark) .home-context-rail .home-person-card:hover,
+html:not(.dark) .home-context-rail .home-discovery-empty {
+  background: var(--surface) !important;
+  background-color: var(--surface) !important;
+  background-image: none !important;
+  color: var(--text) !important;
+}
+
+html:not(.dark) .home-context-rail .home-opportunity-card h3,
+html:not(.dark) .home-context-rail .home-opportunity-card p,
+html:not(.dark) .home-context-rail .home-person-card h3,
+html:not(.dark) .home-context-rail .home-person-card p {
+  color: var(--text) !important;
+}
+
+html:not(.dark) .home-context-rail .home-opportunity-card:hover,
+html:not(.dark) .home-context-rail .home-person-card:hover {
+  background: var(--hover) !important;
+  background-color: var(--hover) !important;
+}
+
+/* Stable home search: one in-flow anchor, CSS-positioned results panel. */
+.home-search-area {
+  position: relative !important;
+  z-index: 60 !important;
+  width: 100% !important;
+  margin: 0 0 12px !important;
+  overflow: visible !important;
+}
+
+.search-wrap {
+  position: relative !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+
+.looma-search {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  width: 100% !important;
+  height: 44px !important;
+  align-items: center !important;
+  gap: 10px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 999px !important;
+  padding: 0 16px !important;
+  background: var(--surface) !important;
+  background-color: var(--surface) !important;
+  background-image: none !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.dark .looma-search {
+  background: #000000 !important;
+  background-color: #000000 !important;
+}
+
+.looma-search:focus-within {
+  border-color: var(--yellow) !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+html:not(.dark) .looma-search:focus-within {
+  border-color: #000000 !important;
+  border-width: 1.5px !important;
+}
+
+.looma-search svg {
+  width: 17px !important;
+  height: 17px !important;
+  flex: 0 0 auto !important;
+  color: var(--text-muted) !important;
+}
+
+.looma-search input {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  border: 0 !important;
+  outline: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+  font: inherit !important;
+}
+
+.looma-search input::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 1 !important;
+}
+
+.looma-search-results {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  right: 0 !important;
+  left: 0 !important;
+  z-index: 70 !important;
+  max-height: min(70dvh, 520px) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  padding: 8px !important;
+  background: var(--surface) !important;
+  background-color: var(--surface) !important;
+  background-image: none !important;
+  color: var(--text) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+  backdrop-filter: none !important;
+}
+
+.dark .looma-search-results {
+  background: #000000 !important;
+  background-color: #000000 !important;
+  box-shadow: none !important;
+}
+
+.search-result-group + .search-result-group {
+  margin-top: 8px !important;
+  padding-top: 8px !important;
+  border-top: 1px solid var(--border) !important;
+}
+
+.search-result-group h3 {
+  margin: 0 0 4px !important;
+  padding: 0 8px !important;
+  color: var(--text-muted) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+
+.looma-search-results a,
+.looma-search-results button {
+  display: grid !important;
+  grid-template-columns: 32px minmax(0, 1fr) !important;
+  width: 100% !important;
+  min-height: 48px !important;
+  align-items: center !important;
+  gap: 10px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  padding: 8px !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  color: var(--text) !important;
+  text-align: left !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+
+.looma-search-results a:hover,
+.looma-search-results button:hover,
+.looma-search-results a.is-active,
+.looma-search-results button.is-active {
+  background: var(--hover) !important;
+  background-color: var(--hover) !important;
+}
+
+.dark .looma-search-results a:hover,
+.dark .looma-search-results button:hover,
+.dark .looma-search-results a.is-active,
+.dark .looma-search-results button.is-active {
+  background: rgba(255, 255, 255, 0.05) !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.search-result-icon {
+  display: inline-flex !important;
+  width: 32px !important;
+  height: 32px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--text-subtle) !important;
+}
+
+.search-result-icon .avatar {
+  width: 32px !important;
+  height: 32px !important;
+  border: 0 !important;
+}
+
+.search-result-copy {
+  display: grid !important;
+  min-width: 0 !important;
+  gap: 2px !important;
+  background: transparent !important;
+}
+
+.search-result-copy strong,
+.search-result-copy small {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.search-result-copy strong {
+  display: flex !important;
+  align-items: center !important;
+  color: var(--text) !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+.search-result-copy small {
+  color: var(--text-muted) !important;
+  font-size: 14px !important;
+}
+
+.search-results-state {
+  margin: 0 !important;
+  padding: 14px 12px !important;
+  color: var(--text-muted) !important;
+  font-size: 14px !important;
+}
+
+.search-results-skeleton {
+  display: grid !important;
+  gap: 8px !important;
+  padding: 6px !important;
+}
+
+.search-results-skeleton i {
+  display: block !important;
+  height: 48px !important;
+  border-radius: 10px !important;
+  background: var(--hover) !important;
+}
+
+.dark .search-results-skeleton i {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+@media (max-width: 1200px) {
+  .feed-stage .home-context-rail {
+    position: sticky !important;
+    top: 0 !important;
+    display: block !important;
+    grid-row: 1 !important;
+    width: min(100vw, 680px) !important;
+    max-height: none !important;
+    padding: 12px 16px !important;
+    overflow: visible !important;
+    background: var(--bg) !important;
+  }
+
+  .feed-stage .home-main-scroll {
+    grid-row: 2 !important;
+  }
+
+  .home-context-rail .home-search-area {
+    margin: 0 !important;
+  }
+
+  .home-context-rail .home-discovery-board,
+  .home-context-rail .home-next-steps,
+  .home-context-rail .home-trending-card,
+  .home-context-rail .home-feed-companion {
+    display: none !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .feed-stage,
+  .feed-stage .home-shell,
+  .feed-stage .home-main-scroll,
+  .feed-stage .home-context-rail {
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+
+  .feed-stage {
+    grid-template-columns: minmax(0, 100vw) !important;
+  }
+
+  .feed-stage .home-context-rail {
+    padding: 12px 16px !important;
+  }
+
+  .looma-search-results {
+    max-height: 70dvh !important;
+  }
+}
+
+/* Verified badge + restrained accent pass: keep yellow only where it is meant
+   to act as a filled control or verification mark. */
+.admin-verified-badge {
+  display: inline-block !important;
+  flex: 0 0 auto !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin-left: 4px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  line-height: 1 !important;
+  vertical-align: -3px !important;
+  box-shadow: none !important;
+}
+
+.admin-verified-badge svg {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.admin-verified-badge .badge-shape {
+  fill: var(--yellow) !important;
+  stroke: rgba(0, 0, 0, 0.45) !important;
+  stroke-linejoin: round !important;
+  stroke-width: 0.7 !important;
+}
+
+.dark .admin-verified-badge .badge-shape {
+  stroke: transparent !important;
+  stroke-width: 0 !important;
+}
+
+.sidebar-profile .admin-verified-badge {
+  width: 16px !important;
+  height: 16px !important;
+  vertical-align: -2px !important;
+}
+
+.profile-hero .admin-verified-badge,
+.profile-heading .admin-verified-badge,
+h1 .admin-verified-badge {
+  width: 22px !important;
+  height: 22px !important;
+}
+
+.post-author-link,
+.post-meta strong,
+.sidebar-profile strong,
+.home-person-card h3,
+.search-result-copy strong,
+.connection-card h3,
+.proposal-card h3,
+.profile-heading,
+.profile-title,
+.workspace-card h2,
+.workspace-card h3,
+.admin-card h2,
+.admin-card h3 {
+  color: var(--text) !important;
+}
+
+.dark
+  a:not(.looma-logo):not(.home-opportunity-card):not(.sidebar-nav a):not(.profile-link):not(
+    .post-author-link
+  ),
+.dark .home-context-rail .home-section-header a,
+.dark .post-see-more,
+.dark .home-companion-link,
+.dark .home-next-step-actions a,
+.dark .home-context-rail .home-discovery-empty > a,
+.dark .home-context-rail .home-projects-empty > a {
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  text-decoration: none !important;
+}
+
+.dark
+  a:not(.looma-logo):not(.home-opportunity-card):not(.sidebar-nav a):not(.profile-link):not(
+    .post-author-link
+  ):hover,
+.dark .home-context-rail .home-section-header a:hover,
+.dark .post-see-more:hover,
+.dark .home-companion-link:hover,
+.dark .home-next-step-actions a:hover,
+.dark .home-context-rail .home-discovery-empty > a:hover,
+.dark .home-context-rail .home-projects-empty > a:hover {
+  color: var(--text) !important;
+  text-decoration: underline !important;
+  text-decoration-color: currentColor !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 3px !important;
+}
+
+html:not(.dark)
+  a:not(.looma-logo):not(.home-opportunity-card):not(.sidebar-nav a):not(.profile-link):not(
+    .post-author-link
+  ),
+html:not(.dark) .home-context-rail .home-section-header a,
+html:not(.dark) .home-companion-link,
+html:not(.dark) .home-next-step-actions a,
+html:not(.dark) .post-see-more {
+  background: transparent !important;
+  color: var(--text) !important;
+  text-decoration: none !important;
+}
+
+html:not(.dark)
+  a:not(.looma-logo):not(.home-opportunity-card):not(.sidebar-nav a):not(.profile-link):not(
+    .post-author-link
+  ):hover,
+html:not(.dark) .home-context-rail .home-section-header a:hover,
+html:not(.dark) .home-companion-link:hover,
+html:not(.dark) .home-next-step-actions a:hover,
+html:not(.dark) .post-see-more:hover {
+  background: transparent !important;
+  color: var(--text) !important;
+  text-decoration: underline !important;
+  text-decoration-color: currentColor !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 3px !important;
+}
+
+.dark .home-feed-stream .feed-tabs button.active::after {
+  background: var(--text) !important;
+  background-color: var(--text) !important;
+}
+
+html:not(.dark) .home-feed-stream .feed-tabs button.active::after {
+  background: #0a0a0a !important;
+  background-color: #0a0a0a !important;
+}
+
+.dark a:focus-visible,
+.dark button:focus-visible,
+.dark input:focus-visible,
+.dark textarea:focus-visible,
+.dark select:focus-visible,
+.dark [role="button"]:focus-visible,
+.dark [tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 2px solid #ffffff !important;
+}
+
+.dark .looma-search:focus-within,
+.dark .aside-search:focus-within,
+.dark .feed-search-overlay .aside-search:focus-within {
+  border-color: #ffffff !important;
+  outline: 0 !important;
+}
+
+.dark .home-empty-secondary,
+.dark .home-context-rail .home-discovery-empty > a,
+.dark .home-context-rail .home-projects-empty > a,
+.dark .home-next-step-actions a,
+.dark .home-companion-link,
+.dark .post-edit-cancel,
+.dark .post-delete-cancel {
+  border-color: #2a2a2a !important;
+  background: transparent !important;
+  color: var(--text) !important;
+}
+
+.dark .home-empty-secondary:hover,
+.dark .home-context-rail .home-discovery-empty > a:hover,
+.dark .home-context-rail .home-projects-empty > a:hover,
+.dark .home-next-step-actions a:hover,
+.dark .home-companion-link:hover,
+.dark .post-edit-cancel:hover,
+.dark .post-delete-cancel:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark .home-context-rail .home-section-header a,
+.dark .home-trending-list a {
+  font-weight: 600 !important;
+}
+
+@media (max-width: 1200px) {
+  .feed-stage {
+    grid-template-columns: minmax(0, 100vw) !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-inline: 0 !important;
+  }
+
+  .feed-stage .home-shell,
+  .feed-stage .home-main-scroll,
+  .feed-stage .home-context-rail {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-inline: 0 !important;
+  }
+
+  .feed-stage .home-context-rail {
+    left: 0 !important;
+    padding: 12px 16px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .feed-stage .home-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+    justify-content: stretch !important;
+  }
+
+  .feed-stage .home-main-scroll,
+  .feed-stage .home-feed-panel,
+  .feed-stage .home-feed-stream,
+  .feed-stage .home-composer-panel,
+  .feed-stage .composer {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
+  }
+}
+
+/* Final neutral-accent guard: dark mode must stay black/white/gray, with yellow
+   reserved for the verification mark only. */
+.feed-ready .brand-intro {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+.post-meta,
+.post-meta a,
+.post-author-link,
+.post-meta strong,
+.post-card strong,
+.feed-post strong,
+.search-result-copy strong,
+.sidebar-profile strong,
+.profile-name,
+.profile-card strong,
+.proposal-card strong,
+.connection-card strong,
+.admin-table strong {
+  color: var(--text) !important;
+  font-weight: 600 !important;
+}
+
+.post-meta span:not(.admin-verified-badge),
+.post-meta button,
+.post-time,
+.post-username,
+.search-result-copy span,
+.search-result-copy small {
+  color: var(--text-muted) !important;
+}
+
+.composer-kind-selector,
+.composer-kind-selector button:not(.active),
+.home-context-rail .home-opportunity-card-top,
+.home-context-rail .home-opportunity-card-top span,
+.home-opportunity-meta,
+.home-opportunity-meta span,
+.tag,
+.badge:not(.admin-verified-badge) {
+  color: var(--text-muted) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.dark .composer-kind-selector,
+.dark .composer-kind-selector button:not(.active),
+.dark .home-context-rail .home-opportunity-card-top span,
+.dark .home-opportunity-meta span,
+.dark .tag,
+.dark .badge:not(.admin-verified-badge) {
+  border-color: #2a2a2a !important;
+}
+
+.dark .composer-kind-selector button.active,
+.dark .home-feed-stream .feed-tabs button.active,
+.dark .sidebar-nav a.active,
+.dark .sidebar-profile,
+.dark .sidebar-theme-toggle {
+  color: var(--text) !important;
+}
+
+.dark .home-context-rail .home-opportunity-card > a,
+.dark .home-context-rail .home-section-header a,
+.dark .home-context-rail a:not(.home-opportunity-card),
+.dark .home-next-step-actions a,
+.dark .home-companion-link {
+  color: var(--text-muted) !important;
+  text-decoration-color: currentColor !important;
+}
+
+.dark .home-context-rail .home-opportunity-card > a:hover,
+.dark .home-context-rail .home-section-header a:hover,
+.dark .home-context-rail a:not(.home-opportunity-card):hover,
+.dark .home-next-step-actions a:hover,
+.dark .home-companion-link:hover {
+  color: var(--text) !important;
+}
+
+html:not(.dark) .composer-kind-selector,
+html:not(.dark) .composer-kind-selector button:not(.active),
+html:not(.dark) .home-context-rail .home-opportunity-card-top span,
+html:not(.dark) .home-opportunity-meta span,
+html:not(.dark) .tag,
+html:not(.dark) .badge:not(.admin-verified-badge) {
+  color: #525252 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+html:not(.dark) .post-meta,
+html:not(.dark) .post-meta a,
+html:not(.dark) .post-author-link,
+html:not(.dark) .post-meta strong,
+html:not(.dark) .post-card strong,
+html:not(.dark) .feed-post strong,
+html:not(.dark) .search-result-copy strong,
+html:not(.dark) .sidebar-profile strong,
+html:not(.dark) .profile-name,
+html:not(.dark) .profile-card strong,
+html:not(.dark) .proposal-card strong,
+html:not(.dark) .connection-card strong,
+html:not(.dark) .admin-table strong {
+  color: #0a0a0a !important;
+}
+
+.dark .post-author-link,
+.dark a.post-author-link,
+.dark .post-meta > strong,
+.dark .search-result-copy strong,
+.dark .sidebar-profile strong,
+.dark .profile-name,
+.dark .profile-card strong,
+.dark .proposal-card strong,
+.dark .connection-card strong,
+.dark .admin-table strong {
+  color: var(--text) !important;
+  font-weight: 600 !important;
+}
+
+html:not(.dark) .post-author-link,
+html:not(.dark) a.post-author-link,
+html:not(.dark) .post-meta > strong,
+html:not(.dark) .search-result-copy strong,
+html:not(.dark) .sidebar-profile strong,
+html:not(.dark) .profile-name,
+html:not(.dark) .profile-card strong,
+html:not(.dark) .proposal-card strong,
+html:not(.dark) .connection-card strong,
+html:not(.dark) .admin-table strong {
+  color: #0a0a0a !important;
+  font-weight: 600 !important;
+}
+
+.sidebar-profile > span:not(.profile-avatar):not(.profile-avatar-guest) {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.sidebar-profile strong {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  overflow: hidden !important;
+}
+
+.sidebar-profile-name-text,
+.sidebar-profile small {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.sidebar-profile-name-text {
+  display: block !important;
+}
+
+.sidebar-profile small {
+  display: block !important;
+  max-width: 100% !important;
+}
+
+.sidebar-profile > svg {
+  flex: 0 0 auto !important;
+}
+
+.home-feed-panel > .home-composer-panel textarea,
+.home-main-scroll > .home-composer-panel textarea,
+.home-composer-panel .composer textarea,
+.composer textarea {
+  border: 0 !important;
+  border-radius: 16px !important;
+  outline: 0 !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+}
+
+.home-feed-panel > .home-composer-panel textarea:focus,
+.home-feed-panel > .home-composer-panel textarea:focus-visible,
+.home-main-scroll > .home-composer-panel textarea:focus,
+.home-main-scroll > .home-composer-panel textarea:focus-visible,
+.home-composer-panel .composer textarea:focus,
+.home-composer-panel .composer textarea:focus-visible {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.composer-type-toggle {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 40px 40px !important;
+  gap: 8px !important;
+  width: 88px !important;
+  height: 45px !important;
+  align-items: start !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.composer-type-toggle > button {
+  all: unset !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  width: 40px !important;
+  height: 40px !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  outline: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  color: inherit !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  transform: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.composer-type-toggle > button svg {
+  display: block !important;
+  width: 28px !important;
+  height: 28px !important;
+  opacity: 0.45 !important;
+  transition: opacity 140ms ease !important;
+}
+
+.composer-type-toggle > button[aria-checked="true"] svg {
+  opacity: 1 !important;
+}
+
+.composer-type-toggle > button:hover,
+.composer-type-toggle > button:active,
+.composer-type-toggle > button[aria-checked="true"]:hover,
+.composer-type-toggle > button[aria-checked="false"]:hover {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  outline: 0 !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+.composer-type-toggle > button:focus {
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.composer-type-toggle > button:focus-visible {
+  outline: 2px solid var(--text) !important;
+  outline-offset: 2px !important;
+}
+
+.composer-type-toggle > button:disabled {
+  cursor: not-allowed !important;
+}
+
+.composer-type-toggle:has(button:disabled) {
+  opacity: 0.72 !important;
+}
+
+.composer-type-indicator {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 10px !important;
+  display: block !important;
+  width: 20px !important;
+  height: 3px !important;
+  border: 1px solid #000000 !important;
+  border-radius: 2px !important;
+  background: #f3f700 !important;
+  background-color: #f3f700 !important;
+  pointer-events: none !important;
+  transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.composer-type-toggle[data-value="work"] .composer-type-indicator {
+  transform: translateX(48px) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .composer-type-indicator,
+  .composer-type-toggle > button svg {
+    transition: none !important;
+  }
+}
+
+.home-feed-panel > .home-composer-panel .publish-button {
+  min-height: 36px !important;
+  height: 36px !important;
+}
+
+html:not(.dark) .looma-sidebar .sidebar-nav a.active,
+html:not(.dark) .looma-sidebar .sidebar-nav a.active:hover,
+html:not(.dark) .looma-sidebar .sidebar-nav a[aria-current="page"],
+html:not(.dark) .looma-sidebar .sidebar-nav a[aria-current="page"]:hover,
+html:not(.dark) .looma-sidebar .sidebar-nav button.active,
+html:not(.dark) .looma-sidebar .sidebar-nav button.active:hover {
+  border: 0 !important;
+  background: var(--yellow) !important;
+  background-color: var(--yellow) !important;
+  background-image: none !important;
+  color: var(--on-yellow) !important;
+  box-shadow: none !important;
+}
+
+html:not(.dark) .looma-sidebar .sidebar-nav a.active svg,
+html:not(.dark) .looma-sidebar .sidebar-nav a[aria-current="page"] svg,
+html:not(.dark) .looma-sidebar .sidebar-nav button.active svg {
+  color: var(--on-yellow) !important;
+  stroke: currentColor !important;
+}
+
+.dark .looma-sidebar .sidebar-nav a.active svg,
+.dark .looma-sidebar .sidebar-nav a[aria-current="page"] svg,
+.dark .looma-sidebar .sidebar-nav button.active svg {
+  color: #000000 !important;
+  stroke: currentColor !important;
+}
+
+/* Workspace dark-mode and scrolling repair: internal pages must not clip long
+   sections, and every surface must follow the active dark palette. */
+.workspace-page {
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  overflow: hidden !important;
+}
+
+.workspace-content {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  scrollbar-gutter: stable !important;
+}
+
+.workspace-body {
+  min-height: 0 !important;
+  padding-bottom: 3rem !important;
+}
+
+.dark .workspace-card,
+.dark .workspace-person-card,
+.dark .workspace-section,
+.dark .workspace-chart,
+.dark .workspace-report-table,
+.dark .workspace-metrics article,
+.dark .settings-panel,
+.dark .portfolio-empty-state,
+.dark .portfolio-performance-empty {
+  border-color: var(--border) !important;
+  background: var(--surface) !important;
+  background-color: var(--surface) !important;
+  background-image: none !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+}
+
+.dark .workspace-card h2,
+.dark .workspace-person-card h2,
+.dark .workspace-section h2,
+.dark .workspace-chart h2,
+.dark .settings-panel h2,
+.dark .portfolio-performance-empty h3,
+.dark .workspace-metrics strong,
+.dark .workspace-report-table td {
+  color: var(--text) !important;
+}
+
+.dark .workspace-card p,
+.dark .workspace-card small,
+.dark .workspace-card time,
+.dark .workspace-section p,
+.dark .workspace-chart span,
+.dark .workspace-metrics span,
+.dark .workspace-metrics small,
+.dark .workspace-report-table th,
+.dark .portfolio-empty-state p,
+.dark .portfolio-performance-empty p,
+.dark .portfolio-section-status {
+  color: var(--text-muted) !important;
+}
+
+.dark .workspace-report-table th,
+.dark .workspace-report-table td {
+  border-bottom-color: var(--border) !important;
+  background: transparent !important;
+}
+
+.dark .workspace-report-table tr:last-child th,
+.dark .workspace-report-table tr:last-child td {
+  border-bottom-color: transparent !important;
+}
+
+.dark .portfolio-skill-list span {
+  border-color: rgba(var(--yellow-rgb), 0.35) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--yellow) !important;
+}
+
+.dark .portfolio-performance-ring {
+  border-color: var(--border-strong) !important;
+  border-top-color: var(--text-muted) !important;
+}
+
+.looma-sidebar .sidebar-profile {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.looma-sidebar .sidebar-profile-main {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.65rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.looma-sidebar .sidebar-profile-main > span {
+  min-width: 0;
+}
+
+.looma-sidebar .sidebar-profile-main strong,
+.looma-sidebar .sidebar-profile-main small,
+.looma-sidebar .sidebar-profile-name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.looma-sidebar .sidebar-profile-settings {
+  flex: 0 0 2rem;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.looma-sidebar .sidebar-profile-settings:hover,
+.looma-sidebar .sidebar-profile-settings:focus-visible {
+  background: var(--surface-hover);
+  color: var(--text);
 }

@@ -7,6 +7,7 @@ export type ActivityMetrics = {
   posts: number;
   opportunitySaves: number;
   opportunityViews: number;
+  trafficEvents: number;
 };
 
 export type ActivityMetricResult = {
@@ -55,6 +56,10 @@ export async function getActivityMetricResults(
     .from("opportunity_views")
     .select("opportunity_id", { count: "exact", head: true })
     .eq("user_id", userId);
+  const trafficEvents = supabase
+    .from("user_traffic_events")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId);
 
   if (options.since) {
     connections.gte("created_at", options.since);
@@ -63,17 +68,26 @@ export async function getActivityMetricResults(
     posts.gte("created_at", options.since);
     opportunitySaves.gte("created_at", options.since);
     opportunityViews.gte("created_at", options.since);
+    trafficEvents.gte("created_at", options.since);
   }
 
-  const [connectionResult, sentResult, receivedResult, postsResult, savesResult, viewsResult] =
-    await Promise.all([
-      connections,
-      proposalsSent,
-      proposalsReceived,
-      posts,
-      opportunitySaves,
-      opportunityViews,
-    ]);
+  const [
+    connectionResult,
+    sentResult,
+    receivedResult,
+    postsResult,
+    savesResult,
+    viewsResult,
+    trafficResult,
+  ] = await Promise.all([
+    connections,
+    proposalsSent,
+    proposalsReceived,
+    posts,
+    opportunitySaves,
+    opportunityViews,
+    trafficEvents,
+  ]);
 
   return {
     connections: {
@@ -88,6 +102,7 @@ export async function getActivityMetricResults(
     posts: { value: postsResult.count ?? 0, error: postsResult.error?.message ?? null },
     opportunitySaves: { value: savesResult.count ?? 0, error: savesResult.error?.message ?? null },
     opportunityViews: { value: viewsResult.count ?? 0, error: viewsResult.error?.message ?? null },
+    trafficEvents: { value: trafficResult.count ?? 0, error: trafficResult.error?.message ?? null },
   };
 }
 
@@ -108,9 +123,29 @@ export async function getActivityMetrics(
       posts: results.posts.value,
       opportunitySaves: results.opportunitySaves.value,
       opportunityViews: results.opportunityViews.value,
+      trafficEvents: results.trafficEvents.value,
     } satisfies ActivityMetrics,
     error: null,
   };
+}
+
+export type UserTrafficEventInput = {
+  path: string;
+  referrer: string | null;
+  userAgent: string | null;
+};
+
+export async function recordUserTrafficEvent(
+  supabase: SupabaseClient,
+  userId: string,
+  event: UserTrafficEventInput,
+) {
+  return supabase.from("user_traffic_events").insert({
+    user_id: userId,
+    path: event.path,
+    referrer: event.referrer,
+    user_agent: event.userAgent,
+  });
 }
 
 export type ConnectionRow = {
@@ -127,6 +162,21 @@ export async function getConnectionRows(supabase: SupabaseClient, userId: string
     .select("id, requester_id, addressee_id, status, created_at")
     .or(`requester_id.eq.${userId},addressee_id.eq.${userId}`)
     .order("created_at", { ascending: false });
+}
+
+export async function recordOpportunityView(
+  supabase: SupabaseClient,
+  userId: string,
+  opportunityId: string,
+) {
+  return supabase.from("opportunity_views").upsert(
+    {
+      opportunity_id: opportunityId,
+      user_id: userId,
+      viewed_at: new Date().toISOString(),
+    },
+    { onConflict: "opportunity_id,user_id" },
+  );
 }
 
 export function getPeerIds(

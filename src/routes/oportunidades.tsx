@@ -8,6 +8,7 @@ import {
   WorkspaceSkeleton,
 } from "@/components/looma/WorkspaceStates";
 import { WorkspaceLayout } from "@/components/looma/WorkspaceLayout";
+import { recordOpportunityView } from "@/lib/activity-metrics";
 import { useCurrentProfile } from "@/lib/profile";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
@@ -135,6 +136,16 @@ function OpportunitiesPage() {
     });
   }
 
+  async function toggleDetails(id: string) {
+    const shouldOpen = expandedId !== id;
+    setExpandedId(shouldOpen ? id : null);
+
+    if (!shouldOpen || !user) return;
+
+    const result = await recordOpportunityView(getSupabaseBrowserClient(), user.id, id);
+    if (result.error) setError(result.error.message);
+  }
+
   function clearFilters() {
     setQuery("");
     setCategory(null);
@@ -257,10 +268,7 @@ function OpportunitiesPage() {
                   ? item.description
                   : `${item.description.slice(0, 180)}${item.description.length > 180 ? "…" : ""}`}
               </p>
-              <button
-                className="workspace-text-action"
-                onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
-              >
+              <button className="workspace-text-action" onClick={() => void toggleDetails(item.id)}>
                 {expandedId === item.id ? "Ocultar detalhes" : "Ver detalhes"}
               </button>
             </article>

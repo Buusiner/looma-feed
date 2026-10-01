@@ -1,7 +1,6 @@
 import {
   BarChart3,
   BadgeCheck,
-  ChevronsUpDown,
   CircleHelp,
   FileText,
   Home,
@@ -18,7 +17,7 @@ import {
   Users,
 } from "lucide-react";
 import { Link, useLocation, useRouter } from "@tanstack/react-router";
-import { type MouseEvent, useState } from "react";
+import { type MouseEvent, useEffect, useState } from "react";
 import { AuthButton } from "./AuthButton";
 import { AdminVerifiedBadge } from "./AdminVerifiedBadge";
 import { ProfileAvatar } from "./ProfileAvatar";
@@ -40,7 +39,7 @@ const NAV_GROUPS = [
   {
     id: "work",
     items: [
-      { icon: TrendingUp, label: "Oportunidades em alta", path: "/oportunidades" },
+      { icon: TrendingUp, label: "Em alta", path: "/oportunidades" },
       { icon: BarChart3, label: "Relatórios", path: "/relatorios" },
       { icon: Send, label: "Propostas", path: "/propostas" },
     ],
@@ -49,7 +48,6 @@ const NAV_GROUPS = [
     id: "account",
     items: [
       { icon: CircleHelp, label: "Comunidade e Ajuda", path: "/comunidade" },
-      { icon: Settings, label: "Configurações", path: "/configuracoes" },
       { icon: BadgeCheck, label: "Planos", path: "/planos" },
     ],
   },
@@ -70,12 +68,20 @@ export function LoomaSidebar() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState<string | null>(null);
   const [isLeavingForProfile, setIsLeavingForProfile] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(() =>
+    typeof document === "undefined" ? true : document.documentElement.classList.contains("dark"),
+  );
+
+  useEffect(() => {
+    setIsDarkTheme(document.documentElement.classList.contains("dark"));
+  }, []);
 
   function toggleTheme() {
     const isDark = document.documentElement.classList.contains("dark");
     const nextTheme = isDark ? "light" : "dark";
     saveTheme(nextTheme);
     applyTheme(getStoredTheme());
+    setIsDarkTheme(nextTheme === "dark");
   }
 
   function openProfileEditor(event: MouseEvent<HTMLAnchorElement>) {
@@ -148,44 +154,53 @@ export function LoomaSidebar() {
 
       <div className="sidebar-profile-wrap">
         <div className="sidebar-footer-row">
-          <button
-            type="button"
-            className="sidebar-profile"
-            aria-label="Abrir menu do perfil"
-            aria-expanded={isProfileMenuOpen}
-            onClick={() => setIsProfileMenuOpen((open) => !open)}
-          >
-            {user ? (
-              <ProfileAvatar
-                className="profile-avatar"
-                fullName={displayName}
-                avatarUrl={profile?.avatar_url}
-              />
-            ) : (
-              <span className="profile-avatar profile-avatar-guest" aria-hidden="true">
-                <UserRound size={18} />
+          <div className="sidebar-profile">
+            <button
+              type="button"
+              className="sidebar-profile-main"
+              aria-label="Abrir menu do perfil"
+              aria-expanded={isProfileMenuOpen}
+              onClick={() => setIsProfileMenuOpen((open) => !open)}
+            >
+              {user ? (
+                <ProfileAvatar
+                  className="profile-avatar"
+                  fullName={displayName}
+                  avatarUrl={profile?.avatar_url}
+                />
+              ) : (
+                <span className="profile-avatar profile-avatar-guest" aria-hidden="true">
+                  <UserRound size={18} />
+                </span>
+              )}
+              <span>
+                <strong>
+                  <span className="sidebar-profile-name-text">{displayName}</span>
+                  {isAdmin ? <AdminVerifiedBadge /> : null}
+                </strong>
+                {username ? <small>{username}</small> : null}
               </span>
-            )}
-            <span>
-              <strong>
-                {displayName}
-                {isAdmin ? <AdminVerifiedBadge /> : null}
-              </strong>
-              {username ? <small>{username}</small> : null}
-            </span>
-            <ChevronsUpDown size={16} aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            className="sidebar-theme-toggle"
-            aria-label="Alternar tema"
-            title="Alternar tema"
-            onClick={toggleTheme}
-          >
-            <Sun className="theme-icon-light" size={17} aria-hidden="true" />
-            <Moon className="theme-icon-dark" size={17} aria-hidden="true" />
-          </button>
+            </button>
+            <Link
+              to="/configuracoes"
+              className="sidebar-profile-settings"
+              aria-label="Abrir configurações"
+              onClick={() => setIsProfileMenuOpen(false)}
+            >
+              <Settings size={16} aria-hidden="true" />
+            </Link>
+          </div>
         </div>
+        <button
+          type="button"
+          className="sidebar-theme-item"
+          aria-label={isDarkTheme ? "Ativar modo claro" : "Ativar modo escuro"}
+          onClick={toggleTheme}
+        >
+          <Sun className="theme-icon-light" size={17} aria-hidden="true" />
+          <Moon className="theme-icon-dark" size={17} aria-hidden="true" />
+          <span>{isDarkTheme ? "Modo claro" : "Modo escuro"}</span>
+        </button>
 
         {isProfileMenuOpen ? (
           <div className="sidebar-profile-menu" role="menu">
