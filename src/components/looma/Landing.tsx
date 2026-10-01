@@ -22,11 +22,22 @@ import {
 import { Link } from "@tanstack/react-router";
 import { LoomaSidebar } from "./Sidebar";
 import { AdminVerifiedBadge } from "./AdminVerifiedBadge";
+import { MediaPicker } from "./MediaPicker";
+import { PostMedia } from "./PostMedia";
 import { ProfileAvatar } from "./ProfileAvatar";
 import { ComposerTypeToggle } from "./ComposerTypeToggle";
 import { getProfileName, getProfileUsername, type Profile, useCurrentProfile } from "@/lib/profile";
 import { useAdminAccess } from "@/lib/admin";
 import { getConnectionRows, getPeerIds, type ConnectionRow } from "@/lib/activity-metrics";
+import {
+  MEDIA_COLUMNS,
+  isMissingPostMediaColumns,
+  removePostMedia,
+  uploadPostMedia,
+  type PostMediaData,
+  type PreparedMedia,
+  withEmptyMediaData,
+} from "@/lib/media";
 import { createWorkProposal, MAX_PROPOSAL_MESSAGE_LENGTH } from "@/lib/proposals";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import {
@@ -39,7 +50,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-type FeedPost = {
+type FeedPost = PostMediaData & {
   id: string;
   author_id: string;
   content: string;
@@ -55,6 +66,8 @@ type PendingFeedPost = {
   author_id: string;
   content: string;
   kind: "post" | "work";
+  mediaPreviewUrl: string | null;
+  media_type: string | null;
   pending: true;
 };
 
@@ -424,6 +437,9 @@ export function LoomaLanding({
   const [introVisible, setIntroVisible] = useState(() => !showSplash);
   const [introStage, setIntroStage] = useState<IntroStage>("logo");
   const [introSequenceDone, setIntroSequenceDone] = useState(() => !showSplash);
+  const [media, setMedia] = useState<PreparedMedia | null>(null);
+  const [mediaBusy, setMediaBusy] = useState(false);
+  const [mediaPickerKey, setMediaPickerKey] = useState(0);
   const [message, setMessage] = useState("");
   const [postKind, setPostKind] = useState<FeedPost["kind"]>("post");
   const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
@@ -666,19 +682,37 @@ export function LoomaLanding({
 
       let query = supabase
         .from("posts")
-        .select("id, author_id, content, kind, likes_count, comments_count, created_at, updated_at")
+        .select(
+          `id, author_id, content, kind, likes_count, comments_count, created_at, updated_at, ${MEDIA_COLUMNS}`,
+        )
         .eq("status", "published")
         .order("created_at", { ascending: false })
         .limit(30);
       if (feedTab === "following") query = query.in("author_id", acceptedPeerIds);
 
       const postResult = await query;
-      if (postResult.error) {
-        setPostsError(postResult.error.message);
+      let postsData = postResult.data;
+      let postsQueryError = postResult.error;
+      if (isMissingPostMediaColumns(postsQueryError)) {
+        let fallbackQuery = supabase
+          .from("posts")
+          .select(
+            "id, author_id, content, kind, likes_count, comments_count, created_at, updated_at",
+          )
+          .eq("status", "published")
+          .order("created_at", { ascending: false })
+          .limit(30);
+        if (feedTab === "following") fallbackQuery = fallbackQuery.in("author_id", acceptedPeerIds);
+        const fallbackResult = await fallbackQuery;
+        postsData = fallbackResult.data?.map(withEmptyMediaData) ?? null;
+        postsQueryError = fallbackResult.error;
+      }
+      if (postsQueryError) {
+        setPostsError(postsQueryError.message);
         return;
       }
 
-      const rows = (postResult.data ?? []) as FeedPost[];
+      const rows = (postsData ?? []) as FeedPost[];
       const authorIds = [...new Set(rows.map((post) => post.author_id))];
       if (!authorIds.length) {
         setPosts([]);
@@ -807,17 +841,20 @@ export function LoomaLanding({
 
   async function publish() {
     const content = message.trim();
-    if (!content || publishing) return;
+    if ((!content && !media) || publishing || mediaBusy) return;
     if (!user) {
       setComposerError("Entre com sua conta para publicar.");
       return;
     }
 
+    const pendingMediaPreviewUrl = media ? URL.createObjectURL(media.file) : null;
     const pendingPost: PendingFeedPost = {
       client_id: crypto.randomUUID(),
       author_id: user.id,
       content,
       kind: postKind,
+      mediaPreviewUrl: pendingMediaPreviewUrl,
+      media_type: media?.file.type ?? null,
       pending: true,
     };
 
@@ -827,13 +864,25 @@ export function LoomaLanding({
     const pendingMinimumTimer = new Promise<void>((resolve) => {
       window.setTimeout(resolve, POST_PENDING_MINIMUM_MS);
     });
+    let uploadedMediaPath: string | null = null;
     try {
+      const mediaData = await uploadPostMedia(user.id, media);
+      uploadedMediaPath = mediaData.media_path;
       const result = await getSupabaseBrowserClient()
         .from("posts")
-        .insert({ author_id: user.id, content, kind: postKind, status: "published" })
-        .select("id, author_id, content, kind, likes_count, comments_count, created_at, updated_at")
+        .insert({
+          author_id: user.id,
+          content,
+          kind: postKind,
+          status: "published",
+          ...mediaData,
+        })
+        .select(
+          `id, author_id, content, kind, likes_count, comments_count, created_at, updated_at, ${MEDIA_COLUMNS}`,
+        )
         .single();
       if (result.error || !result.data) {
+        await removePostMedia(uploadedMediaPath);
         setPosts((current) =>
           current.filter(
             (post) => !isPendingFeedPost(post) || post.client_id !== pendingPost.client_id,
@@ -846,6 +895,8 @@ export function LoomaLanding({
       const [confirmedResult] = await Promise.all([Promise.resolve(result), pendingMinimumTimer]);
       const newPost = confirmedResult.data as FeedPost;
       setMessage("");
+      setMedia(null);
+      setMediaPickerKey((current) => current + 1);
       setPostKind("post");
       setPostsError(null);
       setPosts((current) =>
@@ -856,6 +907,7 @@ export function LoomaLanding({
       setRecentlyAddedPostId(newPost.id);
       setFeedTab("for-you");
     } catch (caught) {
+      await removePostMedia(uploadedMediaPath);
       setPosts((current) =>
         current.filter(
           (post) => !isPendingFeedPost(post) || post.client_id !== pendingPost.client_id,
@@ -865,6 +917,7 @@ export function LoomaLanding({
         caught instanceof Error ? caught.message : "Não foi possível publicar agora.",
       );
     } finally {
+      if (pendingMediaPreviewUrl) URL.revokeObjectURL(pendingMediaPreviewUrl);
       setPublishing(false);
     }
   }
@@ -898,7 +951,7 @@ export function LoomaLanding({
   async function savePostEdit(post: FeedPost) {
     const content = editingPostContent.trim();
     if (!user || user.id !== post.author_id || savingPostId) return;
-    if (!content) {
+    if (!content && !post.media_path) {
       setPostActionError("A publicação não pode ficar vazia.");
       return;
     }
@@ -911,7 +964,9 @@ export function LoomaLanding({
         .update({ content, updated_at: new Date().toISOString() })
         .eq("id", post.id)
         .eq("author_id", user.id)
-        .select("id, author_id, content, kind, likes_count, comments_count, created_at, updated_at")
+        .select(
+          `id, author_id, content, kind, likes_count, comments_count, created_at, updated_at, ${MEDIA_COLUMNS}`,
+        )
         .single();
 
       if (result.error || !result.data) {
@@ -955,6 +1010,7 @@ export function LoomaLanding({
       }
 
       setRemovingPostId(post.id);
+      void removePostMedia(post.media_path);
       setPostPendingDeletion(null);
       postRemovalTimerRef.current = window.setTimeout(() => {
         setPosts((current) =>
@@ -1071,11 +1127,20 @@ export function LoomaLanding({
             disabled={publishing}
           />
           <div className="composer-actions">
-            <ComposerTypeToggle disabled={publishing} value={postKind} onChange={setPostKind} />
+            <div className="composer-left-actions">
+              <MediaPicker
+                key={mediaPickerKey}
+                value={media}
+                onChange={setMedia}
+                disabled={publishing}
+                onBusyChange={setMediaBusy}
+              />
+              <ComposerTypeToggle disabled={publishing} value={postKind} onChange={setPostKind} />
+            </div>
             <button
               type="button"
               className="publish-button"
-              disabled={!message.trim() || publishing}
+              disabled={(!message.trim() && !media) || publishing || mediaBusy}
               onClick={() => void publish()}
             >
               {publishing ? "Publicando…" : "Publicar"} <Send size={15} />
@@ -1332,7 +1397,8 @@ export function LoomaLanding({
                                     className="post-edit-save"
                                     onClick={() => void savePostEdit(post)}
                                     disabled={
-                                      savingPostId === post.id || !editingPostContent.trim()
+                                      savingPostId === post.id ||
+                                      (!editingPostContent.trim() && !post.media_path)
                                     }
                                   >
                                     {savingPostId === post.id ? "Salvando…" : "Salvar"}
@@ -1341,7 +1407,26 @@ export function LoomaLanding({
                               </div>
                             ) : (
                               <>
-                                <p>{visibleContent}</p>
+                                {visibleContent ? <p>{visibleContent}</p> : null}
+                                {isPending && post.mediaPreviewUrl ? (
+                                  post.media_type?.startsWith("video/") ? (
+                                    <video
+                                      className="post-media"
+                                      src={post.mediaPreviewUrl}
+                                      controls
+                                      playsInline
+                                      preload="metadata"
+                                    />
+                                  ) : (
+                                    <img
+                                      className="post-media"
+                                      src={post.mediaPreviewUrl}
+                                      alt="Prévia da mídia da publicação"
+                                    />
+                                  )
+                                ) : !isPending ? (
+                                  <PostMedia path={post.media_path} type={post.media_type} />
+                                ) : null}
                                 {!isPending && isLongPost ? (
                                   <button
                                     type="button"

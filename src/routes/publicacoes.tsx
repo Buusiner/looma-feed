@@ -1,12 +1,23 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { FileText, MoreHorizontal, Plus, Trash2 } from "lucide-react";
+import { MediaPicker } from "@/components/looma/MediaPicker";
+import { PostMedia } from "@/components/looma/PostMedia";
 import {
   WorkspaceEmpty,
   WorkspaceError,
   WorkspaceSkeleton,
 } from "@/components/looma/WorkspaceStates";
 import { WorkspaceLayout } from "@/components/looma/WorkspaceLayout";
+import {
+  MEDIA_COLUMNS,
+  isMissingPostMediaColumns,
+  removePostMedia,
+  uploadPostMedia,
+  type PostMediaData,
+  type PreparedMedia,
+  withEmptyMediaData,
+} from "@/lib/media";
 import { useCurrentProfile } from "@/lib/profile";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import {
@@ -19,7 +30,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-type Post = {
+type Post = PostMediaData & {
   id: string;
   content: string;
   kind: "post" | "work";
@@ -34,6 +45,9 @@ function PostsPage() {
   const { user } = useCurrentProfile();
   const [posts, setPosts] = useState<Post[]>([]);
   const [content, setContent] = useState("");
+  const [media, setMedia] = useState<PreparedMedia | null>(null);
+  const [mediaBusy, setMediaBusy] = useState(false);
+  const [mediaPickerKey, setMediaPickerKey] = useState(0);
   const [composerOpen, setComposerOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -54,12 +68,23 @@ function PostsPage() {
     }
     setLoading(true);
     setError(null);
-    const { data, error: queryError } = await getSupabaseBrowserClient()
+    const supabase = getSupabaseBrowserClient();
+    let { data, error: queryError } = await supabase
       .from("posts")
-      .select("id, content, kind, likes_count, comments_count, created_at")
+      .select(`id, content, kind, likes_count, comments_count, created_at, ${MEDIA_COLUMNS}`)
       .eq("author_id", userId)
       .eq("status", "published")
       .order("created_at", { ascending: false });
+    if (isMissingPostMediaColumns(queryError)) {
+      const fallback = await supabase
+        .from("posts")
+        .select("id, content, kind, likes_count, comments_count, created_at")
+        .eq("author_id", userId)
+        .eq("status", "published")
+        .order("created_at", { ascending: false });
+      data = fallback.data?.map(withEmptyMediaData) ?? null;
+      queryError = fallback.error;
+    }
     if (queryError) setError(queryError.message);
     else setPosts((data ?? []) as Post[]);
     setLoading(false);
@@ -70,19 +95,37 @@ function PostsPage() {
 
   async function createPost(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!user || !content.trim()) return;
+    if (!user || (!content.trim() && !media) || mediaBusy) return;
     setSaving(true);
     setActionError(null);
-    const { error: insertError } = await getSupabaseBrowserClient()
-      .from("posts")
-      .insert({ author_id: user.id, content: content.trim(), status: "published" });
-    if (insertError) setActionError(insertError.message);
-    else {
+    let uploadedMediaPath: string | null = null;
+    try {
+      const mediaData = await uploadPostMedia(user.id, media);
+      uploadedMediaPath = mediaData.media_path;
+      const { error: insertError } = await getSupabaseBrowserClient()
+        .from("posts")
+        .insert({
+          author_id: user.id,
+          content: content.trim(),
+          status: "published",
+          ...mediaData,
+        });
+      if (insertError) {
+        await removePostMedia(uploadedMediaPath);
+        setActionError(insertError.message);
+        return;
+      }
       setContent("");
+      setMedia(null);
+      setMediaPickerKey((current) => current + 1);
       setComposerOpen(false);
       await load();
+    } catch (caught) {
+      await removePostMedia(uploadedMediaPath);
+      setActionError(caught instanceof Error ? caught.message : "Não foi possível publicar.");
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   }
 
   function openPostEditor(post: Post) {
@@ -101,7 +144,7 @@ function PostsPage() {
   async function savePostEdit() {
     if (!user || !editingPost || savingEdit) return;
     const content = editingContent.trim();
-    if (!content) {
+    if (!content && !editingPost.media_path) {
       setActionError("A publicação não pode ficar vazia.");
       return;
     }
@@ -139,6 +182,7 @@ function PostsPage() {
     if (deleteError) {
       setActionError(deleteError.message);
     } else {
+      await removePostMedia(postPendingDeletion.media_path);
       setPostPendingDeletion(null);
       await load();
     }
@@ -173,8 +217,17 @@ function PostsPage() {
             maxLength={300}
           />
           <div>
-            <span>{content.length}/300</span>
-            <button disabled={saving || !content.trim()}>
+            <span className="workspace-composer-tools">
+              <MediaPicker
+                key={mediaPickerKey}
+                value={media}
+                onChange={setMedia}
+                disabled={saving}
+                onBusyChange={setMediaBusy}
+              />
+              {content.length}/300
+            </span>
+            <button disabled={saving || mediaBusy || (!content.trim() && !media)}>
               {saving ? "Publicando…" : "Publicar"}
             </button>
           </div>
@@ -249,7 +302,8 @@ function PostsPage() {
                   </button>
                 </div>
               </div>
-              <p>{post.content}</p>
+              {post.content ? <p>{post.content}</p> : null}
+              <PostMedia path={post.media_path} type={post.media_type} />
               <small>
                 {post.likes_count} curtidas · {post.comments_count} comentários
               </small>
@@ -287,7 +341,7 @@ function PostsPage() {
               type="button"
               className="post-delete-confirm"
               onClick={() => void savePostEdit()}
-              disabled={savingEdit || !editingContent.trim()}
+              disabled={savingEdit || (!editingContent.trim() && !editingPost?.media_path)}
             >
               {savingEdit ? "Salvando…" : "Salvar"}
             </button>

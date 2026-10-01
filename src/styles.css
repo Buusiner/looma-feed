@@ -15222,10 +15222,10 @@ html:not(.dark) .admin-table strong {
 .composer-type-toggle {
   position: relative !important;
   display: grid !important;
-  grid-template-columns: 40px 40px !important;
-  gap: 8px !important;
-  width: 88px !important;
-  height: 45px !important;
+  grid-template-columns: 34px 34px !important;
+  gap: 7px !important;
+  width: 75px !important;
+  height: 38px !important;
   align-items: start !important;
   background: transparent !important;
   background-color: transparent !important;
@@ -15236,11 +15236,11 @@ html:not(.dark) .admin-table strong {
   all: unset !important;
   box-sizing: border-box !important;
   display: grid !important;
-  width: 40px !important;
-  height: 40px !important;
+  width: 34px !important;
+  height: 34px !important;
   place-items: center !important;
-  border: 0 !important;
-  border-radius: 8px !important;
+  border: 1.25px solid #000 !important;
+  border-radius: 999px !important;
   outline: 0 !important;
   padding: 0 !important;
   background: transparent !important;
@@ -15256,13 +15256,14 @@ html:not(.dark) .admin-table strong {
 
 .composer-type-toggle > button svg {
   display: block !important;
-  width: 28px !important;
-  height: 28px !important;
+  width: 24px !important;
+  height: 24px !important;
   opacity: 1 !important;
   transition: color 140ms ease !important;
 }
 
 .composer-type-toggle > button[aria-checked="true"] {
+  border-color: var(--yellow) !important;
   color: var(--yellow) !important;
 }
 
@@ -15940,4 +15941,165 @@ html:not(.dark) .home-feed-stream .feed-post:hover {
   margin-bottom: 0 !important;
   border: 0 !important;
   padding-top: 0 !important;
+}
+
+.media-picker {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  color: var(--text);
+}
+
+.composer-left-actions,
+.workspace-composer-tools {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.media-picker label,
+.media-trim {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.media-picker-upload {
+  display: grid;
+  width: fit-content;
+  place-items: center;
+  cursor: pointer;
+}
+
+.media-picker-icon {
+  display: grid;
+  box-sizing: border-box;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1.25px solid #000;
+  border-radius: 999px;
+  color: #000;
+}
+
+.media-picker-icon svg {
+  width: 30px;
+  height: 30px;
+  fill: currentColor;
+}
+
+.media-picker-upload.is-selected .media-picker-icon {
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+
+.dark .composer-type-toggle > button {
+  border-color: #f7f7ff !important;
+  color: #f7f7ff !important;
+}
+
+.dark .composer-type-toggle > button[aria-checked="true"] {
+  border-color: var(--yellow) !important;
+  color: var(--yellow) !important;
+}
+
+.dark .media-picker-icon {
+  border-color: #f7f7ff;
+  color: #f7f7ff;
+}
+
+.dark .media-picker-upload.is-selected .media-picker-icon {
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+
+.media-picker-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.media-picker input {
+  max-width: 100%;
+  color: var(--text);
+}
+
+.media-trim {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 0.85rem;
+}
+
+.media-picker small,
+.media-picker p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.media-picker button {
+  width: fit-content;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem;
+  background: transparent;
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.media-picker:disabled {
+  opacity: 0.7;
+}
+
+.post-media {
+  display: block;
+  width: 100%;
+  max-height: 440px;
+  margin-block: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--surface);
+  object-fit: contain;
+}
+
+/* Final feed scroll repair: the sidebar stays fixed, but the center feed must
+   own the vertical scroll on desktop and mobile. */
+.feed-stage {
+  height: 100dvh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.feed-stage .home-main-scroll {
+  height: 100dvh !important;
+  min-height: 0 !important;
+  max-height: 100dvh !important;
+  overflow-x: visible !important;
+  overflow-y: auto !important;
+  overscroll-behavior-y: contain !important;
+  scrollbar-gutter: stable !important;
+}
+
+.feed-stage .home-main-scroll > .home-feed-stream,
+.feed-stage .home-main-scroll > .home-feed-stream .home-feed-panel,
+.feed-stage .home-feed-stream .post-list {
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+
+@media (max-width: 900px) {
+  .feed-stage,
+  .feed-stage .home-main-scroll {
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
 }

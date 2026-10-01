@@ -1,7 +1,16 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export type NotificationEventType =
-  "like" | "comment" | "repost" | "retweet" | "connection_request" | "proposal" | "system";
+  | "like"
+  | "comment"
+  | "repost"
+  | "retweet"
+  | "connection_request"
+  | "connection_accepted"
+  | "proposal"
+  | "proposal_received"
+  | "proposal_updated"
+  | "system";
 
 export type NotificationEvent = {
   id: string;

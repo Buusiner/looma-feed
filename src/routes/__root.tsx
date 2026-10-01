@@ -168,20 +168,25 @@ function RootComponent() {
   const router = useRouter();
   const pathname = useLocation({ select: (location: { pathname: string }) => location.pathname });
   const lastTrafficEventRef = useRef<string | null>(null);
-  const [isSplashActive, setIsSplashActive] = useState(() => {
-    if (typeof window === "undefined" || pathname !== "/") return false;
+  function shouldStartSplash(currentPathname: string) {
+    if (typeof window === "undefined" || currentPathname !== "/") return false;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
-    if (window.sessionStorage.getItem("looma-splash-played") === "true") return false;
-    window.sessionStorage.setItem("looma-splash-played", "true");
+    if (window.__loomaSplashShown) return false;
+
+    const navigationEntry = window.performance.getEntriesByType("navigation")[0] as
+      PerformanceNavigationTiming | undefined;
+    const navigationType = navigationEntry?.type;
+    if (navigationType === "reload" || navigationType === "back_forward") return false;
+
+    window.__loomaSplashShown = true;
     return true;
+  }
+  const [isSplashActive, setIsSplashActive] = useState(() => {
+    return shouldStartSplash(pathname);
   });
   const completeSplash = useCallback(() => setIsSplashActive(false), []);
   const startSplash = useCallback(() => {
-    if (typeof window === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (window.sessionStorage.getItem("looma-splash-played") === "true") return;
-    window.sessionStorage.setItem("looma-splash-played", "true");
-    setIsSplashActive(true);
+    if (shouldStartSplash(window.location.pathname)) setIsSplashActive(true);
   }, []);
   const { user, profile, refresh } = useCurrentProfile();
   const shouldShowOnboarding = Boolean(

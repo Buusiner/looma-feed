@@ -52,12 +52,37 @@ create table if not exists public.notification_events (
 create table if not exists public.posts (
   id uuid primary key default gen_random_uuid(),
   author_id uuid not null references public.profiles(id) on delete cascade,
-  content text not null check (char_length(trim(content)) > 0),
+  content text not null,
   status text not null default 'published' check (status in ('published', 'draft')),
   likes_count integer not null default 0 check (likes_count >= 0),
   comments_count integer not null default 0 check (comments_count >= 0),
+  media_path text,
+  media_type text,
+  media_size bigint,
+  media_duration double precision,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  constraint posts_content_or_media_check check (
+    char_length(trim(content)) > 0 or media_path is not null
+  ),
+  constraint posts_media_valid check (
+    (media_path is null and media_type is null and media_size is null and media_duration is null)
+    or (
+      media_path is not null and media_type is not null and media_size is not null
+      and split_part(media_path, '/', 1) = author_id::text
+      and media_size > 0
+      and (
+        (media_type = 'image/webp' and media_size <= 5242880 and media_duration is null)
+        or (
+          media_type in ('video/mp4','video/webm','video/quicktime')
+          and media_size <= 26214400
+          and media_duration is not null
+          and media_duration > 0
+          and media_duration <= 10
+        )
+      )
+    )
+  )
 );
 
 create table if not exists public.connections (

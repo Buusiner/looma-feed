@@ -69,6 +69,10 @@ function getNotificationIcon(item: NotificationItem) {
   if (item.eventType === "like") return Heart;
   if (item.eventType === "comment") return MessageCircle;
   if (item.eventType === "repost" || item.eventType === "retweet") return Repeat2;
+  if (item.eventType === "proposal" || item.eventType.startsWith("proposal_")) {
+    return FileSignature;
+  }
+  if (item.eventType.startsWith("connection_")) return UserPlus;
   return Bell;
 }
 
