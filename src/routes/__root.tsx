@@ -8,7 +8,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { recordUserTrafficEvent } from "../lib/activity-metrics";
@@ -75,12 +75,18 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
+  const reportedError = useMemo(() => {
+    if (error instanceof Error) return error;
+    if (typeof error === "string") return new Error(error);
+    return new Error("Erro desconhecido");
+  }, [error]);
+
   console.error(error);
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
+    reportLovableError(reportedError, { boundary: "tanstack_root_error_component" });
+  }, [reportedError]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
