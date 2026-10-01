@@ -12920,9 +12920,9 @@ select:focus,
   --surface-2: #0b0b0b !important;
   --border: #242424 !important;
   --border-strong: #333333 !important;
-  --text: #f2f2f2 !important;
-  --text-muted: #a3a3a3 !important;
-  --text-subtle: #8f8f8f !important;
+  --text: #f7f7ff !important;
+  --text-muted: #f7f7ff !important;
+  --text-subtle: #f7f7ff !important;
   --home-timeline-border: #242424 !important;
   --home-timeline-hover: rgba(255, 255, 255, 0.035) !important;
   --looma-background: #000000 !important;
@@ -13914,9 +13914,9 @@ body,
   --yellow: #f3f700;
   --yellow-rgb: 243, 247, 0;
   --on-yellow: #000000;
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --surface-2: #ffffff;
+  --bg: #f9e9da;
+  --surface: #f9e9da;
+  --surface-2: #f9e9da;
   --border: rgba(0, 0, 0, 0.12);
   --border-strong: rgba(0, 0, 0, 0.22);
   --text: #0a0a0a;
@@ -13960,9 +13960,9 @@ body,
   --surface-2: #000000;
   --border: rgba(255, 255, 255, 0.14);
   --border-strong: rgba(255, 255, 255, 0.22);
-  --text: #ffffff;
-  --text-muted: #d4d4d8;
-  --text-subtle: #a1a1aa;
+  --text: #f7f7ff;
+  --text-muted: #f7f7ff;
+  --text-subtle: #f7f7ff;
   --accent: var(--yellow);
   --accent-hover: var(--yellow);
   --accent-soft: transparent;
@@ -13985,7 +13985,7 @@ body,
   --card-foreground: var(--text);
   --popover: var(--surface);
   --popover-foreground: var(--text);
-  --primary: #ffffff;
+  --primary: #f7f7ff;
   --primary-foreground: #000000;
   --secondary: var(--surface);
   --secondary-foreground: var(--text);
@@ -15246,7 +15246,7 @@ html:not(.dark) .admin-table strong {
   background: transparent !important;
   background-color: transparent !important;
   background-image: none !important;
-  color: inherit !important;
+  color: var(--text) !important;
   cursor: pointer !important;
   box-shadow: none !important;
   text-decoration: none !important;
@@ -15258,8 +15258,12 @@ html:not(.dark) .admin-table strong {
   display: block !important;
   width: 28px !important;
   height: 28px !important;
-  opacity: 0.45 !important;
-  transition: opacity 140ms ease !important;
+  opacity: 1 !important;
+  transition: color 140ms ease !important;
+}
+
+.composer-type-toggle > button[aria-checked="true"] {
+  color: var(--yellow) !important;
 }
 
 .composer-type-toggle > button[aria-checked="true"] svg {
@@ -15302,13 +15306,13 @@ html:not(.dark) .admin-table strong {
   position: absolute !important;
   bottom: 0 !important;
   left: 10px !important;
-  display: block !important;
+  display: none !important;
   width: 20px !important;
   height: 3px !important;
-  border: 1px solid #000000 !important;
+  border: 0 !important;
   border-radius: 2px !important;
-  background: #f3f700 !important;
-  background-color: #f3f700 !important;
+  background: transparent !important;
+  background-color: transparent !important;
   pointer-events: none !important;
   transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
@@ -15493,4 +15497,447 @@ html:not(.dark) .looma-sidebar .sidebar-nav button.active svg {
 .looma-sidebar .sidebar-profile-settings:focus-visible {
   background: var(--surface-hover);
   color: var(--text);
+}
+
+.looma-sidebar .sidebar-help-link {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  min-height: 24px;
+  margin: 0.15rem 0 0;
+  border: 0 !important;
+  padding: 0 12px;
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  opacity: 0.62;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none !important;
+}
+
+.looma-sidebar .sidebar-help-link span {
+  text-decoration: none !important;
+}
+
+.looma-sidebar .sidebar-help-link:hover,
+.looma-sidebar .sidebar-help-link:focus-visible {
+  color: var(--text) !important;
+  opacity: 0.82;
+  outline: 0 !important;
+  text-decoration: none !important;
+}
+
+.looma-sidebar .sidebar-logo-link {
+  width: 2.8rem;
+  height: 2.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 0.8rem 0.35rem;
+  border-radius: 999px;
+  color: var(--text);
+  text-decoration: none !important;
+}
+
+.looma-sidebar .sidebar-logo-link:hover,
+.looma-sidebar .sidebar-logo-link:focus-visible {
+  background: var(--hover);
+  outline: 0;
+}
+
+.looma-sidebar .sidebar-logo-mark {
+  width: 1.9rem;
+  height: 1.9rem;
+  background: currentColor;
+}
+
+.sidebar-nav-icon {
+  position: relative;
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.sidebar-notification-dot {
+  position: absolute;
+  top: -0.25rem;
+  right: -0.25rem;
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 999px;
+  background: #ff2d2d;
+  box-shadow: 0 0 0 2px var(--surface);
+}
+
+.notifications-list {
+  gap: 0.9rem;
+}
+
+.notification-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.notification-card.is-unread {
+  border-color: rgba(255, 45, 45, 0.45) !important;
+}
+
+.notification-card-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+}
+
+.notification-card-icon .workspace-avatar {
+  width: 100%;
+  height: 100%;
+}
+
+.notification-card-copy {
+  min-width: 0;
+}
+
+.notification-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.notification-card-heading h2 {
+  margin: 0;
+}
+
+.notification-card-heading span {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #ff2d2d;
+  color: #ffffff;
+  padding: 0.18rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.notification-card-actor {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.2rem;
+  color: var(--text);
+}
+
+.notification-card p {
+  margin: 0.35rem 0 0;
+}
+
+.notification-card time {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.explore-page {
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.explore-page.feed-stage {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  transform: none !important;
+  pointer-events: auto !important;
+  transition: none !important;
+}
+
+.explore-page .home-shell,
+.explore-page .home-main-scroll,
+.explore-page .home-context-rail,
+.explore-page .looma-sidebar {
+  pointer-events: auto !important;
+}
+
+.explore-feed-stream,
+.explore-main {
+  min-width: 0;
+}
+
+.explore-main {
+  overflow: hidden;
+}
+
+.explore-search {
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0 1rem;
+  color: var(--text-muted);
+}
+
+.explore-search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+}
+
+.explore-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.explore-search-compact {
+  min-height: 2.8rem;
+}
+
+.explore-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--border);
+}
+
+.explore-tabs button {
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 1rem 0.5rem 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.explore-tabs button.active {
+  border-bottom-color: var(--text);
+  color: var(--text);
+}
+
+.explore-news-card,
+.explore-people-section {
+  padding: 1.1rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.explore-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.explore-section-heading h1,
+.explore-section-heading h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  line-height: 1.05;
+}
+
+.explore-section-heading a {
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.explore-news-item {
+  padding: 1rem 0 0;
+}
+
+.explore-news-item h2,
+.explore-trends-list h2,
+.explore-profile-list h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.explore-news-item p,
+.explore-trends-list span,
+.explore-profile-list p,
+.explore-profile-list small,
+.explore-state {
+  color: var(--text-muted);
+}
+
+.explore-news-item p,
+.explore-trends-list span,
+.explore-profile-list p,
+.explore-profile-list small {
+  margin: 0.35rem 0 0;
+  font-size: 0.86rem;
+}
+
+.explore-trends-list article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.explore-profile-list,
+.explore-profile-skeleton {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.explore-profile-list article {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.explore-profile-list article > a:last-child {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  padding: 0.45rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.explore-profile-list a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.explore-profile-skeleton i {
+  height: 3.5rem;
+  border-radius: 1rem;
+  background: var(--hover);
+}
+
+.explore-right-rail {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  max-height: 100dvh;
+  overflow-y: auto;
+  padding-top: 0;
+}
+
+.explore-right-rail .home-section-header h2,
+.explore-right-rail .home-context-heading h2,
+.explore-right-rail .home-trending-card h2,
+.explore-right-rail .home-feed-companion h2 {
+  font-size: 0.95rem !important;
+  line-height: 1.15 !important;
+}
+
+.explore-right-rail .home-opportunity-card h3,
+.explore-right-rail .home-person-card h3,
+.explore-right-rail .home-discovery-empty h3 {
+  font-size: 0.88rem !important;
+  line-height: 1.2 !important;
+}
+
+.explore-right-rail .home-section-header p,
+.explore-right-rail .home-opportunity-card p,
+.explore-right-rail .home-person-card p,
+.explore-right-rail .home-person-card small,
+.explore-right-rail .home-next-steps > p,
+.explore-right-rail .home-feed-companion p {
+  font-size: 0.82rem !important;
+  line-height: 1.35 !important;
+}
+
+.explore-right-rail .home-section-header a,
+.explore-right-rail .home-opportunity-card > a,
+.explore-right-rail .home-person-card > a,
+.explore-right-rail .home-next-step-actions a,
+.explore-right-rail .home-companion-link {
+  font-size: 0.78rem !important;
+}
+
+@media (max-width: 1180px) {
+  .explore-right-rail {
+    position: static;
+    max-height: none;
+  }
+}
+
+/* Light mode: remove underline bars and black focus strokes from sidebar items. */
+html:not(.dark) .looma-sidebar .sidebar-nav a,
+html:not(.dark) .looma-sidebar .sidebar-nav button,
+html:not(.dark) .looma-sidebar .sidebar-theme-item,
+html:not(.dark) .looma-sidebar .sidebar-profile-main,
+html:not(.dark) .looma-sidebar .sidebar-profile-settings {
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  text-decoration: none !important;
+}
+
+html:not(.dark) .looma-sidebar .sidebar-nav a::after,
+html:not(.dark) .looma-sidebar .sidebar-nav button::after,
+html:not(.dark) .looma-sidebar .sidebar-theme-item::after,
+html:not(.dark) .looma-sidebar .sidebar-profile-main::after,
+html:not(.dark) .looma-sidebar .sidebar-profile-settings::after {
+  content: none !important;
+  display: none !important;
+}
+
+html:not(.dark) .looma-sidebar .sidebar-nav a:focus,
+html:not(.dark) .looma-sidebar .sidebar-nav a:focus-visible,
+html:not(.dark) .looma-sidebar .sidebar-nav button:focus,
+html:not(.dark) .looma-sidebar .sidebar-nav button:focus-visible,
+html:not(.dark) .looma-sidebar .sidebar-theme-item:focus,
+html:not(.dark) .looma-sidebar .sidebar-theme-item:focus-visible,
+html:not(.dark) .looma-sidebar .sidebar-profile-main:focus,
+html:not(.dark) .looma-sidebar .sidebar-profile-main:focus-visible,
+html:not(.dark) .looma-sidebar .sidebar-profile-settings:focus,
+html:not(.dark) .looma-sidebar .sidebar-profile-settings:focus-visible {
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  text-decoration: none !important;
+}
+
+html:not(.dark) .home-main-scroll > .home-feed-stream .feed-post:hover,
+html:not(.dark) .home-feed-stream .feed-post:hover {
+  background: var(--surface) !important;
+  background-color: var(--surface) !important;
+  background-image: none !important;
+}
+
+.looma-sidebar .sidebar-nav {
+  gap: 0 !important;
+}
+
+.looma-sidebar .sidebar-nav-group,
+.looma-sidebar .sidebar-nav-group + .sidebar-nav-group {
+  gap: 0 !important;
+  margin-top: 0 !important;
+  border: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.looma-sidebar .sidebar-nav-group:first-child > a:first-child,
+.looma-sidebar .sidebar-nav-group:first-child > a:nth-child(2) {
+  margin-bottom: 0 !important;
+  border: 0 !important;
+  padding-top: 0 !important;
 }

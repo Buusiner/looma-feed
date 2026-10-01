@@ -1,6 +1,7 @@
 import {
   BarChart3,
   BadgeCheck,
+  Bell,
   CircleHelp,
   FileText,
   Home,
@@ -10,11 +11,12 @@ import {
   Send,
   Settings,
   ShieldCheck,
+  MessageCircle,
+  Search,
   Sun,
   TrendingUp,
   UserRound,
   BriefcaseBusiness,
-  Users,
 } from "lucide-react";
 import { Link, useLocation, useRouter } from "@tanstack/react-router";
 import { type MouseEvent, useEffect, useState } from "react";
@@ -25,13 +27,16 @@ import { getProfileName, getProfileUsername, useCurrentProfile } from "@/lib/pro
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { useAdminAccess } from "@/lib/admin";
 import { applyTheme, getStoredTheme, saveTheme } from "@/lib/theme";
+import { getUnreadNotificationCount } from "@/lib/notifications";
 
 const NAV_GROUPS = [
   {
     id: "main",
     items: [
       { icon: Home, label: "Início", path: "/" },
-      { icon: Users, label: "Conexões", path: "/conexoes" },
+      { icon: Search, label: "Explorar", path: "/explorar" },
+      { icon: Bell, label: "Notificações", path: "/notificacoes", showsUnreadDot: true },
+      { icon: MessageCircle, label: "Chat", path: "/conexoes" },
       { icon: FileText, label: "Publicações", path: "/publicacoes" },
       { icon: BriefcaseBusiness, label: "Portfólio", path: "/perfil" },
     ],
@@ -46,10 +51,7 @@ const NAV_GROUPS = [
   },
   {
     id: "account",
-    items: [
-      { icon: CircleHelp, label: "Comunidade e Ajuda", path: "/comunidade" },
-      { icon: BadgeCheck, label: "Planos", path: "/planos" },
-    ],
+    items: [{ icon: BadgeCheck, label: "Planos", path: "/planos" }],
   },
 ];
 
@@ -68,6 +70,7 @@ export function LoomaSidebar() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState<string | null>(null);
   const [isLeavingForProfile, setIsLeavingForProfile] = useState(false);
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(() =>
     typeof document === "undefined" ? true : document.documentElement.classList.contains("dark"),
   );
@@ -75,6 +78,29 @@ export function LoomaSidebar() {
   useEffect(() => {
     setIsDarkTheme(document.documentElement.classList.contains("dark"));
   }, []);
+
+  useEffect(() => {
+    const userId = user?.id;
+    if (!userId) {
+      setHasUnreadNotifications(false);
+      return;
+    }
+
+    let isCurrent = true;
+    void getUnreadNotificationCount(getSupabaseBrowserClient(), userId).then(
+      ({ count, errors }) => {
+        if (!isCurrent) return;
+        if (errors.length) {
+          console.error("[Looma] Não foi possível carregar indicador de notificações.", errors);
+        }
+        setHasUnreadNotifications(count > 0);
+      },
+    );
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [pathname, user?.id]);
 
   function toggleTheme() {
     const isDark = document.documentElement.classList.contains("dark");
@@ -119,10 +145,13 @@ export function LoomaSidebar() {
 
   return (
     <aside className="looma-sidebar fixed left-0 top-0 z-30 hidden h-screen w-60 lg:flex">
+      <Link to="/" className="sidebar-logo-link" aria-label="Voltar para o início">
+        <span className="looma-logo-mark sidebar-logo-mark" role="img" aria-label="Looma" />
+      </Link>
       <nav className="sidebar-nav" aria-label="Navegação principal">
         {NAV_GROUPS.map((group) => (
           <div className="sidebar-nav-group" key={group.id}>
-            {group.items.map(({ icon: Icon, label, path }) => {
+            {group.items.map(({ icon: Icon, label, path, showsUnreadDot }) => {
               const isActive =
                 pathname === path || (path === "/perfil" && pathname.startsWith("/perfil"));
               return (
@@ -132,7 +161,12 @@ export function LoomaSidebar() {
                   className={isActive ? "active" : ""}
                   aria-current={isActive ? "page" : undefined}
                 >
-                  <Icon size={16} aria-hidden="true" />
+                  <span className="sidebar-nav-icon">
+                    <Icon size={16} aria-hidden="true" />
+                    {showsUnreadDot && hasUnreadNotifications ? (
+                      <span className="sidebar-notification-dot" aria-hidden="true" />
+                    ) : null}
+                  </span>
                   <span>{label}</span>
                 </Link>
               );
@@ -201,6 +235,10 @@ export function LoomaSidebar() {
           <Moon className="theme-icon-dark" size={17} aria-hidden="true" />
           <span>{isDarkTheme ? "Modo claro" : "Modo escuro"}</span>
         </button>
+        <Link to="/comunidade" className="sidebar-help-link">
+          <CircleHelp size={13} aria-hidden="true" />
+          <span>Ajuda</span>
+        </Link>
 
         {isProfileMenuOpen ? (
           <div className="sidebar-profile-menu" role="menu">

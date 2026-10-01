@@ -36,6 +36,19 @@ create table if not exists public.user_traffic_events (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.notification_events (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  actor_id uuid references public.profiles(id) on delete set null,
+  type text not null check (type in ('like', 'comment', 'repost', 'retweet', 'connection_request', 'proposal', 'system')),
+  title text not null check (char_length(trim(title)) > 0),
+  body text not null default '',
+  source_type text,
+  source_id uuid,
+  is_read boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
 create table if not exists public.posts (
   id uuid primary key default gen_random_uuid(),
   author_id uuid not null references public.profiles(id) on delete cascade,
@@ -89,6 +102,7 @@ alter table public.opportunities enable row level security;
 alter table public.opportunity_saves enable row level security;
 alter table public.opportunity_views enable row level security;
 alter table public.user_traffic_events enable row level security;
+alter table public.notification_events enable row level security;
 alter table public.posts enable row level security;
 alter table public.connections enable row level security;
 alter table public.proposals enable row level security;
@@ -109,6 +123,13 @@ drop policy if exists "Users insert own traffic events" on public.user_traffic_e
 create policy "Users insert own traffic events" on public.user_traffic_events for insert with check (auth.uid() = user_id);
 drop policy if exists "Users read own traffic events" on public.user_traffic_events;
 create policy "Users read own traffic events" on public.user_traffic_events for select using (auth.uid() = user_id);
+
+drop policy if exists "Users read own notification events" on public.notification_events;
+create policy "Users read own notification events" on public.notification_events for select using (auth.uid() = user_id);
+drop policy if exists "Users update own notification events" on public.notification_events;
+create policy "Users update own notification events" on public.notification_events for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "Users create own notification events" on public.notification_events;
+create policy "Users create own notification events" on public.notification_events for insert with check (auth.uid() = user_id);
 
 drop policy if exists "Published posts are readable" on public.posts;
 create policy "Published posts are readable" on public.posts for select using (status = 'published' or auth.uid() = author_id);
@@ -142,5 +163,7 @@ create policy "Users manage own settings" on public.user_settings for all using 
 create index if not exists opportunities_created_at_idx on public.opportunities(created_at desc);
 create index if not exists posts_author_status_created_idx on public.posts(author_id, status, created_at desc);
 create index if not exists user_traffic_events_user_created_idx on public.user_traffic_events(user_id, created_at desc);
+create index if not exists notification_events_user_created_idx on public.notification_events(user_id, created_at desc);
+create index if not exists notification_events_user_unread_idx on public.notification_events(user_id, is_read) where is_read = false;
 create index if not exists connections_participants_idx on public.connections(requester_id, addressee_id, status);
 create index if not exists proposals_participants_idx on public.proposals(sender_id, recipient_id, status);

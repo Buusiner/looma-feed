@@ -20,19 +20,7 @@ function PublicationIcon() {
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
-        stroke="#000"
-        strokeOpacity=".9"
-        strokeWidth="2.7"
-      >
-        <circle cx="12" cy="12" r="9.6" />
-        <ellipse cx="12" cy="12" rx="4.3" ry="9.6" />
-        <path d="M2.4 12h19.2" />
-      </g>
-      <g
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        stroke="#F3F700"
+        stroke="currentColor"
         strokeWidth="1.7"
       >
         <circle cx="12" cy="12" r="9.6" />
@@ -50,20 +38,7 @@ function WorkIcon() {
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
-        stroke="#000"
-        strokeOpacity=".9"
-        strokeWidth="2.7"
-      >
-        <rect x="2.8" y="7.5" width="18.4" height="12.7" rx="2.8" />
-        <path d="M8.8 7.5V6.2a1.7 1.7 0 0 1 1.7-1.7h3a1.7 1.7 0 0 1 1.7 1.7v1.3" />
-        <path d="M2.8 13.2h18.4" />
-        <rect x="10.4" y="11.6" width="3.2" height="3.2" rx=".8" />
-      </g>
-      <g
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        stroke="#F3F700"
+        stroke="currentColor"
         strokeWidth="1.7"
       >
         <rect x="2.8" y="7.5" width="18.4" height="12.7" rx="2.8" />

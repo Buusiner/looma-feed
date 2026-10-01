@@ -14,6 +14,8 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ComunidadeRouteImport } from './routes/comunidade'
 import { Route as ConexoesRouteImport } from './routes/conexoes'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
+import { Route as ExplorarRouteImport } from './routes/explorar'
+import { Route as NotificacoesRouteImport } from './routes/notificacoes'
 import { Route as OportunidadesRouteImport } from './routes/oportunidades'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as PlanosRouteImport } from './routes/planos'
@@ -47,6 +49,16 @@ const ConexoesRoute = ConexoesRouteImport.update({
 const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
   id: '/configuracoes',
   path: '/configuracoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExplorarRoute = ExplorarRouteImport.update({
+  id: '/explorar',
+  path: '/explorar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificacoesRoute = NotificacoesRouteImport.update({
+  id: '/notificacoes',
+  path: '/notificacoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OportunidadesRoute = OportunidadesRouteImport.update({
@@ -101,6 +113,8 @@ export interface FileRoutesByFullPath {
   '/comunidade': typeof ComunidadeRoute
   '/conexoes': typeof ConexoesRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/explorar': typeof ExplorarRoute
+  '/notificacoes': typeof NotificacoesRoute
   '/oportunidades': typeof OportunidadesRoute
   '/perfil': typeof PerfilRouteWithChildren
   '/planos': typeof PlanosRoute
@@ -117,6 +131,8 @@ export interface FileRoutesByTo {
   '/comunidade': typeof ComunidadeRoute
   '/conexoes': typeof ConexoesRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/explorar': typeof ExplorarRoute
+  '/notificacoes': typeof NotificacoesRoute
   '/oportunidades': typeof OportunidadesRoute
   '/perfil': typeof PerfilRouteWithChildren
   '/planos': typeof PlanosRoute
@@ -134,6 +150,8 @@ export interface FileRoutesById {
   '/comunidade': typeof ComunidadeRoute
   '/conexoes': typeof ConexoesRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/explorar': typeof ExplorarRoute
+  '/notificacoes': typeof NotificacoesRoute
   '/oportunidades': typeof OportunidadesRoute
   '/perfil': typeof PerfilRouteWithChildren
   '/planos': typeof PlanosRoute
@@ -152,6 +170,8 @@ export interface FileRouteTypes {
     | '/comunidade'
     | '/conexoes'
     | '/configuracoes'
+    | '/explorar'
+    | '/notificacoes'
     | '/oportunidades'
     | '/perfil'
     | '/planos'
@@ -168,6 +188,8 @@ export interface FileRouteTypes {
     | '/comunidade'
     | '/conexoes'
     | '/configuracoes'
+    | '/explorar'
+    | '/notificacoes'
     | '/oportunidades'
     | '/perfil'
     | '/planos'
@@ -184,6 +206,8 @@ export interface FileRouteTypes {
     | '/comunidade'
     | '/conexoes'
     | '/configuracoes'
+    | '/explorar'
+    | '/notificacoes'
     | '/oportunidades'
     | '/perfil'
     | '/planos'
@@ -201,6 +225,8 @@ export interface RootRouteChildren {
   ComunidadeRoute: typeof ComunidadeRoute
   ConexoesRoute: typeof ConexoesRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
+  ExplorarRoute: typeof ExplorarRoute
+  NotificacoesRoute: typeof NotificacoesRoute
   OportunidadesRoute: typeof OportunidadesRoute
   PerfilRoute: typeof PerfilRouteWithChildren
   PlanosRoute: typeof PlanosRoute
@@ -245,6 +271,20 @@ declare module '@tanstack/react-router' {
       path: '/configuracoes'
       fullPath: '/configuracoes'
       preLoaderRoute: typeof ConfiguracoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explorar': {
+      id: '/explorar'
+      path: '/explorar'
+      fullPath: '/explorar'
+      preLoaderRoute: typeof ExplorarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notificacoes': {
+      id: '/notificacoes'
+      path: '/notificacoes'
+      fullPath: '/notificacoes'
+      preLoaderRoute: typeof NotificacoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/oportunidades': {
@@ -332,6 +372,8 @@ const rootRouteChildren: RootRouteChildren = {
   ComunidadeRoute: ComunidadeRoute,
   ConexoesRoute: ConexoesRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
+  ExplorarRoute: ExplorarRoute,
+  NotificacoesRoute: NotificacoesRoute,
   OportunidadesRoute: OportunidadesRoute,
   PerfilRoute: PerfilRouteWithChildren,
   PlanosRoute: PlanosRoute,
