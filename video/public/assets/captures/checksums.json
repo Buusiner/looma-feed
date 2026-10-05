@@ -1,0 +1,57 @@
+[
+  {
+    "file": "vertical-composer.mp4",
+    "bytes": 15829,
+    "sha256": "61442e8bd9890dd11cc6146d3e8ab655b316b491bc40d3a4217c036a3163a608"
+  },
+  {
+    "file": "vertical-discover.mp4",
+    "bytes": 108590,
+    "sha256": "3451492ded7b1d75a1bfb01bd67fb6578862ad844e981ffefd3c4d013d90a4de"
+  },
+  {
+    "file": "vertical-opportunities.mp4",
+    "bytes": 165880,
+    "sha256": "45eab42c4fa211abeb55a568414462430725520c20c69dd056ed17de0fe16fbc"
+  },
+  {
+    "file": "vertical-people.mp4",
+    "bytes": 512797,
+    "sha256": "039058c8c75f8d96d3025e646b74881d27111da06160e6b4d6df32ff8148fb32"
+  },
+  {
+    "file": "vertical-search.mp4",
+    "bytes": 83768,
+    "sha256": "4f11fb6b665f9e9d295a828ce68f8fce8e5462557e48b2ef6f6e35529cf31765"
+  },
+  {
+    "file": "wide-composer.mp4",
+    "bytes": 93921,
+    "sha256": "98dd1b166d2fcb1b19f3138fa65a78f2a7267b3ff520e3217378aa8e95db776f"
+  },
+  {
+    "file": "wide-discover.mp4",
+    "bytes": 245276,
+    "sha256": "af396d957deda478d7fa6796784b4d59327bcb572d4df1af57c86e230b0d02d9"
+  },
+  {
+    "file": "wide-opportunities.mp4",
+    "bytes": 172348,
+    "sha256": "5787d2876dd123783f363251d94d611c683aa45ea46384497e1ed53fb8921866"
+  },
+  {
+    "file": "wide-people.mp4",
+    "bytes": 379070,
+    "sha256": "3d1de86a9bf600356d163fa6cdd6b5e8159949f4e8e965b922a318a162984e58"
+  },
+  {
+    "file": "wide-search.mp4",
+    "bytes": 88088,
+    "sha256": "e553809008fb41244a94f37300d178b9567fc7298be646df362c7eea3b9cef0a"
+  },
+  {
+    "file": "wide-theme.mp4",
+    "bytes": 344232,
+    "sha256": "28ada08d99547abdf9585eb47e6d4bf6b122a5b9976c4269f11b9780fcb3f091"
+  }
+]

@@ -1,8 +1,8 @@
-import { useEffect, useState, type FormEvent, type MouseEvent } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useId, useState, type FormEvent } from "react";
 import type { User } from "@supabase/supabase-js";
 import { Mail, X } from "lucide-react";
 import { createSupabaseCredentialClient, getSupabaseBrowserClient } from "@/lib/supabase/browser";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 type AuthButtonProps = {
   variant?: "header" | "sidebar";
@@ -25,6 +25,7 @@ function translateAuthError(message: string) {
 }
 
 export function AuthButton({ variant = "header" }: AuthButtonProps) {
+  const formId = useId();
   const [user, setUser] = useState<User | null>(null);
   const [isWorking, setIsWorking] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,15 +64,6 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
 
     return () => unsubscribe?.();
   }, []);
-
-  useEffect(() => {
-    if (!isEmailModalOpen) return;
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !isWorking) closeEmailModal();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isEmailModalOpen, isWorking]);
 
   async function signInWithGoogle() {
     setIsWorking(true);
@@ -240,170 +232,172 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
     setError(null);
   }
 
-  function handleBackdropClick(event: MouseEvent<HTMLDivElement>) {
-    if (event.target === event.currentTarget && !isWorking) closeEmailModal();
-  }
+  const emailModal = (
+    <Dialog
+      open={isEmailModalOpen}
+      onOpenChange={(open) => {
+        if (!open && !isWorking) closeEmailModal();
+      }}
+    >
+      <DialogContent
+        className={`email-auth-modal email-auth-step-${emailStep}`}
+        showClose={false}
+        aria-describedby={undefined}
+        onEscapeKeyDown={(event) => {
+          if (isWorking) event.preventDefault();
+        }}
+        onPointerDownOutside={(event) => {
+          if (isWorking) event.preventDefault();
+        }}
+      >
+        <button
+          type="button"
+          className="email-auth-close"
+          onClick={closeEmailModal}
+          disabled={isWorking}
+          aria-label="Fechar"
+        >
+          <X size={18} aria-hidden="true" />
+        </button>
+        <span className="looma-logo-mark email-auth-logo" role="img" aria-label="Looma" />
 
-  const emailModal =
-    isEmailModalOpen && typeof document !== "undefined"
-      ? createPortal(
-          <div className="email-auth-overlay" onMouseDown={handleBackdropClick}>
-            <section
-              className={`email-auth-modal email-auth-step-${emailStep}`}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="email-auth-title"
-            >
+        {emailStep === "credentials" ? (
+          <>
+            <header className="email-auth-heading">
+              <DialogTitle asChild>
+                <h1>{authMode === "login" ? "Entrar na Looma" : "Criar conta"}</h1>
+              </DialogTitle>
+              <p>
+                {authMode === "login"
+                  ? "Use o seu e-mail e senha para continuar."
+                  : "Crie a sua conta e confirme o e-mail com um código."}
+              </p>
+            </header>
+            <form className="email-auth-form" onSubmit={submitCredentials}>
+              <label htmlFor={`modal-auth-email-${formId}`}>E-mail</label>
+              <input
+                id={`modal-auth-email-${formId}`}
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="nome@email.com"
+                autoComplete="email"
+                required
+                autoFocus
+              />
+              <label htmlFor={`modal-auth-password-${formId}`}>Senha</label>
+              <input
+                id={`modal-auth-password-${formId}`}
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="A sua senha"
+                autoComplete={authMode === "login" ? "current-password" : "new-password"}
+                minLength={authMode === "login" ? 6 : 8}
+                required
+              />
+              {authMode === "signup" ? (
+                <>
+                  <label htmlFor={`modal-auth-repeat-password-${formId}`}>Repetir senha</label>
+                  <input
+                    id={`modal-auth-repeat-password-${formId}`}
+                    type="password"
+                    value={repeatPassword}
+                    onChange={(event) => setRepeatPassword(event.target.value)}
+                    placeholder="Repita a sua senha"
+                    autoComplete="new-password"
+                    minLength={8}
+                    required
+                  />
+                </>
+              ) : null}
+              {error ? (
+                <p className="email-auth-error" role="alert">
+                  {error}
+                </p>
+              ) : null}
               <button
-                type="button"
-                className="email-auth-close"
-                onClick={closeEmailModal}
-                disabled={isWorking}
-                aria-label="Fechar"
+                type="submit"
+                className="email-auth-submit"
+                disabled={
+                  isWorking ||
+                  !email.trim() ||
+                  (authMode === "login"
+                    ? password.length < 6
+                    : password.length < 8 ||
+                      repeatPassword.length < 8 ||
+                      password !== repeatPassword)
+                }
               >
-                <X size={18} aria-hidden="true" />
+                {isWorking ? "A continuar…" : authMode === "login" ? "Login" : "Criar conta"}
               </button>
-              <span className="looma-logo-mark email-auth-logo" role="img" aria-label="Looma" />
-
-              {emailStep === "credentials" ? (
-                <>
-                  <header className="email-auth-heading">
-                    <h1 id="email-auth-title">
-                      {authMode === "login" ? "Entrar na Looma" : "Criar conta"}
-                    </h1>
-                    <p>
-                      {authMode === "login"
-                        ? "Use o seu e-mail e senha para continuar."
-                        : "Crie a sua conta e confirme o e-mail com um código."}
-                    </p>
-                  </header>
-                  <form className="email-auth-form" onSubmit={submitCredentials}>
-                    <label htmlFor={`modal-auth-email-${variant}`}>E-mail</label>
-                    <input
-                      id={`modal-auth-email-${variant}`}
-                      type="email"
-                      value={email}
-                      onChange={(event) => setEmail(event.target.value)}
-                      placeholder="nome@email.com"
-                      autoComplete="email"
-                      required
-                      autoFocus
-                    />
-                    <label htmlFor={`modal-auth-password-${variant}`}>Senha</label>
-                    <input
-                      id={`modal-auth-password-${variant}`}
-                      type="password"
-                      value={password}
-                      onChange={(event) => setPassword(event.target.value)}
-                      placeholder="A sua senha"
-                      autoComplete={authMode === "login" ? "current-password" : "new-password"}
-                      minLength={authMode === "login" ? 6 : 8}
-                      required
-                    />
-                    {authMode === "signup" ? (
-                      <>
-                        <label htmlFor={`modal-auth-repeat-password-${variant}`}>
-                          Repetir senha
-                        </label>
-                        <input
-                          id={`modal-auth-repeat-password-${variant}`}
-                          type="password"
-                          value={repeatPassword}
-                          onChange={(event) => setRepeatPassword(event.target.value)}
-                          placeholder="Repita a sua senha"
-                          autoComplete="new-password"
-                          minLength={8}
-                          required
-                        />
-                      </>
-                    ) : null}
-                    {error ? (
-                      <p className="email-auth-error" role="alert">
-                        {error}
-                      </p>
-                    ) : null}
-                    <button
-                      type="submit"
-                      className="email-auth-submit"
-                      disabled={
-                        isWorking ||
-                        !email.trim() ||
-                        (authMode === "login"
-                          ? password.length < 6
-                          : password.length < 8 ||
-                            repeatPassword.length < 8 ||
-                            password !== repeatPassword)
-                      }
-                    >
-                      {isWorking ? "A continuar…" : authMode === "login" ? "Login" : "Criar conta"}
-                    </button>
-                  </form>
-                  <button
-                    type="button"
-                    className="email-auth-mode"
-                    onClick={() => {
-                      setAuthMode((current) => (current === "login" ? "signup" : "login"));
-                      setRepeatPassword("");
-                      setError(null);
-                    }}
-                  >
-                    {authMode === "login"
-                      ? "Ainda não tem conta? Criar conta"
-                      : "Já tem conta? Fazer login"}
-                  </button>
-                </>
-              ) : (
-                <>
-                  <header className="email-auth-heading">
-                    <h1 id="email-auth-title">Confirme o código</h1>
-                    <p>
-                      Enviámos um código de oito dígitos para <strong>{email}</strong>.
-                    </p>
-                  </header>
-                  <form className="email-auth-form" onSubmit={verifyEmailCode}>
-                    <label htmlFor={`modal-auth-code-${variant}`}>Código de verificação</label>
-                    <input
-                      id={`modal-auth-code-${variant}`}
-                      className="email-auth-code"
-                      value={code}
-                      onChange={(event) =>
-                        setCode(event.target.value.replace(/\D/g, "").slice(0, EMAIL_OTP_LENGTH))
-                      }
-                      placeholder="Digite o código de 8 dígitos"
-                      inputMode="numeric"
-                      autoComplete="one-time-code"
-                      pattern="[0-9]{8}"
-                      required
-                      autoFocus
-                    />
-                    {error ? (
-                      <p className="email-auth-error" role="alert">
-                        {error}
-                      </p>
-                    ) : null}
-                    <button
-                      type="submit"
-                      className="email-auth-submit"
-                      disabled={isWorking || code.length !== EMAIL_OTP_LENGTH}
-                    >
-                      {isWorking ? "A verificar…" : "Confirmar código"}
-                    </button>
-                  </form>
-                  <button
-                    type="button"
-                    className="email-auth-mode"
-                    onClick={() => void resendEmailCode()}
-                    disabled={isWorking}
-                  >
-                    {isWorking ? "A reenviar…" : "Reenviar código"}
-                  </button>
-                </>
-              )}
-            </section>
-          </div>,
-          document.body,
-        )
-      : null;
+            </form>
+            <button
+              type="button"
+              className="email-auth-mode"
+              onClick={() => {
+                setAuthMode((current) => (current === "login" ? "signup" : "login"));
+                setRepeatPassword("");
+                setError(null);
+              }}
+            >
+              {authMode === "login"
+                ? "Ainda não tem conta? Criar conta"
+                : "Já tem conta? Fazer login"}
+            </button>
+          </>
+        ) : (
+          <>
+            <header className="email-auth-heading">
+              <DialogTitle asChild>
+                <h1>Confirme o código</h1>
+              </DialogTitle>
+              <p>
+                Enviámos um código de oito dígitos para <strong>{email}</strong>.
+              </p>
+            </header>
+            <form className="email-auth-form" onSubmit={verifyEmailCode}>
+              <label htmlFor={`modal-auth-code-${formId}`}>Código de verificação</label>
+              <input
+                id={`modal-auth-code-${formId}`}
+                className="email-auth-code"
+                value={code}
+                onChange={(event) =>
+                  setCode(event.target.value.replace(/\D/g, "").slice(0, EMAIL_OTP_LENGTH))
+                }
+                placeholder="Digite o código de 8 dígitos"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                pattern="[0-9]{8}"
+                required
+                autoFocus
+              />
+              {error ? (
+                <p className="email-auth-error" role="alert">
+                  {error}
+                </p>
+              ) : null}
+              <button
+                type="submit"
+                className="email-auth-submit"
+                disabled={isWorking || code.length !== EMAIL_OTP_LENGTH}
+              >
+                {isWorking ? "A verificar…" : "Confirmar código"}
+              </button>
+            </form>
+            <button
+              type="button"
+              className="email-auth-mode"
+              onClick={() => void resendEmailCode()}
+              disabled={isWorking}
+            >
+              {isWorking ? "A reenviar…" : "Reenviar código"}
+            </button>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
 
   if (user && !isEmailModalOpen) {
     if (variant === "sidebar") return null;

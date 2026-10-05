@@ -11,6 +11,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import responsiveCss from "../responsive.css?url";
 import { recordUserTrafficEvent } from "../lib/activity-metrics";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SplashProvider } from "../lib/splash-state";
@@ -123,7 +124,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      {
+        name: "viewport",
+        content:
+          "width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content",
+      },
       { title: "looma" },
       { name: "description", content: "Rede social para criadores e freelancers." },
       { property: "og:type", content: "website" },
@@ -134,6 +139,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
+      { rel: "stylesheet", href: responsiveCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {
         rel: "stylesheet",
@@ -187,12 +193,15 @@ function RootComponent() {
     window.__loomaSplashShown = true;
     return true;
   }
-  const [isSplashActive, setIsSplashActive] = useState(() => {
-    return shouldStartSplash(pathname);
-  });
+  // Hydrate the same splash markup on the server and in the browser, then
+  // apply browser-only navigation and motion preferences after mounting.
+  const [isSplashActive, setIsSplashActive] = useState(pathname === "/");
   const completeSplash = useCallback(() => setIsSplashActive(false), []);
   const startSplash = useCallback(() => {
     if (shouldStartSplash(window.location.pathname)) setIsSplashActive(true);
+  }, []);
+  useEffect(() => {
+    setIsSplashActive(shouldStartSplash(window.location.pathname));
   }, []);
   const { user, profile, refresh } = useCurrentProfile();
   const shouldShowOnboarding = Boolean(
@@ -227,19 +236,24 @@ function RootComponent() {
   }, []);
 
   useEffect(() => {
-    const supabase = getSupabaseBrowserClient();
-    let currentUserId = user?.id ?? null;
-    const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
-      const nextUserId = session?.user?.id ?? null;
-      if (nextUserId === currentUserId && event !== "SIGNED_OUT") return;
-      currentUserId = nextUserId;
+    try {
+      const supabase = getSupabaseBrowserClient();
+      let currentUserId = user?.id ?? null;
+      const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
+        const nextUserId = session?.user?.id ?? null;
+        if (nextUserId === currentUserId && event !== "SIGNED_OUT") return;
+        currentUserId = nextUserId;
 
-      if (event === "SIGNED_IN" && session?.user) {
-        if (window.location.pathname !== "/") void router.navigate({ to: "/" });
-      }
-    });
+        if (event === "SIGNED_IN" && session?.user) {
+          if (window.location.pathname !== "/") void router.navigate({ to: "/" });
+        }
+      });
 
-    return () => subscription.subscription.unsubscribe();
+      return () => subscription.subscription.unsubscribe();
+    } catch (error) {
+      console.error("[Looma] Não foi possível acompanhar a sessão do Supabase.", error);
+      return;
+    }
   }, [router, user?.id]);
 
   useEffect(() => {

@@ -17,6 +17,7 @@ import {
   TrendingUp,
   UserRound,
   BriefcaseBusiness,
+  Menu,
 } from "lucide-react";
 import { Link, useLocation, useRouter } from "@tanstack/react-router";
 import { type MouseEvent, useEffect, useState } from "react";
@@ -28,6 +29,13 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { useAdminAccess } from "@/lib/admin";
 import { applyTheme, getStoredTheme, saveTheme } from "@/lib/theme";
 import { getUnreadNotificationCount } from "@/lib/notifications";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetDescription,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const NAV_GROUPS = [
   {
@@ -71,9 +79,22 @@ export function LoomaSidebar() {
   const [signOutError, setSignOutError] = useState<string | null>(null);
   const [isLeavingForProfile, setIsLeavingForProfile] = useState(false);
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
-  const [isDarkTheme, setIsDarkTheme] = useState(() =>
-    typeof document === "undefined" ? true : document.documentElement.classList.contains("dark"),
-  );
+  const [isDarkTheme, setIsDarkTheme] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    setIsProfileMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const closeOnDesktop = () => {
+      if (desktop.matches) setIsMobileMenuOpen(false);
+    };
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => desktop.removeEventListener("change", closeOnDesktop);
+  }, []);
 
   useEffect(() => {
     setIsDarkTheme(document.documentElement.classList.contains("dark"));
@@ -143,8 +164,8 @@ export function LoomaSidebar() {
     setIsSigningOut(false);
   }
 
-  return (
-    <aside className="looma-sidebar fixed left-0 top-0 z-30 hidden h-screen w-60 lg:flex">
+  const sidebarContent = (
+    <>
       <Link to="/" className="sidebar-logo-link" aria-label="Voltar para o início">
         <span className="looma-logo-mark sidebar-logo-mark" role="img" aria-label="Looma" />
       </Link>
@@ -263,6 +284,69 @@ export function LoomaSidebar() {
           </div>
         ) : null}
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      <aside className="looma-sidebar desktop-sidebar fixed left-0 top-0 z-30 hidden h-screen w-60 lg:flex">
+        {sidebarContent}
+      </aside>
+      <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+        <header className="mobile-app-header">
+          <Link to="/" className="mobile-brand" aria-label="Voltar para o início">
+            <span className="looma-logo-mark" aria-hidden="true" />
+            <span>Looma</span>
+          </Link>
+          <Link to="/perfil" className="mobile-profile-link" aria-label="Abrir portfólio">
+            <ProfileAvatar
+              className="profile-avatar"
+              fullName={displayName}
+              avatarUrl={profile?.avatar_url}
+            />
+          </Link>
+        </header>
+        <nav className="mobile-app-nav" aria-label="Navegação principal móvel">
+          {NAV_GROUPS[0]?.items.slice(0, 4).map(({ icon: Icon, label, path, showsUnreadDot }) => (
+            <Link key={path} to={path} aria-current={pathname === path ? "page" : undefined}>
+              <span className="mobile-nav-icon">
+                <Icon size={21} aria-hidden="true" />
+                {showsUnreadDot && hasUnreadNotifications ? (
+                  <span className="sidebar-notification-dot" />
+                ) : null}
+              </span>
+              <span>{label}</span>
+            </Link>
+          ))}
+          <SheetTrigger asChild>
+            <button type="button" aria-label="Abrir menu de navegação">
+              <Menu size={21} aria-hidden="true" />
+              <span>Menu</span>
+            </button>
+          </SheetTrigger>
+        </nav>
+        <SheetContent side="left" className="mobile-navigation-sheet">
+          <SheetTitle className="sr-only">Navegação Looma</SheetTitle>
+          <SheetDescription className="sr-only">
+            Explore a Looma e gerencie a sua conta.
+          </SheetDescription>
+          <aside
+            className="looma-sidebar mobile-sidebar"
+            onClick={(event) => {
+              if (
+                (event.target as HTMLElement).closest("a[href]") &&
+                !event.metaKey &&
+                !event.ctrlKey &&
+                !event.shiftKey &&
+                !event.altKey
+              )
+                setIsMobileMenuOpen(false);
+            }}
+          >
+            {sidebarContent}
+          </aside>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }

@@ -25,16 +25,16 @@ export function LoomaDropdown<T extends string | number>({
   const selected = options.find((option) => option.value === value) ?? options[0];
 
   useEffect(() => {
-    function closeFromOutside(event: MouseEvent) {
+    function closeFromOutside(event: PointerEvent) {
       if (!containerRef.current?.contains(event.target as Node)) setIsOpen(false);
     }
     function closeFromEscape(event: KeyboardEvent) {
       if (event.key === "Escape") setIsOpen(false);
     }
-    document.addEventListener("mousedown", closeFromOutside);
+    document.addEventListener("pointerdown", closeFromOutside);
     document.addEventListener("keydown", closeFromEscape);
     return () => {
-      document.removeEventListener("mousedown", closeFromOutside);
+      document.removeEventListener("pointerdown", closeFromOutside);
       document.removeEventListener("keydown", closeFromEscape);
     };
   }, []);

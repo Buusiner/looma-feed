@@ -10,6 +10,7 @@ import {
   ArrowRight,
   BadgeCheck,
   BriefcaseBusiness,
+  ChevronDown,
   Compass,
   FileText,
   MoreHorizontal,
@@ -474,6 +475,7 @@ export function LoomaLanding({
   const [proposalError, setProposalError] = useState<string | null>(null);
   const [sendingProposal, setSendingProposal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDiscoveryOpen, setIsDiscoveryOpen] = useState(false);
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [isSearchSettling, setIsSearchSettling] = useState(false);
   const [profileSearchResults, setProfileSearchResults] = useState<Profile[]>([]);
@@ -610,6 +612,7 @@ export function LoomaLanding({
 
   useEffect(() => {
     if (!showSplash) {
+      setFeedReady(true);
       setIntroVisible(true);
       setIntroStage("tagline");
       setIntroSequenceDone(true);
@@ -1481,209 +1484,222 @@ export function LoomaLanding({
                 onPostSelect={focusPostFromSearch}
               />
             </div>
-            <div className="home-discovery-board">
-              <section
-                className="home-discovery-section home-opportunities-section"
-                aria-labelledby="home-opportunities-title"
-              >
-                <header className="home-section-header">
-                  <div>
-                    <p className="home-section-kicker">Descubra possibilidades</p>
-                    <h2 id="home-opportunities-title">Oportunidades</h2>
-                    <p>Vagas, projetos e pedidos publicados pela comunidade.</p>
-                  </div>
-                  <Link to="/oportunidades">Ver todas</Link>
-                </header>
-                {opportunitiesLoading ? (
-                  <div className="home-discovery-skeleton" aria-label="Carregando oportunidades">
-                    <i />
-                    <i />
-                    <i />
-                  </div>
-                ) : opportunitiesError ? (
-                  <section className="home-discovery-empty" role="alert">
-                    <p>Não foi possível carregar oportunidades: {opportunitiesError}</p>
-                    <Link to="/oportunidades">Tentar na página de oportunidades</Link>
-                  </section>
-                ) : opportunities.length ? (
-                  <div className="home-opportunity-grid">
-                    {opportunities.map((opportunity) => (
-                      <Link
-                        className="home-opportunity-card"
-                        key={opportunity.id}
-                        to="/oportunidades"
-                      >
-                        <div className="home-opportunity-card-top">
-                          <BriefcaseBusiness size={18} aria-hidden="true" />
-                          {opportunity.category ? <span>{opportunity.category}</span> : null}
-                        </div>
-                        <h3>{opportunity.title}</h3>
+            <button
+              type="button"
+              className="home-discovery-toggle"
+              aria-expanded={isDiscoveryOpen}
+              aria-controls="home-discovery-content"
+              onClick={() => setIsDiscoveryOpen((open) => !open)}
+            >
+              <Compass size={18} aria-hidden="true" />
+              <span>Descubra na Looma</span>
+              <ChevronDown size={18} aria-hidden="true" />
+            </button>
+            <div
+              id="home-discovery-content"
+              className={`home-discovery-content ${isDiscoveryOpen ? "is-expanded" : ""}`}
+            >
+              <div className="home-discovery-board">
+                <section
+                  className="home-discovery-section home-opportunities-section"
+                  aria-labelledby="home-opportunities-title"
+                >
+                  <header className="home-section-header">
+                    <div>
+                      <p className="home-section-kicker">Descubra possibilidades</p>
+                      <h2 id="home-opportunities-title">Oportunidades</h2>
+                      <p>Vagas, projetos e pedidos publicados pela comunidade.</p>
+                    </div>
+                    <Link to="/oportunidades">Ver todas</Link>
+                  </header>
+                  {opportunitiesLoading ? (
+                    <div className="home-discovery-skeleton" aria-label="Carregando oportunidades">
+                      <i />
+                      <i />
+                      <i />
+                    </div>
+                  ) : opportunitiesError ? (
+                    <section className="home-discovery-empty" role="alert">
+                      <p>Não foi possível carregar oportunidades: {opportunitiesError}</p>
+                      <Link to="/oportunidades">Tentar na página de oportunidades</Link>
+                    </section>
+                  ) : opportunities.length ? (
+                    <div className="home-opportunity-grid">
+                      {opportunities.map((opportunity) => (
+                        <Link
+                          className="home-opportunity-card"
+                          key={opportunity.id}
+                          to="/oportunidades"
+                        >
+                          <div className="home-opportunity-card-top">
+                            <BriefcaseBusiness size={18} aria-hidden="true" />
+                            {opportunity.category ? <span>{opportunity.category}</span> : null}
+                          </div>
+                          <h3>{opportunity.title}</h3>
+                          <p>
+                            {opportunity.description.length > 150
+                              ? `${opportunity.description.slice(0, 150)}…`
+                              : opportunity.description}
+                          </p>
+                          <div className="home-opportunity-meta">
+                            {opportunity.type ? <span>{opportunity.type}</span> : null}
+                            {opportunity.work_mode ? <span>{opportunity.work_mode}</span> : null}
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <section className="home-discovery-empty">
+                      <div>
+                        <h3>As próximas oportunidades começam por aqui.</h3>
+                        <p>Quando a comunidade publicar algo novo, você verá nesta área.</p>
+                      </div>
+                      <Link to="/conexoes">Conhecer pessoas para se conectar</Link>
+                    </section>
+                  )}
+                </section>
+
+                <section className="home-discovery-section" aria-labelledby="home-people-title">
+                  <header className="home-section-header">
+                    <div>
+                      <p className="home-section-kicker">Sua rede</p>
+                      <h2 id="home-people-title">Pessoas para conhecer</h2>
+                      <p>Profissionais que podem somar ao que você está construindo.</p>
+                    </div>
+                    <Link to="/conexoes">Ver todas</Link>
+                  </header>
+                  {suggestionsLoading ? (
+                    <div
+                      className="home-discovery-skeleton"
+                      aria-label="Carregando pessoas recomendadas"
+                    >
+                      <i />
+                      <i />
+                      <i />
+                    </div>
+                  ) : suggestionsError ? (
+                    <section className="home-discovery-empty" role="alert">
+                      <p>Não foi possível carregar pessoas recomendadas: {suggestionsError}</p>
+                      <Link to="/conexoes">Ver conexões</Link>
+                    </section>
+                  ) : suggestions.length ? (
+                    <div className="home-people-grid">
+                      {suggestions.map((suggestion) => (
+                        <article className="home-person-card" key={suggestion.id}>
+                          <ProfileAvatar
+                            className="avatar"
+                            fullName={suggestion.full_name || "Usuário"}
+                            avatarUrl={suggestion.avatar_url}
+                          />
+                          <div>
+                            {suggestion.username ? (
+                              <Link
+                                className="home-person-profile-link"
+                                to="/perfil/$username"
+                                params={{ username: suggestion.username.replace(/^@/, "") }}
+                              >
+                                <h3>{suggestion.full_name?.trim() || "Usuário"}</h3>
+                              </Link>
+                            ) : (
+                              <h3>{suggestion.full_name?.trim() || "Usuário"}</h3>
+                            )}
+                            {suggestion.username ? (
+                              <p>@{suggestion.username.replace(/^@/, "")}</p>
+                            ) : null}
+                            <small>{suggestion.recommendation_reason}</small>
+                          </div>
+                          <button
+                            type="button"
+                            disabled={connectingId === suggestion.id}
+                            onClick={() => void requestConnection(suggestion.id)}
+                          >
+                            {connectingId === suggestion.id ? "Enviando…" : "Conectar"}
+                          </button>
+                        </article>
+                      ))}
+                    </div>
+                  ) : (
+                    <section className="home-discovery-empty">
+                      <div>
+                        <h3>Sem sugestões por enquanto</h3>
                         <p>
-                          {opportunity.description.length > 150
-                            ? `${opportunity.description.slice(0, 150)}…`
-                            : opportunity.description}
+                          Conexões recomendadas aparecerão aqui quando a sua conta estiver pronta.
                         </p>
-                        <div className="home-opportunity-meta">
-                          {opportunity.type ? <span>{opportunity.type}</span> : null}
-                          {opportunity.work_mode ? <span>{opportunity.work_mode}</span> : null}
-                        </div>
+                      </div>
+                      <Link to="/conexoes">Explorar conexões</Link>
+                    </section>
+                  )}
+                </section>
+              </div>
+
+              <section className="home-next-steps">
+                <div className="home-context-heading">
+                  <span className="home-context-icon" aria-hidden="true">
+                    <BadgeCheck size={17} />
+                  </span>
+                  <div>
+                    <p className="home-section-kicker">Próximo passo</p>
+                    <h2>Construa sua presença.</h2>
+                  </div>
+                </div>
+                <p>Pequenas ações deixam seu perfil pronto para as oportunidades certas.</p>
+                <div className="home-next-step-actions">
+                  <Link to="/perfil">
+                    <Pencil size={16} aria-hidden="true" /> Completar portfólio
+                    <ArrowRight size={15} aria-hidden="true" />
+                  </Link>
+                  <Link to="/oportunidades">
+                    <BriefcaseBusiness size={16} aria-hidden="true" /> Explorar oportunidades
+                    <ArrowRight size={15} aria-hidden="true" />
+                  </Link>
+                </div>
+              </section>
+
+              <section className="home-trending-card" aria-labelledby="home-trending-title">
+                <header>
+                  <div>
+                    <p className="home-section-kicker">Em alta na Looma</p>
+                    <h2 id="home-trending-title">Áreas para explorar</h2>
+                  </div>
+                  <Compass size={18} aria-hidden="true" />
+                </header>
+                {interestsLoading ? (
+                  <div className="home-trending-skeleton" aria-label="Carregando áreas">
+                    <i />
+                    <i />
+                    <i />
+                  </div>
+                ) : interestsError ? (
+                  <p className="home-trending-state" role="alert">
+                    Não foi possível carregar as áreas agora.
+                  </p>
+                ) : interests.length ? (
+                  <div className="home-trending-list">
+                    {interests.slice(0, 6).map((interest) => (
+                      <Link key={interest.id} to="/oportunidades">
+                        {interest.name}
                       </Link>
                     ))}
                   </div>
                 ) : (
-                  <section className="home-discovery-empty">
-                    <div>
-                      <h3>As próximas oportunidades começam por aqui.</h3>
-                      <p>Quando a comunidade publicar algo novo, você verá nesta área.</p>
-                    </div>
-                    <Link to="/conexoes">Conhecer pessoas para se conectar</Link>
-                  </section>
+                  <p className="home-trending-state">
+                    As áreas profissionais aparecerão aqui assim que estiverem disponíveis.
+                  </p>
                 )}
               </section>
 
-              <section className="home-discovery-section" aria-labelledby="home-people-title">
-                <header className="home-section-header">
-                  <div>
-                    <p className="home-section-kicker">Sua rede</p>
-                    <h2 id="home-people-title">Pessoas para conhecer</h2>
-                    <p>Profissionais que podem somar ao que você está construindo.</p>
-                  </div>
-                  <Link to="/conexoes">Ver todas</Link>
-                </header>
-                {suggestionsLoading ? (
-                  <div
-                    className="home-discovery-skeleton"
-                    aria-label="Carregando pessoas recomendadas"
-                  >
-                    <i />
-                    <i />
-                    <i />
-                  </div>
-                ) : suggestionsError ? (
-                  <section className="home-discovery-empty" role="alert">
-                    <p>Não foi possível carregar pessoas recomendadas: {suggestionsError}</p>
-                    <Link to="/conexoes">Ver conexões</Link>
-                  </section>
-                ) : suggestions.length ? (
-                  <div className="home-people-grid">
-                    {suggestions.map((suggestion) => (
-                      <article className="home-person-card" key={suggestion.id}>
-                        <ProfileAvatar
-                          className="avatar"
-                          fullName={suggestion.full_name || "Usuário"}
-                          avatarUrl={suggestion.avatar_url}
-                        />
-                        <div>
-                          {suggestion.username ? (
-                            <Link
-                              className="home-person-profile-link"
-                              to="/perfil/$username"
-                              params={{ username: suggestion.username.replace(/^@/, "") }}
-                            >
-                              <h3>{suggestion.full_name?.trim() || "Usuário"}</h3>
-                            </Link>
-                          ) : (
-                            <h3>{suggestion.full_name?.trim() || "Usuário"}</h3>
-                          )}
-                          {suggestion.username ? (
-                            <p>@{suggestion.username.replace(/^@/, "")}</p>
-                          ) : null}
-                          <small>{suggestion.recommendation_reason}</small>
-                        </div>
-                        <button
-                          type="button"
-                          disabled={connectingId === suggestion.id}
-                          onClick={() => void requestConnection(suggestion.id)}
-                        >
-                          {connectingId === suggestion.id ? "Enviando…" : "Conectar"}
-                        </button>
-                      </article>
-                    ))}
-                  </div>
-                ) : (
-                  <section className="home-discovery-empty">
-                    <div>
-                      <h3>Sem sugestões por enquanto</h3>
-                      <p>
-                        Conexões recomendadas aparecerão aqui quando a sua conta estiver pronta.
-                      </p>
-                    </div>
-                    <Link to="/conexoes">Explorar conexões</Link>
-                  </section>
-                )}
+              <section className="home-feed-companion">
+                <p className="home-section-kicker">Sua rede</p>
+                <h2>Boas conversas viram oportunidades.</h2>
+                <p>Conheça profissionais, acompanhe ideias e dê o próximo passo no seu ritmo.</p>
+                <Link to="/conexoes" className="home-companion-link">
+                  <UsersRound size={16} aria-hidden="true" /> Conhecer pessoas
+                  <ArrowRight size={15} aria-hidden="true" />
+                </Link>
               </section>
             </div>
-
-            <section className="home-next-steps">
-              <div className="home-context-heading">
-                <span className="home-context-icon" aria-hidden="true">
-                  <BadgeCheck size={17} />
-                </span>
-                <div>
-                  <p className="home-section-kicker">Próximo passo</p>
-                  <h2>Construa sua presença.</h2>
-                </div>
-              </div>
-              <p>Pequenas ações deixam seu perfil pronto para as oportunidades certas.</p>
-              <div className="home-next-step-actions">
-                <Link to="/perfil">
-                  <Pencil size={16} aria-hidden="true" /> Completar portfólio
-                  <ArrowRight size={15} aria-hidden="true" />
-                </Link>
-                <Link to="/oportunidades">
-                  <BriefcaseBusiness size={16} aria-hidden="true" /> Explorar oportunidades
-                  <ArrowRight size={15} aria-hidden="true" />
-                </Link>
-              </div>
-            </section>
-
-            <section className="home-trending-card" aria-labelledby="home-trending-title">
-              <header>
-                <div>
-                  <p className="home-section-kicker">Em alta na Looma</p>
-                  <h2 id="home-trending-title">Áreas para explorar</h2>
-                </div>
-                <Compass size={18} aria-hidden="true" />
-              </header>
-              {interestsLoading ? (
-                <div className="home-trending-skeleton" aria-label="Carregando áreas">
-                  <i />
-                  <i />
-                  <i />
-                </div>
-              ) : interestsError ? (
-                <p className="home-trending-state" role="alert">
-                  Não foi possível carregar as áreas agora.
-                </p>
-              ) : interests.length ? (
-                <div className="home-trending-list">
-                  {interests.slice(0, 6).map((interest) => (
-                    <Link key={interest.id} to="/oportunidades">
-                      {interest.name}
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <p className="home-trending-state">
-                  As áreas profissionais aparecerão aqui assim que estiverem disponíveis.
-                </p>
-              )}
-            </section>
-
-            <section className="home-feed-companion">
-              <p className="home-section-kicker">Sua rede</p>
-              <h2>Boas conversas viram oportunidades.</h2>
-              <p>Conheça profissionais, acompanhe ideias e dê o próximo passo no seu ritmo.</p>
-              <Link to="/conexoes" className="home-companion-link">
-                <UsersRound size={16} aria-hidden="true" /> Conhecer pessoas
-                <ArrowRight size={15} aria-hidden="true" />
-              </Link>
-            </section>
           </aside>
         </div>
-        <nav className="mobile-feed-nav" aria-label="Looma">
-          <span className="looma-logo-mark mobile-logo" role="img" aria-label="Looma" />
-        </nav>
       </section>
       <Dialog open={postPendingDeletion !== null} onOpenChange={handlePostDeletionDialogChange}>
         <DialogContent

@@ -196,3 +196,10 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+Before starting the development server, copy `.env.example` to `.env` and set
+`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to your Supabase project URL and
+public key. Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` to the same values for
+server features. Restart the development server after changing these values.
+Without this configuration, the interface remains visible, but login and live
+data are unavailable.

@@ -1,0 +1,1019 @@
+/* Responsive layout authority. Loaded after the desktop visual system so the
+   accumulated legacy breakpoint rules cannot reintroduce fixed-width columns. */
+:root {
+  --looma-navigation-width: 264px;
+  --mobile-header-height: calc(56px + env(safe-area-inset-top, 0px));
+  --mobile-nav-height: calc(64px + env(safe-area-inset-bottom, 0px));
+  --looma-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --route-enter-distance: 14px;
+}
+
+.mobile-app-header,
+.mobile-app-nav {
+  display: none;
+}
+
+/* A settled translateY(0) still traps fixed navigation in the feed's bounds. */
+.feed-ready .feed-stage {
+  transform: none !important;
+}
+
+.looma-sidebar .sidebar-nav .sidebar-nav-icon {
+  width: 24px !important;
+  height: 24px !important;
+  overflow: visible !important;
+}
+
+.mobile-nav-icon .sidebar-notification-dot,
+.sidebar-nav-icon .sidebar-notification-dot {
+  background: #ff2d2d !important;
+}
+
+.home-discovery-toggle {
+  display: none;
+}
+.home-discovery-content {
+  display: grid;
+  gap: 16px;
+}
+.explore-page.feed-stage {
+  will-change: auto !important;
+}
+
+@media (min-width: 1024px) {
+  .profile-edit-page,
+  .admin-shell {
+    height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+  }
+}
+
+:where(button, a, input, textarea, select, label) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(button, a, label) {
+  touch-action: manipulation;
+}
+
+:where(
+  .workspace-body,
+  .workspace-card,
+  .workspace-section,
+  .settings-panel,
+  .profile-edit-card,
+  .home-discovery-section,
+  .post-body,
+  .composer-body,
+  .explore-main,
+  .notification-card-copy
+) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+:where(.workspace-page, .profile-edit-page, .admin-shell) img,
+:where(.workspace-page, .profile-edit-page, .admin-shell) video {
+  max-width: 100%;
+}
+
+.looma-dialog-content {
+  box-sizing: border-box;
+  max-width: calc(100vw - 2rem) !important;
+  max-height: calc(
+    100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 2rem
+  ) !important;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  border-radius: 16px;
+}
+
+.looma-dialog-content > button:last-child:has(.sr-only),
+.email-auth-close {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+}
+
+.email-auth-modal.looma-dialog-content {
+  position: fixed;
+  display: block;
+  width: min(100% - 2rem, 28rem);
+  margin: 0;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  animation: looma-modal-enter 420ms var(--looma-ease) both;
+}
+
+.email-auth-modal .email-auth-form > label,
+.email-auth-modal .email-auth-heading p,
+.profile-auth-prompt > p {
+  color: var(--text-muted) !important;
+}
+.avatar-upload-button {
+  color: #0a0a0b !important;
+}
+
+/* Reserve the media surface while signed URLs and image dimensions load. */
+.post-media-placeholder,
+.post-media-loading {
+  height: min(440px, 65dvh);
+}
+.post-media-placeholder {
+  display: grid;
+  width: 100%;
+  margin-block: 0.75rem;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--surface);
+  color: var(--text-muted);
+}
+
+.profile-skill-editor,
+.avatar-crop-dialog.looma-dialog-content {
+  border-color: var(--border) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+.profile-skill-summary strong,
+.profile-skill-summary button,
+.profile-skill-level,
+.profile-skill-level select,
+.profile-edit-section h2,
+.profile-social-field > span,
+.avatar-crop-dialog h2 {
+  color: var(--text) !important;
+}
+.profile-edit-section p,
+.profile-skill-level > span,
+.avatar-crop-dialog p {
+  color: var(--text-muted) !important;
+}
+.avatar-crop-viewport {
+  background: var(--hover);
+}
+.avatar-crop-dialog .avatar-crop-cancel {
+  border-color: var(--border) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+.avatar-crop-dialog .avatar-crop-confirm {
+  border-color: var(--yellow) !important;
+  background: var(--yellow) !important;
+  color: #0a0a0b !important;
+}
+
+/* Cropping intentionally renders the source beyond the square viewport. */
+.avatar-crop-viewport img {
+  max-width: none !important;
+}
+.avatar-crop-dialog.looma-dialog-content .avatar-crop-handle {
+  min-height: 24px !important;
+  width: 24px;
+  height: 24px;
+  touch-action: none;
+}
+
+@keyframes looma-modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 1279px) {
+  .home-context-rail .home-discovery-toggle {
+    display: flex;
+    width: 100%;
+    min-height: 44px;
+    align-items: center;
+    gap: 10px;
+    border: 0;
+    padding: 8px 4px;
+    background: transparent;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .home-discovery-toggle span {
+    flex: 1;
+    text-align: left;
+  }
+  .home-discovery-toggle > svg:last-child {
+    transition: transform 300ms var(--looma-ease);
+  }
+  .home-discovery-toggle[aria-expanded="true"] > svg:last-child {
+    transform: rotate(180deg);
+  }
+  .home-discovery-content {
+    display: none;
+  }
+  .home-discovery-content.is-expanded {
+    display: grid;
+    gap: 16px;
+    padding-block: 12px;
+    animation: workspace-route-enter 320ms var(--looma-ease) both;
+  }
+  .home-context-rail .home-discovery-content.is-expanded .home-discovery-board,
+  .home-context-rail .home-discovery-content.is-expanded .home-next-steps,
+  .home-context-rail .home-discovery-content.is-expanded .home-trending-card,
+  .home-context-rail .home-discovery-content.is-expanded .home-feed-companion {
+    display: block !important;
+  }
+  .home-context-rail .home-discovery-content .home-section-header h2 {
+    white-space: normal !important;
+    overflow: visible !important;
+  }
+}
+
+.onboarding-gate {
+  box-sizing: border-box;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: max(1rem, env(safe-area-inset-top, 0px)) max(1rem, env(safe-area-inset-right, 0px))
+    max(1rem, env(safe-area-inset-bottom, 0px)) max(1rem, env(safe-area-inset-left, 0px));
+}
+
+.onboarding-card {
+  max-height: calc(
+    100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 2rem
+  );
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.looma-dropdown-menu {
+  max-height: min(50dvh, 24rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Keep the full desktop composition fluid, including the awkward laptop gap
+   between the old 1024 and 1200px breakpoints. */
+@media (min-width: 1024px) {
+  .feed-stage {
+    position: relative !important;
+    inset: auto !important;
+    display: grid !important;
+    grid-template-columns: var(--looma-navigation-width) minmax(0, 1fr) !important;
+    width: min(100%, 1360px) !important;
+    max-width: 1360px !important;
+    margin-inline: auto !important;
+    padding: 0 !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+    align-items: start !important;
+  }
+
+  .feed-stage > .desktop-sidebar {
+    display: flex !important;
+    position: fixed !important;
+    left: max(0px, calc((100vw - 1360px) / 2)) !important;
+    top: 0 !important;
+    z-index: 30 !important;
+    width: var(--looma-navigation-width) !important;
+    min-width: 0 !important;
+    max-width: var(--looma-navigation-width) !important;
+    height: 100dvh !important;
+    overflow-x: hidden !important;
+  }
+
+  .feed-stage .home-shell {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 680px) minmax(0, 388px) !important;
+    width: 100% !important;
+    max-width: 1068px !important;
+    height: 100dvh !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    align-items: start !important;
+  }
+
+  .feed-stage .home-main-scroll {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 100dvh !important;
+    min-height: 0 !important;
+    max-height: 100dvh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  .feed-stage .home-main-scroll > .home-feed-stream,
+  .feed-stage .home-main-scroll > .home-feed-stream .home-feed-panel {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .feed-stage .home-context-rail {
+    position: static !important;
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    min-height: 0 !important;
+    padding: 12px 0 32px 28px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  .workspace-page {
+    display: grid !important;
+    grid-template-columns: var(--looma-navigation-width) minmax(0, 1fr) !important;
+    padding: 0 !important;
+  }
+
+  .workspace-page > .desktop-sidebar {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: var(--looma-navigation-width) !important;
+    height: 100dvh !important;
+    max-width: var(--looma-navigation-width) !important;
+  }
+
+  .workspace-content {
+    grid-column: 2 !important;
+    width: min(100%, 1120px) !important;
+    margin-inline: auto !important;
+    min-width: 0 !important;
+  }
+}
+
+/* Tablet landscape and laptops: retain discovery below the search, and give
+   both it and the timeline a single shared scroll surface. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .feed-stage .home-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-content: start !important;
+    grid-auto-rows: auto !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain;
+  }
+
+  .feed-stage .home-main-scroll {
+    grid-row: 2 !important;
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .feed-stage .home-context-rail {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 12px 20px !important;
+    overflow: visible !important;
+  }
+}
+
+/* Below desktop, one natural page scroll makes browser chrome, keyboard and
+   touch gestures work together. Only the menu and dialogs own nested scroll. */
+@media (max-width: 1023px) {
+  html,
+  body,
+  #root {
+    height: auto !important;
+    overflow-y: auto !important;
+  }
+
+  .desktop-sidebar,
+  .feed-stage > .desktop-sidebar {
+    display: none !important;
+  }
+
+  .mobile-app-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 40;
+    display: flex;
+    height: var(--mobile-header-height);
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--border);
+    padding: env(safe-area-inset-top, 0px) max(16px, env(safe-area-inset-right, 0px)) 0
+      max(16px, env(safe-area-inset-left, 0px));
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .mobile-brand {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 9px;
+    color: inherit;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    text-decoration: none;
+  }
+
+  .mobile-brand .looma-logo-mark {
+    width: 26px;
+    height: 26px;
+    background: currentColor;
+  }
+
+  .mobile-profile-link {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border-radius: 50%;
+    color: inherit;
+  }
+
+  .mobile-profile-link .profile-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .mobile-app-nav {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    box-sizing: border-box;
+    height: var(--mobile-nav-height);
+    border-top: 1px solid var(--border);
+    padding: 4px max(4px, env(safe-area-inset-right, 0px))
+      calc(4px + env(safe-area-inset-bottom, 0px)) max(4px, env(safe-area-inset-left, 0px));
+    background: var(--bg);
+    color: var(--text-muted);
+  }
+
+  .mobile-app-nav > :is(a, button) {
+    display: flex;
+    min-width: 0;
+    min-height: 48px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border: 0;
+    border-radius: 12px;
+    padding: 4px 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: clamp(9px, 2.6vw, 11px);
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    transition:
+      background-color 220ms var(--looma-ease),
+      color 220ms var(--looma-ease),
+      transform 220ms var(--looma-ease);
+  }
+
+  .mobile-app-nav > [aria-current="page"],
+  .mobile-app-nav > [data-state="open"] {
+    background: var(--hover);
+    color: var(--text);
+  }
+
+  .mobile-app-nav > :active {
+    transform: scale(0.96);
+  }
+  .mobile-nav-icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+
+  .feed-stage,
+  .explore-page.feed-stage {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: min(100%, 48rem) !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    margin: 0 auto !important;
+    padding: var(--mobile-header-height) 0 var(--mobile-nav-height) !important;
+    overflow: visible !important;
+  }
+
+  .feed-stage .home-shell {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    overflow: visible !important;
+  }
+
+  .feed-stage .home-main-scroll,
+  .feed-stage .home-main-scroll > .home-feed-stream,
+  .feed-stage .home-main-scroll > .home-feed-stream .home-feed-panel {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    scrollbar-gutter: auto !important;
+  }
+
+  .feed-stage .home-context-rail {
+    position: static !important;
+    order: -1 !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 12px 16px !important;
+    overflow: visible !important;
+  }
+
+  .home-feed-stream .home-feed-heading {
+    top: var(--mobile-header-height) !important;
+  }
+
+  .feed-stage .home-search-area {
+    z-index: 25 !important;
+  }
+
+  .feed-stage .looma-search-results {
+    max-height: min(52dvh, 420px) !important;
+  }
+
+  .workspace-page {
+    display: block !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    padding: var(--mobile-header-height) 0 var(--mobile-nav-height) !important;
+    overflow: visible !important;
+  }
+
+  .workspace-content {
+    width: min(100%, 48rem) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 auto !important;
+    padding: clamp(20px, 4vw, 32px) max(16px, env(safe-area-inset-right, 0px)) 24px
+      max(16px, env(safe-area-inset-left, 0px)) !important;
+    overflow: visible !important;
+    scrollbar-gutter: auto !important;
+  }
+
+  .workspace-body {
+    padding-bottom: 1rem !important;
+  }
+
+  .workspace-header {
+    flex-wrap: wrap;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+  }
+  .workspace-heading-copy {
+    flex: 1;
+    min-width: 0;
+    margin: 0 !important;
+  }
+  .workspace-toolbar {
+    flex-wrap: wrap;
+  }
+  .settings-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .settings-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  :is(.workspace-page, .feed-stage, .profile-edit-page, .looma-dialog-content, .onboarding-gate)
+    :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) {
+    font-size: 16px !important;
+  }
+
+  :is(.workspace-page, .feed-stage, .profile-edit-page, .looma-dialog-content, .onboarding-gate)
+    :is(
+      button,
+      .workspace-primary-action,
+      .workspace-empty-action,
+      .portfolio-section-action,
+      .profile-back-link,
+      .avatar-upload-button
+    ) {
+    min-height: 44px !important;
+  }
+
+  .home-feed-panel > .home-composer-panel .composer-actions {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+
+  .home-feed-panel > .home-composer-panel .publish-button {
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+
+  .media-picker-icon,
+  .composer-type-toggle > button,
+  .post-menu-trigger,
+  .icon-action {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  .feed-work-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .post-media {
+    max-height: min(440px, 65dvh);
+  }
+  .post-meta {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    row-gap: 4px !important;
+  }
+  .home-feed-stream .post-meta > span {
+    white-space: normal !important;
+    overflow: visible !important;
+    font-size: 12px !important;
+  }
+  .home-feed-stream .post-author-link {
+    white-space: normal !important;
+    overflow: visible !important;
+    font-size: 14px !important;
+  }
+  .explore-page .explore-right-rail {
+    display: none !important;
+  }
+  .post-meta > strong,
+  .post-author-link {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .home-feed-stream .post-body {
+    min-width: 0 !important;
+  }
+  .post-body > p {
+    overflow-wrap: anywhere;
+  }
+
+  .explore-tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .explore-tabs button {
+    padding-inline: 3px;
+    font-size: clamp(11px, 2.8vw, 14px);
+    overflow-wrap: anywhere;
+  }
+  .explore-search input {
+    min-width: 0;
+  }
+  .workspace-search {
+    min-width: 0;
+    width: 100%;
+  }
+  .looma-dropdown {
+    min-width: 0;
+  }
+  .looma-dropdown-trigger span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .notification-card-heading {
+    flex-wrap: wrap;
+  }
+  .settings-theme-options {
+    flex-wrap: wrap;
+  }
+
+  .profile-edit-page {
+    padding: max(16px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px))
+      max(24px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+  }
+  .profile-edit-shell {
+    min-width: 0;
+  }
+  .profile-field,
+  .profile-social-field {
+    min-width: 0;
+  }
+  .profile-skill-summary {
+    flex-wrap: wrap;
+  }
+  .profile-skill-level {
+    max-width: 100%;
+  }
+
+  .admin-shell {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+  }
+  .admin-sidebar {
+    position: static !important;
+    height: auto !important;
+  }
+  .admin-sidebar nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+  }
+  .admin-sidebar nav a {
+    min-height: 44px;
+    flex-shrink: 0;
+  }
+  .admin-main {
+    overflow: visible;
+  }
+  .admin-global-search {
+    min-width: 0;
+    width: 100%;
+  }
+  .admin-global-search input {
+    min-width: 0;
+  }
+  .admin-filters {
+    flex-wrap: wrap;
+  }
+}
+
+/* The sheet inherits the desktop identity without inheriting its fixed width
+   or positioning. Radix provides focus containment, Escape and scroll lock. */
+.mobile-navigation-sheet {
+  z-index: 50;
+  box-sizing: border-box;
+  width: min(88vw, 340px);
+  max-width: 340px;
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: max(12px, env(safe-area-inset-top, 0px)) 16px max(16px, env(safe-area-inset-bottom, 0px));
+  background: var(--bg);
+  color: var(--text);
+  border-color: var(--border);
+  animation-timing-function: var(--looma-ease);
+}
+
+.mobile-navigation-sheet > button {
+  z-index: 2;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+}
+
+.mobile-navigation-sheet .mobile-sidebar {
+  position: static !important;
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  border: 0 !important;
+  padding: 0 !important;
+  background: var(--bg) !important;
+}
+
+.mobile-sidebar .sidebar-nav a,
+.mobile-sidebar .sidebar-theme-item,
+.mobile-sidebar .sidebar-profile-main,
+.mobile-sidebar .sidebar-profile-settings,
+.mobile-sidebar .sidebar-help-link,
+.mobile-sidebar .sidebar-google-login,
+.mobile-sidebar .sidebar-email-login {
+  min-height: 44px !important;
+}
+.mobile-sidebar .sidebar-profile-settings {
+  width: 44px;
+  flex-basis: 44px;
+}
+.mobile-sidebar .sidebar-profile-menu {
+  position: relative;
+  bottom: auto;
+  margin-top: 8px;
+}
+
+@media (max-width: 479px) {
+  .home-feed-panel > .home-composer-panel .composer,
+  .home-feed-stream .feed-post {
+    grid-template-columns: 36px minmax(0, 1fr) !important;
+    gap: 10px !important;
+    padding-inline: 12px !important;
+  }
+  .home-feed-stream .feed-post > .avatar,
+  .home-feed-panel > .home-composer-panel .composer > .avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .home-feed-panel > .home-composer-panel .composer-actions {
+    margin-left: -46px !important;
+  }
+  .home-feed-panel > .home-composer-panel .composer-left-actions {
+    gap: 4px !important;
+  }
+  .home-feed-panel > .home-composer-panel .composer textarea {
+    min-height: 84px !important;
+  }
+  .home-feed-stream .post-meta {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    font-size: 12px !important;
+  }
+  .home-feed-stream .post-meta > :is(a, strong) {
+    grid-column: 1;
+    grid-row: 1;
+    white-space: normal !important;
+    overflow: visible !important;
+  }
+  .home-feed-stream .post-meta > span {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .home-feed-stream .post-meta time {
+    white-space: nowrap;
+  }
+  .home-feed-stream .post-meta .post-menu-wrap {
+    grid-column: 2;
+    grid-row: 1 / 3;
+  }
+  .home-feed-stream .post-meta strong {
+    font-size: 14px !important;
+  }
+  .home-feed-stream .post-body > p {
+    font-size: 15px !important;
+    line-height: 1.55 !important;
+  }
+  .workspace-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .workspace-header-action {
+    width: 100%;
+  }
+  .workspace-header-action > * {
+    width: 100%;
+    justify-content: center;
+  }
+  .workspace-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .workspace-toolbar .looma-dropdown {
+    width: 100%;
+  }
+  .workspace-card-heading > div {
+    min-width: 0;
+  }
+  .workspace-person-card {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .workspace-person-card > div:nth-child(2) {
+    flex-basis: calc(100% - 64px);
+  }
+  .workspace-card-actions {
+    width: 100%;
+  }
+  .workspace-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .workspace-metrics strong {
+    font-size: clamp(20px, 6vw, 28px);
+  }
+  .settings-nav {
+    gap: 4px;
+  }
+  .settings-nav button {
+    padding-inline: 8px;
+  }
+  .plans-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .plan-card {
+    min-width: 0;
+  }
+  .explore-profile-list article {
+    gap: 8px;
+  }
+  .explore-profile-list article > a:last-child {
+    padding-inline: 10px;
+    min-height: 44px;
+    display: grid;
+    place-items: center;
+  }
+  .profile-edit-card {
+    padding: 20px 16px;
+  }
+  .profile-form-actions {
+    flex-wrap: wrap;
+  }
+  .intro-lockup {
+    font-size: clamp(2.7rem, 12vw, 3.8rem);
+    --intro-logo-gap: 0.75rem;
+  }
+  .intro-tagline {
+    font-size: clamp(10px, 3vw, 13px);
+    white-space: normal;
+    text-align: center;
+  }
+  .intro-tagline-clip {
+    max-width: calc(100vw - 32px);
+  }
+}
+
+/* Keep the easing and the staged reveal; reduce travel and compositing cost
+   on compact screens instead of removing normal motion. */
+@keyframes workspace-route-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--route-enter-distance)) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --route-enter-distance: 8px;
+  }
+  .feed-stage {
+    transition-timing-function: var(--looma-ease);
+  }
+  .looma-transition:not(.feed-ready) .feed-stage {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  .looma-transition .feed-stage {
+    transition:
+      transform 700ms var(--looma-ease),
+      opacity 700ms var(--looma-ease);
+  }
+  .looma-transition.feed-ready .feed-stage {
+    opacity: 1;
+  }
+  .workspace-content > *,
+  .feed-ready .feed-column {
+    animation-timing-function: var(--looma-ease);
+  }
+  .home-feed-stream .feed-post:hover {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feed-stage,
+  .brand-intro,
+  .profile-edit-page {
+    transition: none !important;
+  }
+  .email-auth-modal.looma-dialog-content,
+  .home-discovery-content.is-expanded {
+    animation: none;
+  }
+  .mobile-app-nav > :is(a, button),
+  .mobile-navigation-sheet {
+    transition: none;
+    animation-duration: 1ms;
+  }
+  .workspace-content > *,
+  .feed-ready .feed-column {
+    animation: none !important;
+  }
+}

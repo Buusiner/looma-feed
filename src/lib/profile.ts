@@ -107,12 +107,18 @@ export function useCurrentProfile() {
 
   useEffect(() => {
     void refresh();
-    const supabase = getSupabaseBrowserClient();
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      void refresh(session?.user ?? null);
-    });
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+        void refresh(session?.user ?? null);
+      });
 
-    return () => subscription.subscription.unsubscribe();
+      return () => subscription.subscription.unsubscribe();
+    } catch {
+      // refresh() already records the configuration error and clears loading.
+      // A failed auth subscription must not unmount the public interface.
+      return;
+    }
   }, [refresh]);
 
   return { user, profile, profileError, isLoading, refresh };

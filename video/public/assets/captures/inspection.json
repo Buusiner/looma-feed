@@ -1,0 +1,1026 @@
+[
+  {
+    "format": "wide",
+    "name": "explore",
+    "url": "https://looma-feed.vercel.app/explorar",
+    "text": "Início\nExplorar\nNotificações\nChat\nPublicações\nPortfólio\nEm alta\nRelatórios\nPropostas\nPlanos\nEntrar com Google\nou\nLogin com Email\nUsuário\nModo escuro\nAjuda\nExplorar\nEm alta\nNovidades\nProjetos\nNovidades para descobrir\nCriadores estão montando miniestúdios para vender serviços completos\n\nHoje · Criatividade · 428 conversas\n\nPortfólios vivos ganham espaço entre freelancers e equipes pequenas\n\n2 h · Portfólio · 319 conversas\n\nProfissionais de operações usam IA para acelerar propostas e entregas\n\n4 h · Produtividade · 612 conversas\n\nDesign · Em alta\nIdentidade para marcas pequenas\nTecnologia · Em alta\nAutomação sem código\nMarketing · Em alta\nCampanhas de lançamento\nDados · Em alta\nDashboards para negócios locais\nBrasil · Crescendo\nComunidades profissionais independentes\nContas para conhecer\nVer rede\nFelipe Xavier\n\nPerfil\n\nConectar\nSpring K\n\nPerfil\n\nConectar\nScrux FT\n\nPerfil\n\nSou heterao\nConectar\nLooma Oficial\n\n@loomaoficial\n\nFounder Looma\nConectar\nArthur Mezacasa\n\nPerfil\n\nConectar\nTeyllor Duarte.\n\n@clownn\n\nConectar\nOportunidades\nVer todas\nDesign\nProjeto de interface\n\nPrecisamos de designer UI/UX\n\nMarketing\nLanding de campanha\n\nPrecisamos de designer gráfico\n\nPessoas para conhecer\nVer todas\nFelipe Xavier\n\nPerfil\n\nConectar\nSpring K\n\nPerfil\n\nConectar\nScrux FT\n\nPerfil\n\nSou heterao\nConectar\nConstrua sua presença.\n\nPequenas ações deixam seu perfil pronto para as oportunidades certas.\n\nCompletar portfólio\nExplorar oportunidades\nÁreas para explorar\nDesigner UI/UX\nEditor de vídeo\nSocial media\nDesenvolvedor front-end\nAnalista de dados\nGestor de tráfego\nBoas conversas viram oportunidades.\n\nConheça profissionais, acompanhe ideias e dê o próximo passo no seu ritmo.\n\nConhecer pessoas",
+    "rects": [
+      {
+        "selector": "feed-stage explore-page",
+        "aria": null,
+        "rect": {
+          "x": 280,
+          "y": 0,
+          "width": 1360,
+          "height": 1080,
+          "top": 0,
+          "right": 1640,
+          "bottom": 1080,
+          "left": 280
+        }
+      },
+      {
+        "selector": "home-main-scroll",
+        "aria": null,
+        "rect": {
+          "x": 524,
+          "y": 0,
+          "width": 680,
+          "height": 1080,
+          "top": 0,
+          "right": 1204,
+          "bottom": 1080,
+          "left": 524
+        }
+      },
+      {
+        "selector": "home-feed-stream explore-feed-stream",
+        "aria": "Explorar",
+        "rect": {
+          "x": 524,
+          "y": 0,
+          "width": 680,
+          "height": 1080,
+          "top": 0,
+          "right": 1204,
+          "bottom": 1080,
+          "left": 524
+        }
+      },
+      {
+        "selector": "explore-tabs",
+        "aria": "Categorias de exploração",
+        "rect": {
+          "x": 525,
+          "y": 73.59375,
+          "width": 678,
+          "height": 58.390625,
+          "top": 73.59375,
+          "right": 1203,
+          "bottom": 131.984375,
+          "left": 525
+        }
+      },
+      {
+        "selector": "explore-trends-list",
+        "aria": "Assuntos em alta",
+        "rect": {
+          "x": 525,
+          "y": 383.890625,
+          "width": 678,
+          "height": 384.921875,
+          "top": 383.890625,
+          "right": 1203,
+          "bottom": 768.8125,
+          "left": 525
+        }
+      }
+    ]
+  },
+  {
+    "format": "wide",
+    "name": "trends",
+    "url": "https://looma-feed.vercel.app/explorar",
+    "text": "Início\nExplorar\nNotificações\nChat\nPublicações\nPortfólio\nEm alta\nRelatórios\nPropostas\nPlanos\nEntrar com Google\nou\nLogin com Email\nUsuário\nModo escuro\nAjuda\nExplorar\nEm alta\nNovidades\nProjetos\nNovidades para descobrir\nCriadores estão montando miniestúdios para vender serviços completos\n\nHoje · Criatividade · 428 conversas\n\nPortfólios vivos ganham espaço entre freelancers e equipes pequenas\n\n2 h · Portfólio · 319 conversas\n\nProfissionais de operações usam IA para acelerar propostas e entregas\n\n4 h · Produtividade · 612 conversas\n\nDesign · Em alta\nIdentidade para marcas pequenas\nTecnologia · Em alta\nAutomação sem código\nMarketing · Em alta\nCampanhas de lançamento\nDados · Em alta\nDashboards para negócios locais\nBrasil · Crescendo\nComunidades profissionais independentes\nContas para conhecer\nVer rede\nFelipe Xavier\n\nPerfil\n\nConectar\nSpring K\n\nPerfil\n\nConectar\nScrux FT\n\nPerfil\n\nSou heterao\nConectar\nLooma Oficial\n\n@loomaoficial\n\nFounder Looma\nConectar\nArthur Mezacasa\n\nPerfil\n\nConectar\nTeyllor Duarte.\n\n@clownn\n\nConectar\nOportunidades\nVer todas\nDesign\nProjeto de interface\n\nPrecisamos de designer UI/UX\n\nMarketing\nLanding de campanha\n\nPrecisamos de designer gráfico\n\nPessoas para conhecer\nVer todas\nFelipe Xavier\n\nPerfil\n\nConectar\nSpring K\n\nPerfil\n\nConectar\nScrux FT\n\nPerfil\n\nSou heterao\nConectar\nConstrua sua presença.\n\nPequenas ações deixam seu perfil pronto para as oportunidades certas.\n\nCompletar portfólio\nExplorar oportunidades\nÁreas para explorar\nDesigner UI/UX\nEditor de vídeo\nSocial media\nDesenvolvedor front-end\nAnalista de dados\nGestor de tráfego\nBoas conversas viram oportunidades.\n\nConheça profissionais, acompanhe ideias e dê o próximo passo no seu ritmo.\n\nConhecer pessoas",
+    "rects": [
+      {
+        "selector": "feed-stage explore-page",
+        "aria": null,
+        "rect": {
+          "x": 280,
+          "y": 0,
+          "width": 1360,
+          "height": 1080,
+          "top": 0,
+          "right": 1640,
+          "bottom": 1080,
+          "left": 280
+        }
+      },
+      {
+        "selector": "home-main-scroll",
+        "aria": null,
+        "rect": {
+          "x": 524,
+          "y": 0,
+          "width": 680,
+          "height": 1080,
+          "top": 0,
+          "right": 1204,
+          "bottom": 1080,
+          "left": 524
+        }
+      },
+      {
+        "selector": "home-feed-stream explore-feed-stream",
+        "aria": "Explorar",
+        "rect": {
+          "x": 524,
+          "y": 0,
+          "width": 680,
+          "height": 1080,
+          "top": 0,
+          "right": 1204,
+          "bottom": 1080,
+          "left": 524
+        }
+      },
+      {
+        "selector": "explore-tabs",
+        "aria": "Categorias de exploração",
+        "rect": {
+          "x": 525,
+          "y": 73.59375,
+          "width": 678,
+          "height": 58.390625,
+          "top": 73.59375,
+          "right": 1203,
+          "bottom": 131.984375,
+          "left": 525
+        }
+      },
+      {
+        "selector": "explore-trends-list",
+        "aria": "Assuntos em alta",
+        "rect": {
+          "x": 525,
+          "y": 383.890625,
+          "width": 678,
+          "height": 384.921875,
+          "top": 383.890625,
+          "right": 1203,
+          "bottom": 768.8125,
+          "left": 525
+        }
+      }
+    ]
+  },
+  {
+    "format": "wide",
+    "name": "projects",
+    "url": "https://looma-feed.vercel.app/explorar",
+    "text": "Início\nExplorar\nNotificações\nChat\nPublicações\nPortfólio\nEm alta\nRelatórios\nPropostas\nPlanos\nEntrar com Google\nou\nLogin com Email\nUsuário\nModo escuro\nAjuda\nExplorar\nEm alta\nNovidades\nProjetos\nNovidades para descobrir\nCriadores estão montando miniestúdios para vender serviços completos\n\nHoje · Criatividade · 428 conversas\n\nPortfólios vivos ganham espaço entre freelancers e equipes pequenas\n\n2 h · Portfólio · 319 conversas\n\nProfissionais de operações usam IA para acelerar propostas e entregas\n\n4 h · Produtividade · 612 conversas\n\nDesign · Em alta\nIdentidade para marcas pequenas\nTecnologia · Em alta\nAutomação sem código\nMarketing · Em alta\nCampanhas de lançamento\nDados · Em alta\nDashboards para negócios locais\nBrasil · Crescendo\nComunidades profissionais independentes\nContas para conhecer\nVer rede\nFelipe Xavier\n\nPerfil\n\nConectar\nSpring K\n\nPerfil\n\nConectar\nScrux FT\n\nPerfil\n\nSou heterao\nConectar\nLooma Oficial\n\n@loomaoficial\n\nFounder Looma\nConectar\nArthur Mezacasa\n\nPerfil\n\nConectar\nTeyllor Duarte.\n\n@clownn\n\nConectar\nOportunidades\nVer todas\nDesign\nProjeto de interface\n\nPrecisamos de designer UI/UX\n\nMarketing\nLanding de campanha\n\nPrecisamos de designer gráfico\n\nPessoas para conhecer\nVer todas\nFelipe Xavier\n\nPerfil\n\nConectar\nSpring K\n\nPerfil\n\nConectar\nScrux FT\n\nPerfil\n\nSou heterao\nConectar\nConstrua sua presença.\n\nPequenas ações deixam seu perfil pronto para as oportunidades certas.\n\nCompletar portfólio\nExplorar oportunidades\nÁreas para explorar\nDesigner UI/UX\nEditor de vídeo\nSocial media\nDesenvolvedor front-end\nAnalista de dados\nGestor de tráfego\nBoas conversas viram oportunidades.\n\nConheça profissionais, acompanhe ideias e dê o próximo passo no seu ritmo.\n\nConhecer pessoas",
+    "rects": [
+      {
+        "selector": "feed-stage explore-page",
+        "aria": null,
+        "rect": {
+          "x": 280,
+          "y": 0,
+          "width": 1360,
+          "height": 1080,
+          "top": 0,
+          "right": 1640,
+          "bottom": 1080,
+          "left": 280
+        }
+      },
+      {
+        "selector": "home-main-scroll",
+        "aria": null,
+        "rect": {
+          "x": 524,
+          "y": 0,
+          "width": 680,
+          "height": 1080,
+          "top": 0,
+          "right": 1204,
+          "bottom": 1080,
+          "left": 524
+        }
+      },
+      {
+        "selector": "home-feed-stream explore-feed-stream",
+        "aria": "Explorar",
+        "rect": {
+          "x": 524,
+          "y": 0,
+          "width": 680,
+          "height": 1080,
+          "top": 0,
+          "right": 1204,
+          "bottom": 1080,
+          "left": 524
+        }
+      },
+      {
+        "selector": "explore-tabs",
+        "aria": "Categorias de exploração",
+        "rect": {
+          "x": 525,
+          "y": 73.59375,
+          "width": 678,
+          "height": 58.390625,
+          "top": 73.59375,
+          "right": 1203,
+          "bottom": 131.984375,
+          "left": 525
+        }
+      },
+      {
+        "selector": "explore-trends-list",
+        "aria": "Assuntos em alta",
+        "rect": {
+          "x": 525,
+          "y": 383.890625,
+          "width": 678,
+          "height": 384.921875,
+          "top": 383.890625,
+          "right": 1203,
+          "bottom": 768.8125,
+          "left": 525
+        }
+      }
+    ]
+  },
+  {
+    "format": "wide",
+    "name": "people",
+    "url": "https://looma-feed.vercel.app/explorar",
+    "text": "Início\nExplorar\nNotificações\nChat\nPublicações\nPortfólio\nEm alta\nRelatórios\nPropostas\nPlanos\nEntrar com Google\nou\nLogin com Email\nUsuário\nModo escuro\nAjuda\nExplorar\nEm alta\nNovidades\nProjetos\nNovidades para descobrir\nCriadores estão montando miniestúdios para vender serviços completos\n\nHoje · Criatividade · 428 conversas\n\nPortfólios vivos ganham espaço entre freelancers e equipes pequenas\n\n2 h · Portfólio · 319 conversas\n\nProfissionais de operações usam IA para acelerar propostas e entregas\n\n4 h · Produtividade · 612 conversas\n\nDesign · Em alta\nIdentidade para marcas pequenas\nTecnologia · Em alta\nAutomação sem código\nMarketing · Em alta\nCampanhas de lançamento\nDados · Em alta\nDashboards para negócios locais\nBrasil · Crescendo\nComunidades profissionais independentes\nContas para conhecer\nVer rede\nLooma Oficial\n\n@loomaoficial\n\nFounder Looma\nConectar\nOportunidades\nVer todas\nDesign\nProjeto de interface\n\nPrecisamos de designer UI/UX\n\nMarketing\nLanding de campanha\n\nPrecisamos de designer gráfico\n\nPessoas para conhecer\nVer todas\nLooma Oficial\n\n@loomaoficial\n\nFounder Looma\nConectar\nConstrua sua presença.\n\nPequenas ações deixam seu perfil pronto para as oportunidades certas.\n\nCompletar portfólio\nExplorar oportunidades\nÁreas para explorar\nDesigner UI/UX\nEditor de vídeo\nSocial media\nDesenvolvedor front-end\nAnalista de dados\nGestor de tráfego\nBoas conversas viram oportunidades.\n\nConheça profissionais, acompanhe ideias e dê o próximo passo no seu ritmo.\n\nConhecer pessoas",
+    "rects": [
+      {
+        "selector": "feed-stage explore-page",
+        "aria": null,
+        "rect": {
+          "x": 280,
+          "y": 0,
+          "width": 1360,
+          "height": 1080,
+          "top": 0,
+          "right": 1640,
+          "bottom": 1080,
+          "left": 280
+        }
+      },
+      {
+        "selector": "home-main-scroll",
+        "aria": null,
+        "rect": {
+          "x": 524,
+          "y": 0,
+          "width": 680,
+          "height": 1080,
+          "top": 0,
+          "right": 1204,
+          "bottom": 1080,
+          "left": 524
+        }
+      },
+      {
+        "selector": "home-feed-stream explore-feed-stream",
+        "aria": "Explorar",
+        "rect": {
+          "x": 524,
+          "y": 0,
+          "width": 680,
+          "height": 946.890625,
+          "top": 0,
+          "right": 1204,
+          "bottom": 946.890625,
+          "left": 524
+        }
+      },
+      {
+        "selector": "explore-tabs",
+        "aria": "Categorias de exploração",
+        "rect": {
+          "x": 525,
+          "y": 73.59375,
+          "width": 678,
+          "height": 58.390625,
+          "top": 73.59375,
+          "right": 1203,
+          "bottom": 131.984375,
+          "left": 525
+        }
+      },
+      {
+        "selector": "explore-trends-list",
+        "aria": "Assuntos em alta",
+        "rect": {
+          "x": 525,
+          "y": 383.890625,
+          "width": 678,
+          "height": 384.921875,
+          "top": 383.890625,
+          "right": 1203,
+          "bottom": 768.8125,
+          "left": 525
+        }
+      }
+    ]
+  },
+  {
+    "format": "wide",
+    "name": "opportunities",
+    "url": "https://looma-feed.vercel.app/oportunidades",
+    "text": "Início\nExplorar\nNotificações\nChat\nPublicações\nPortfólio\nEm alta\nRelatórios\nPropostas\nPlanos\nEntrar com Google\nou\nLogin com Email\nUsuário\nModo escuro\nAjuda\nOportunidades em alta\nEncontre oportunidades publicadas pela comunidade Looma.\nMais recentes\nDesign\nMarketing\nProjeto de interface\nDesign\n\nPrecisamos de designer UI/UX\n\nVer detalhes\nLanding de campanha\nMarketing\n\nPrecisamos de designer gráfico\n\nVer detalhes",
+    "rects": [
+      {
+        "selector": "workspace-page",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "left": 0
+        }
+      },
+      {
+        "selector": "workspace-content",
+        "aria": null,
+        "rect": {
+          "x": 646,
+          "y": 0,
+          "width": 1120,
+          "height": 1080,
+          "top": 0,
+          "right": 1766,
+          "bottom": 1080,
+          "left": 646
+        }
+      }
+    ]
+  },
+  {
+    "format": "wide",
+    "name": "design",
+    "url": "https://looma-feed.vercel.app/oportunidades",
+    "text": "Início\nExplorar\nNotificações\nChat\nPublicações\nPortfólio\nEm alta\nRelatórios\nPropostas\nPlanos\nEntrar com Google\nou\nLogin com Email\nUsuário\nModo escuro\nAjuda\nOportunidades em alta\nEncontre oportunidades publicadas pela comunidade Looma.\nMais recentes\nDesign\nMarketing\nProjeto de interface\nDesign\n\nPrecisamos de designer UI/UX\n\nVer detalhes",
+    "rects": [
+      {
+        "selector": "workspace-page",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "left": 0
+        }
+      },
+      {
+        "selector": "workspace-content",
+        "aria": null,
+        "rect": {
+          "x": 646,
+          "y": 0,
+          "width": 1120,
+          "height": 1080,
+          "top": 0,
+          "right": 1766,
+          "bottom": 1080,
+          "left": 646
+        }
+      }
+    ]
+  },
+  {
+    "format": "wide",
+    "name": "home",
+    "url": "https://looma-feed.vercel.app/",
+    "text": "Início\nExplorar\nNotificações\nChat\nPublicações\nPortfólio\nEm alta\nRelatórios\nPropostas\nPlanos\nEntrar com Google\nou\nLogin com Email\nUsuário\nModo escuro\nAjuda\nPara você\nSeguindo\nPublicar\nLooma Oficial\n@loomaoficial · há 3 d\nLooma Oficial\n@loomaoficial · há 3 d\n\noi\n\nTrabalho aberto\nEnviar proposta\nLooma Oficial\n@loomaoficial · há 3 d\n\noi\n\nLooma Oficial\n@loomaoficial · há 3 d\nLooma Oficial\n@loomaoficial · há 4 d\n\nCu\n\nLooma Oficial\n@loomaoficial · há 4 d\n\nOla\n\nTrabalho aberto\nEnviar proposta\nLooma Oficial\n@loomaoficial · há 5 d\n\nOlá!\n\nOportunidades\nVer todas\nDesign\nProjeto de interface\n\nPrecisamos de designer UI/UX\n\nMarketing\nLanding de campanha\n\nPrecisamos de designer gráfico\n\nPessoas para conhecer\nVer todas\nSem sugestões por enquanto\n\nConexões recomendadas aparecerão aqui quando a sua conta estiver pronta.\n\nExplorar conexões\nConstrua sua presença.\n\nPequenas ações deixam seu perfil pronto para as oportunidades certas.\n\nCompletar portfólio\nExplorar oportunidades\nÁreas para explorar\nAdministrador de banco de dados\nAnalista de BI\nAnalista de cibersegurança\nAnalista de CRM\nAnalista de dados\nAnalista de marketing\nBoas conversas viram oportunidades.\n\nConheça profissionais, acompanhe ideias e dê o próximo passo no seu ritmo.\n\nConhecer pessoas",
+    "rects": [
+      {
+        "selector": "looma-transition intro-visible intro-stage-tagline feed-ready",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-main-scroll",
+        "aria": null,
+        "rect": {
+          "x": 524,
+          "y": 0,
+          "width": 680,
+          "height": 1080,
+          "top": 0,
+          "right": 1204,
+          "bottom": 1080,
+          "left": 524
+        }
+      },
+      {
+        "selector": "home-feed-stream",
+        "aria": "Atualizações",
+        "rect": {
+          "x": 524,
+          "y": 0,
+          "width": 680,
+          "height": 1080,
+          "top": 0,
+          "right": 1204,
+          "bottom": 1080,
+          "left": 524
+        }
+      },
+      {
+        "selector": "composer",
+        "aria": "Criar publicação",
+        "rect": {
+          "x": 525,
+          "y": 82.59375,
+          "width": 678,
+          "height": 143.1875,
+          "top": 82.59375,
+          "right": 1203,
+          "bottom": 225.78125,
+          "left": 525
+        }
+      }
+    ]
+  },
+  {
+    "format": "wide",
+    "name": "composer",
+    "url": "https://looma-feed.vercel.app/",
+    "text": "Início\nExplorar\nNotificações\nChat\nPublicações\nPortfólio\nEm alta\nRelatórios\nPropostas\nPlanos\nEntrar com Google\nou\nLogin com Email\nUsuário\nModo escuro\nAjuda\nPara você\nSeguindo\nPublicar\nLooma Oficial\n@loomaoficial · há 3 d\nLooma Oficial\n@loomaoficial · há 3 d\n\noi\n\nTrabalho aberto\nEnviar proposta\nLooma Oficial\n@loomaoficial · há 3 d\n\noi\n\nLooma Oficial\n@loomaoficial · há 3 d\nLooma Oficial\n@loomaoficial · há 4 d\n\nCu\n\nLooma Oficial\n@loomaoficial · há 4 d\n\nOla\n\nTrabalho aberto\nEnviar proposta\nLooma Oficial\n@loomaoficial · há 5 d\n\nOlá!\n\nOportunidades\nVer todas\nDesign\nProjeto de interface\n\nPrecisamos de designer UI/UX\n\nMarketing\nLanding de campanha\n\nPrecisamos de designer gráfico\n\nPessoas para conhecer\nVer todas\nSem sugestões por enquanto\n\nConexões recomendadas aparecerão aqui quando a sua conta estiver pronta.\n\nExplorar conexões\nConstrua sua presença.\n\nPequenas ações deixam seu perfil pronto para as oportunidades certas.\n\nCompletar portfólio\nExplorar oportunidades\nÁreas para explorar\nAdministrador de banco de dados\nAnalista de BI\nAnalista de cibersegurança\nAnalista de CRM\nAnalista de dados\nAnalista de marketing\nBoas conversas viram oportunidades.\n\nConheça profissionais, acompanhe ideias e dê o próximo passo no seu ritmo.\n\nConhecer pessoas",
+    "rects": [
+      {
+        "selector": "looma-transition intro-visible intro-stage-tagline feed-ready",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-main-scroll",
+        "aria": null,
+        "rect": {
+          "x": 524,
+          "y": 0,
+          "width": 680,
+          "height": 1080,
+          "top": 0,
+          "right": 1204,
+          "bottom": 1080,
+          "left": 524
+        }
+      },
+      {
+        "selector": "home-feed-stream",
+        "aria": "Atualizações",
+        "rect": {
+          "x": 524,
+          "y": 0,
+          "width": 680,
+          "height": 1080,
+          "top": 0,
+          "right": 1204,
+          "bottom": 1080,
+          "left": 524
+        }
+      },
+      {
+        "selector": "composer",
+        "aria": "Criar publicação",
+        "rect": {
+          "x": 525,
+          "y": 82.59375,
+          "width": 678,
+          "height": 143.1875,
+          "top": 82.59375,
+          "right": 1203,
+          "bottom": 225.78125,
+          "left": 525
+        }
+      }
+    ]
+  },
+  {
+    "format": "vertical",
+    "name": "explore",
+    "url": "https://looma-feed.vercel.app/explorar",
+    "text": "Explorar\nEm alta\nNovidades\nProjetos\nNovidades para descobrir\nCriadores estão montando miniestúdios para vender serviços completos\n\nHoje · Criatividade · 428 conversas\n\nPortfólios vivos ganham espaço entre freelancers e equipes pequenas\n\n2 h · Portfólio · 319 conversas\n\nProfissionais de operações usam IA para acelerar propostas e entregas\n\n4 h · Produtividade · 612 conversas\n\nDesign · Em alta\nIdentidade para marcas pequenas\nTecnologia · Em alta\nAutomação sem código\nMarketing · Em alta\nCampanhas de lançamento\nDados · Em alta\nDashboards para negócios locais\nBrasil · Crescendo\nComunidades profissionais independentes\nContas para conhecer\nVer rede\nTeyllor Duarte.\n\n@clownn\n\nConectar\nArthur Mezacasa\n\nPerfil\n\nConectar\nLooma Oficial\n\n@loomaoficial\n\nFounder Looma\nConectar\nSpring K\n\nPerfil\n\nConectar\nScrux FT\n\nPerfil\n\nSou heterao\nConectar\nFelipe Xavier\n\nPerfil\n\nConectar",
+    "rects": [
+      {
+        "selector": "feed-stage explore-page",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 720,
+          "height": 1280,
+          "top": 0,
+          "right": 720,
+          "bottom": 1280,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-main-scroll",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 68.796875,
+          "width": 720,
+          "height": 1300.734375,
+          "top": 68.796875,
+          "right": 720,
+          "bottom": 1369.53125,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-feed-stream explore-feed-stream",
+        "aria": "Explorar",
+        "rect": {
+          "x": 0,
+          "y": 140.796875,
+          "width": 720,
+          "height": 1228.734375,
+          "top": 140.796875,
+          "right": 720,
+          "bottom": 1369.53125,
+          "left": 0
+        }
+      },
+      {
+        "selector": "explore-tabs",
+        "aria": "Categorias de exploração",
+        "rect": {
+          "x": 1,
+          "y": 206.390625,
+          "width": 718,
+          "height": 58.390625,
+          "top": 206.390625,
+          "right": 719,
+          "bottom": 264.78125,
+          "left": 1
+        }
+      },
+      {
+        "selector": "explore-trends-list",
+        "aria": "Assuntos em alta",
+        "rect": {
+          "x": 1,
+          "y": 509.96875,
+          "width": 718,
+          "height": 384.921875,
+          "top": 509.96875,
+          "right": 719,
+          "bottom": 894.890625,
+          "left": 1
+        }
+      }
+    ]
+  },
+  {
+    "format": "vertical",
+    "name": "trends",
+    "url": "https://looma-feed.vercel.app/explorar",
+    "text": "Explorar\nEm alta\nNovidades\nProjetos\nNovidades para descobrir\nCriadores estão montando miniestúdios para vender serviços completos\n\nHoje · Criatividade · 428 conversas\n\nPortfólios vivos ganham espaço entre freelancers e equipes pequenas\n\n2 h · Portfólio · 319 conversas\n\nProfissionais de operações usam IA para acelerar propostas e entregas\n\n4 h · Produtividade · 612 conversas\n\nDesign · Em alta\nIdentidade para marcas pequenas\nTecnologia · Em alta\nAutomação sem código\nMarketing · Em alta\nCampanhas de lançamento\nDados · Em alta\nDashboards para negócios locais\nBrasil · Crescendo\nComunidades profissionais independentes\nContas para conhecer\nVer rede\nTeyllor Duarte.\n\n@clownn\n\nConectar\nArthur Mezacasa\n\nPerfil\n\nConectar\nLooma Oficial\n\n@loomaoficial\n\nFounder Looma\nConectar\nSpring K\n\nPerfil\n\nConectar\nScrux FT\n\nPerfil\n\nSou heterao\nConectar\nFelipe Xavier\n\nPerfil\n\nConectar",
+    "rects": [
+      {
+        "selector": "feed-stage explore-page",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 720,
+          "height": 1280,
+          "top": 0,
+          "right": 720,
+          "bottom": 1280,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-main-scroll",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 68.796875,
+          "width": 720,
+          "height": 1300.734375,
+          "top": 68.796875,
+          "right": 720,
+          "bottom": 1369.53125,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-feed-stream explore-feed-stream",
+        "aria": "Explorar",
+        "rect": {
+          "x": 0,
+          "y": 140.796875,
+          "width": 720,
+          "height": 1228.734375,
+          "top": 140.796875,
+          "right": 720,
+          "bottom": 1369.53125,
+          "left": 0
+        }
+      },
+      {
+        "selector": "explore-tabs",
+        "aria": "Categorias de exploração",
+        "rect": {
+          "x": 1,
+          "y": 206.390625,
+          "width": 718,
+          "height": 58.390625,
+          "top": 206.390625,
+          "right": 719,
+          "bottom": 264.78125,
+          "left": 1
+        }
+      },
+      {
+        "selector": "explore-trends-list",
+        "aria": "Assuntos em alta",
+        "rect": {
+          "x": 1,
+          "y": 509.96875,
+          "width": 718,
+          "height": 384.921875,
+          "top": 509.96875,
+          "right": 719,
+          "bottom": 894.890625,
+          "left": 1
+        }
+      }
+    ]
+  },
+  {
+    "format": "vertical",
+    "name": "projects",
+    "url": "https://looma-feed.vercel.app/explorar",
+    "text": "Explorar\nEm alta\nNovidades\nProjetos\nNovidades para descobrir\nCriadores estão montando miniestúdios para vender serviços completos\n\nHoje · Criatividade · 428 conversas\n\nPortfólios vivos ganham espaço entre freelancers e equipes pequenas\n\n2 h · Portfólio · 319 conversas\n\nProfissionais de operações usam IA para acelerar propostas e entregas\n\n4 h · Produtividade · 612 conversas\n\nDesign · Em alta\nIdentidade para marcas pequenas\nTecnologia · Em alta\nAutomação sem código\nMarketing · Em alta\nCampanhas de lançamento\nDados · Em alta\nDashboards para negócios locais\nBrasil · Crescendo\nComunidades profissionais independentes\nContas para conhecer\nVer rede\nTeyllor Duarte.\n\n@clownn\n\nConectar\nArthur Mezacasa\n\nPerfil\n\nConectar\nLooma Oficial\n\n@loomaoficial\n\nFounder Looma\nConectar\nSpring K\n\nPerfil\n\nConectar\nScrux FT\n\nPerfil\n\nSou heterao\nConectar\nFelipe Xavier\n\nPerfil\n\nConectar",
+    "rects": [
+      {
+        "selector": "feed-stage explore-page",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 720,
+          "height": 1280,
+          "top": 0,
+          "right": 720,
+          "bottom": 1280,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-main-scroll",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 68.796875,
+          "width": 720,
+          "height": 1300.734375,
+          "top": 68.796875,
+          "right": 720,
+          "bottom": 1369.53125,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-feed-stream explore-feed-stream",
+        "aria": "Explorar",
+        "rect": {
+          "x": 0,
+          "y": 140.796875,
+          "width": 720,
+          "height": 1228.734375,
+          "top": 140.796875,
+          "right": 720,
+          "bottom": 1369.53125,
+          "left": 0
+        }
+      },
+      {
+        "selector": "explore-tabs",
+        "aria": "Categorias de exploração",
+        "rect": {
+          "x": 1,
+          "y": 206.390625,
+          "width": 718,
+          "height": 58.390625,
+          "top": 206.390625,
+          "right": 719,
+          "bottom": 264.78125,
+          "left": 1
+        }
+      },
+      {
+        "selector": "explore-trends-list",
+        "aria": "Assuntos em alta",
+        "rect": {
+          "x": 1,
+          "y": 509.96875,
+          "width": 718,
+          "height": 384.921875,
+          "top": 509.96875,
+          "right": 719,
+          "bottom": 894.890625,
+          "left": 1
+        }
+      }
+    ]
+  },
+  {
+    "format": "vertical",
+    "name": "people",
+    "url": "https://looma-feed.vercel.app/explorar",
+    "text": "Explorar\nEm alta\nNovidades\nProjetos\nNovidades para descobrir\nCriadores estão montando miniestúdios para vender serviços completos\n\nHoje · Criatividade · 428 conversas\n\nPortfólios vivos ganham espaço entre freelancers e equipes pequenas\n\n2 h · Portfólio · 319 conversas\n\nProfissionais de operações usam IA para acelerar propostas e entregas\n\n4 h · Produtividade · 612 conversas\n\nDesign · Em alta\nIdentidade para marcas pequenas\nTecnologia · Em alta\nAutomação sem código\nMarketing · Em alta\nCampanhas de lançamento\nDados · Em alta\nDashboards para negócios locais\nBrasil · Crescendo\nComunidades profissionais independentes\nContas para conhecer\nVer rede\nLooma Oficial\n\n@loomaoficial\n\nFounder Looma\nConectar",
+    "rects": [
+      {
+        "selector": "feed-stage explore-page",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 720,
+          "height": 1280,
+          "top": 0,
+          "right": 720,
+          "bottom": 1280,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-main-scroll",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 68.796875,
+          "width": 720,
+          "height": 1280,
+          "top": 68.796875,
+          "right": 720,
+          "bottom": 1348.796875,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-feed-stream explore-feed-stream",
+        "aria": "Explorar",
+        "rect": {
+          "x": 0,
+          "y": 358.703125,
+          "width": 720,
+          "height": 990.09375,
+          "top": 358.703125,
+          "right": 720,
+          "bottom": 1348.796875,
+          "left": 0
+        }
+      },
+      {
+        "selector": "explore-tabs",
+        "aria": "Categorias de exploração",
+        "rect": {
+          "x": 1,
+          "y": 424.296875,
+          "width": 718,
+          "height": 58.390625,
+          "top": 424.296875,
+          "right": 719,
+          "bottom": 482.6875,
+          "left": 1
+        }
+      },
+      {
+        "selector": "explore-trends-list",
+        "aria": "Assuntos em alta",
+        "rect": {
+          "x": 1,
+          "y": 727.875,
+          "width": 718,
+          "height": 384.921875,
+          "top": 727.875,
+          "right": 719,
+          "bottom": 1112.796875,
+          "left": 1
+        }
+      }
+    ]
+  },
+  {
+    "format": "vertical",
+    "name": "opportunities",
+    "url": "https://looma-feed.vercel.app/oportunidades",
+    "text": "Início\nExplorar\nNotificações\nChat\nPublicações\nPortfólio\nEm alta\nRelatórios\nPropostas\nPlanos\nEntrar com Google\nou\nLogin com Email\nUsuário\nModo escuro\nAjuda\nOportunidades em alta\nEncontre oportunidades publicadas pela comunidade Looma.\nMais recentes\nDesign\nMarketing\nProjeto de interface\nDesign\n\nPrecisamos de designer UI/UX\n\nVer detalhes\nLanding de campanha\nMarketing\n\nPrecisamos de designer gráfico\n\nVer detalhes",
+    "rects": [
+      {
+        "selector": "workspace-page",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 720,
+          "height": 1280,
+          "top": 0,
+          "right": 720,
+          "bottom": 1280,
+          "left": 0
+        }
+      },
+      {
+        "selector": "workspace-content",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 48,
+          "width": 720,
+          "height": 1280,
+          "top": 48,
+          "right": 720,
+          "bottom": 1328,
+          "left": 0
+        }
+      }
+    ]
+  },
+  {
+    "format": "vertical",
+    "name": "design",
+    "url": "https://looma-feed.vercel.app/oportunidades",
+    "text": "Início\nExplorar\nNotificações\nChat\nPublicações\nPortfólio\nEm alta\nRelatórios\nPropostas\nPlanos\nEntrar com Google\nou\nLogin com Email\nUsuário\nModo escuro\nAjuda\nOportunidades em alta\nEncontre oportunidades publicadas pela comunidade Looma.\nMais recentes\nDesign\nMarketing\nProjeto de interface\nDesign\n\nPrecisamos de designer UI/UX\n\nVer detalhes",
+    "rects": [
+      {
+        "selector": "workspace-page",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 720,
+          "height": 1280,
+          "top": 0,
+          "right": 720,
+          "bottom": 1280,
+          "left": 0
+        }
+      },
+      {
+        "selector": "workspace-content",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 48,
+          "width": 720,
+          "height": 1280,
+          "top": 48,
+          "right": 720,
+          "bottom": 1328,
+          "left": 0
+        }
+      }
+    ]
+  },
+  {
+    "format": "vertical",
+    "name": "home",
+    "url": "https://looma-feed.vercel.app/",
+    "text": "Para você\nSeguindo\nPublicar\nLooma Oficial\n@loomaoficial · há 3 d\nLooma Oficial\n@loomaoficial · há 3 d\n\noi\n\nTrabalho aberto\nEnviar proposta\nLooma Oficial\n@loomaoficial · há 3 d\n\noi\n\nLooma Oficial\n@loomaoficial · há 3 d\nLooma Oficial\n@loomaoficial · há 4 d\n\nCu\n\nLooma Oficial\n@loomaoficial · há 4 d\n\nOla\n\nTrabalho aberto\nEnviar proposta\nLooma Oficial\n@loomaoficial · há 5 d\n\nOlá!",
+    "rects": [
+      {
+        "selector": "looma-transition intro-visible intro-stage-tagline feed-ready",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 720,
+          "height": 1280,
+          "top": 0,
+          "right": 720,
+          "bottom": 1280,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-main-scroll",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 68,
+          "width": 720,
+          "height": 1794.046875,
+          "top": 68,
+          "right": 720,
+          "bottom": 1862.046875,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-feed-stream",
+        "aria": "Atualizações",
+        "rect": {
+          "x": 0,
+          "y": 140,
+          "width": 720,
+          "height": 1722.046875,
+          "top": 140,
+          "right": 720,
+          "bottom": 1862.046875,
+          "left": 0
+        }
+      },
+      {
+        "selector": "composer",
+        "aria": "Criar publicação",
+        "rect": {
+          "x": 1,
+          "y": 214.59375,
+          "width": 718,
+          "height": 143.1875,
+          "top": 214.59375,
+          "right": 719,
+          "bottom": 357.78125,
+          "left": 1
+        }
+      }
+    ]
+  },
+  {
+    "format": "vertical",
+    "name": "composer",
+    "url": "https://looma-feed.vercel.app/",
+    "text": "Para você\nSeguindo\nPublicar\nLooma Oficial\n@loomaoficial · há 3 d\nLooma Oficial\n@loomaoficial · há 3 d\n\noi\n\nTrabalho aberto\nEnviar proposta\nLooma Oficial\n@loomaoficial · há 3 d\n\noi\n\nLooma Oficial\n@loomaoficial · há 3 d\nLooma Oficial\n@loomaoficial · há 4 d\n\nCu\n\nLooma Oficial\n@loomaoficial · há 4 d\n\nOla\n\nTrabalho aberto\nEnviar proposta\nLooma Oficial\n@loomaoficial · há 5 d\n\nOlá!",
+    "rects": [
+      {
+        "selector": "looma-transition intro-visible intro-stage-tagline feed-ready",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 720,
+          "height": 1280,
+          "top": 0,
+          "right": 720,
+          "bottom": 1280,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-main-scroll",
+        "aria": null,
+        "rect": {
+          "x": 0,
+          "y": 68,
+          "width": 720,
+          "height": 1794.046875,
+          "top": 68,
+          "right": 720,
+          "bottom": 1862.046875,
+          "left": 0
+        }
+      },
+      {
+        "selector": "home-feed-stream",
+        "aria": "Atualizações",
+        "rect": {
+          "x": 0,
+          "y": 140,
+          "width": 720,
+          "height": 1722.046875,
+          "top": 140,
+          "right": 720,
+          "bottom": 1862.046875,
+          "left": 0
+        }
+      },
+      {
+        "selector": "composer",
+        "aria": "Criar publicação",
+        "rect": {
+          "x": 1,
+          "y": 214.59375,
+          "width": 718,
+          "height": 143.1875,
+          "top": 214.59375,
+          "right": 719,
+          "bottom": 357.78125,
+          "left": 1
+        }
+      }
+    ]
+  }
+]

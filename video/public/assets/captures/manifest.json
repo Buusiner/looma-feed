@@ -1,0 +1,228 @@
+[
+  {
+    "format": "wide",
+    "name": "discover",
+    "seconds": 4,
+    "fps": 60,
+    "clip": {
+      "x": 524,
+      "y": 0,
+      "width": 680,
+      "height": 590
+    },
+    "source": "https://looma-feed.vercel.app/explorar",
+    "output": "D:\\Documentos\\looma-feed\\video\\public\\assets\\captures\\wide-discover.mp4",
+    "events": []
+  },
+  {
+    "format": "wide",
+    "name": "opportunities",
+    "seconds": 6,
+    "fps": 60,
+    "clip": {
+      "x": 672,
+      "y": 0,
+      "width": 1056,
+      "height": 710
+    },
+    "source": "https://looma-feed.vercel.app/oportunidades",
+    "output": "D:\\Documentos\\looma-feed\\video\\public\\assets\\captures\\wide-opportunities.mp4",
+    "events": [
+      {
+        "frame": 100,
+        "point": {
+          "x": 40.578125,
+          "y": 241.84375
+        },
+        "action": "Design filter"
+      },
+      {
+        "frame": 220,
+        "point": {
+          "x": 40.578125,
+          "y": 241.84375
+        },
+        "action": "Reset Design filter"
+      }
+    ]
+  },
+  {
+    "format": "wide",
+    "name": "search",
+    "seconds": 4,
+    "fps": 60,
+    "clip": {
+      "x": 672,
+      "y": 0,
+      "width": 1056,
+      "height": 710
+    },
+    "source": "https://looma-feed.vercel.app/oportunidades",
+    "output": "D:\\Documentos\\looma-feed\\video\\public\\assets\\captures\\wide-search.mp4",
+    "events": [
+      {
+        "frame": 45,
+        "point": {
+          "x": 288.15312500000005,
+          "y": 157.0390625
+        },
+        "action": "Search interface"
+      }
+    ]
+  },
+  {
+    "format": "wide",
+    "name": "people",
+    "seconds": 5,
+    "fps": 60,
+    "clip": {
+      "x": 524,
+      "y": 0,
+      "width": 680,
+      "height": 1020
+    },
+    "source": "https://looma-feed.vercel.app/explorar",
+    "output": "D:\\Documentos\\looma-feed\\video\\public\\assets\\captures\\wide-people.mp4",
+    "events": []
+  },
+  {
+    "format": "wide",
+    "name": "composer",
+    "seconds": 6,
+    "fps": 60,
+    "clip": {
+      "x": 525,
+      "y": 82,
+      "width": 678,
+      "height": 146
+    },
+    "source": "https://looma-feed.vercel.app/",
+    "output": "D:\\Documentos\\looma-feed\\video\\public\\assets\\captures\\wide-composer.mp4",
+    "events": []
+  },
+  {
+    "format": "wide",
+    "name": "theme",
+    "seconds": 4,
+    "fps": 60,
+    "clip": {
+      "x": 300,
+      "y": 0,
+      "width": 904,
+      "height": 790
+    },
+    "source": "https://looma-feed.vercel.app/explorar",
+    "output": "D:\\Documentos\\looma-feed\\video\\public\\assets\\captures\\wide-theme.mp4",
+    "events": [
+      {
+        "frame": 100,
+        "point": {
+          "x": 112,
+          "y": 749
+        },
+        "action": "Actual light to dark toggle"
+      }
+    ]
+  },
+  {
+    "format": "vertical",
+    "name": "discover",
+    "seconds": 4,
+    "fps": 60,
+    "clip": {
+      "x": 0,
+      "y": 140,
+      "width": 720,
+      "height": 750
+    },
+    "source": "https://looma-feed.vercel.app/explorar",
+    "output": "D:\\Documentos\\looma-feed\\video\\public\\assets\\captures\\vertical-discover.mp4",
+    "events": []
+  },
+  {
+    "format": "vertical",
+    "name": "opportunities",
+    "seconds": 6,
+    "fps": 60,
+    "clip": {
+      "x": 0,
+      "y": 48,
+      "width": 720,
+      "height": 810
+    },
+    "source": "https://looma-feed.vercel.app/oportunidades",
+    "output": "D:\\Documentos\\looma-feed\\video\\public\\assets\\captures\\vertical-opportunities.mp4",
+    "events": [
+      {
+        "frame": 100,
+        "point": {
+          "x": 66.578125,
+          "y": 295.84375
+        },
+        "action": "Design filter"
+      },
+      {
+        "frame": 220,
+        "point": {
+          "x": 66.578125,
+          "y": 295.84375
+        },
+        "action": "Reset Design filter"
+      }
+    ]
+  },
+  {
+    "format": "vertical",
+    "name": "search",
+    "seconds": 4,
+    "fps": 60,
+    "clip": {
+      "x": 0,
+      "y": 48,
+      "width": 720,
+      "height": 810
+    },
+    "source": "https://looma-feed.vercel.app/oportunidades",
+    "output": "D:\\Documentos\\looma-feed\\video\\public\\assets\\captures\\vertical-search.mp4",
+    "events": [
+      {
+        "frame": 45,
+        "point": {
+          "x": 327.396875,
+          "y": 157.0390625
+        },
+        "action": "Search interface"
+      }
+    ]
+  },
+  {
+    "format": "vertical",
+    "name": "people",
+    "seconds": 5,
+    "fps": 60,
+    "clip": {
+      "x": 0,
+      "y": 355,
+      "width": 720,
+      "height": 750
+    },
+    "source": "https://looma-feed.vercel.app/explorar",
+    "output": "D:\\Documentos\\looma-feed\\video\\public\\assets\\captures\\vertical-people.mp4",
+    "events": []
+  },
+  {
+    "format": "vertical",
+    "name": "composer",
+    "seconds": 6,
+    "fps": 60,
+    "clip": {
+      "x": 1,
+      "y": 214,
+      "width": 718,
+      "height": 146
+    },
+    "source": "https://looma-feed.vercel.app/",
+    "output": "D:\\Documentos\\looma-feed\\video\\public\\assets\\captures\\vertical-composer.mp4",
+    "events": []
+  }
+]
