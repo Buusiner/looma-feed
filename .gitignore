@@ -15,6 +15,7 @@ dist-ssr
 .tanstack/**
 .nitro
 .codex-preview/
+/output/playwright/
 *.local
 .env
 .env.*

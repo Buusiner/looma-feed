@@ -16103,3 +16103,108 @@ html:not(.dark) .home-feed-stream .feed-post:hover {
     overflow: visible !important;
   }
 }
+/* Device-local UI audio controls. */
+.ui-audio-settings {
+  margin-bottom: 1.5rem;
+  max-width: 48rem;
+}
+.ui-audio-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.ui-audio-heading > svg {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+.ui-audio-settings .settings-toggle > span {
+  color: var(--looma-text);
+}
+.ui-audio-volume {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.9rem 0;
+  font-size: 0.875rem;
+}
+.ui-audio-volume > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.ui-audio-volume output {
+  color: var(--looma-muted);
+  font-variant-numeric: tabular-nums;
+}
+.ui-audio-volume input {
+  width: 100%;
+  accent-color: var(--looma-primary);
+  cursor: pointer;
+  appearance: none;
+  height: 0.3rem;
+  border-radius: 1rem;
+  background: var(--line-strong);
+  margin: 0.4rem 0;
+}
+.settings-panel.ui-audio-settings .ui-audio-volume input[type="range"] {
+  background: var(--line-strong) !important;
+}
+.ui-audio-volume input::-webkit-slider-thumb {
+  appearance: none;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  background: var(--looma-primary);
+  margin-top: -0.3rem;
+}
+.ui-audio-volume input::-webkit-slider-runnable-track {
+  height: 0.3rem;
+  border-radius: 1rem;
+  background: var(--line-strong);
+}
+.ui-audio-volume input::-moz-range-track {
+  height: 0.3rem;
+  border-radius: 1rem;
+  background: var(--line-strong);
+}
+.ui-audio-volume input::-moz-range-thumb {
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 0;
+  border-radius: 50%;
+  background: var(--looma-primary);
+}
+.ui-audio-preview-choice {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+.ui-audio-preview-choice select {
+  width: min(100%, 20rem);
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+  padding: 0.6rem;
+  background: var(--looma-surface);
+  color: var(--looma-text);
+}
+.ui-audio-settings details {
+  margin: 1rem 0;
+}
+.ui-audio-settings summary {
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.ui-audio-preview {
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+  background: transparent;
+  padding: 0.6rem 0.9rem;
+  color: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.ui-audio-preview:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

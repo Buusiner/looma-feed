@@ -1,4 +1,40 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js";
+import { DEMO_OPPORTUNITY_FILTER } from "./opportunities";
+
+const missingTrafficTables = new WeakMap<SupabaseClient, PostgrestError>();
+const TRAFFIC_UNAVAILABLE_MESSAGE = "O registro de visitas está temporariamente indisponível.";
+
+export function isMissingUserTrafficTable(error: { code?: string; message?: string } | null) {
+  return Boolean(
+    error &&
+    (error.code === "PGRST205" || error.code === "42P01") &&
+    error.message?.includes("user_traffic_events"),
+  );
+}
+
+function rememberMissingTrafficTable(supabase: SupabaseClient, error: PostgrestError | null) {
+  if (!error || !isMissingUserTrafficTable(error) || missingTrafficTables.has(supabase)) return;
+  // Avoid retrying a missing optional table on every navigation. Reload the app
+  // after applying the migration to resume traffic collection.
+  missingTrafficTables.set(supabase, error);
+  console.warn(
+    "[Looma] Registro de visitas indisponível. Aplique supabase/migrations/20261005120000_ensure_user_traffic_events.sql no Supabase e recarregue o app.",
+  );
+}
+
+async function getTrafficEventCount(supabase: SupabaseClient, userId: string, since?: string) {
+  const missingTableError = missingTrafficTables.get(supabase);
+  if (missingTableError) return { count: null, error: missingTableError };
+
+  const query = supabase
+    .from("user_traffic_events")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId);
+  if (since) query.gte("created_at", since);
+  const result = await query;
+  rememberMissingTrafficTable(supabase, result.error);
+  return result;
+}
 
 export type ActivityMetrics = {
   connections: number;
@@ -51,14 +87,12 @@ export async function getActivityMetricResults(
   const opportunitySaves = supabase
     .from("opportunity_saves")
     .select("opportunity_id", { count: "exact", head: true })
+    .not("opportunity_id", "in", DEMO_OPPORTUNITY_FILTER)
     .eq("user_id", userId);
   const opportunityViews = supabase
     .from("opportunity_views")
     .select("opportunity_id", { count: "exact", head: true })
-    .eq("user_id", userId);
-  const trafficEvents = supabase
-    .from("user_traffic_events")
-    .select("id", { count: "exact", head: true })
+    .not("opportunity_id", "in", DEMO_OPPORTUNITY_FILTER)
     .eq("user_id", userId);
 
   if (options.since) {
@@ -68,7 +102,6 @@ export async function getActivityMetricResults(
     posts.gte("created_at", options.since);
     opportunitySaves.gte("created_at", options.since);
     opportunityViews.gte("created_at", options.since);
-    trafficEvents.gte("created_at", options.since);
   }
 
   const [
@@ -86,7 +119,7 @@ export async function getActivityMetricResults(
     posts,
     opportunitySaves,
     opportunityViews,
-    trafficEvents,
+    getTrafficEventCount(supabase, userId, options.since),
   ]);
 
   return {
@@ -102,7 +135,12 @@ export async function getActivityMetricResults(
     posts: { value: postsResult.count ?? 0, error: postsResult.error?.message ?? null },
     opportunitySaves: { value: savesResult.count ?? 0, error: savesResult.error?.message ?? null },
     opportunityViews: { value: viewsResult.count ?? 0, error: viewsResult.error?.message ?? null },
-    trafficEvents: { value: trafficResult.count ?? 0, error: trafficResult.error?.message ?? null },
+    trafficEvents: {
+      value: trafficResult.count ?? 0,
+      error: isMissingUserTrafficTable(trafficResult.error)
+        ? TRAFFIC_UNAVAILABLE_MESSAGE
+        : (trafficResult.error?.message ?? null),
+    },
   };
 }
 
@@ -140,12 +178,17 @@ export async function recordUserTrafficEvent(
   userId: string,
   event: UserTrafficEventInput,
 ) {
-  return supabase.from("user_traffic_events").insert({
+  const missingTableError = missingTrafficTables.get(supabase);
+  if (missingTableError) return { error: missingTableError };
+
+  const result = await supabase.from("user_traffic_events").insert({
     user_id: userId,
     path: event.path,
     referrer: event.referrer,
     user_agent: event.userAgent,
   });
+  rememberMissingTrafficTable(supabase, result.error);
+  return result;
 }
 
 export type ConnectionRow = {

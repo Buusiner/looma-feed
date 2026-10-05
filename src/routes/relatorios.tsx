@@ -132,15 +132,15 @@ function ReportsPage() {
 
   const tableMetrics = metricResults
     ? ([
-        ["Conexões", metricResults.connections.value],
-        ["Propostas enviadas", metricResults.proposalsSent.value],
-        ["Propostas recebidas", metricResults.proposalsReceived.value],
-        ["Publicações", metricResults.posts.value],
-        ["Oportunidades salvas", metricResults.opportunitySaves.value],
-        ["Visitas no site", metricResults.trafficEvents.value],
-      ] as Array<[string, number]>)
+        ["Conexões", metricResults.connections],
+        ["Propostas enviadas", metricResults.proposalsSent],
+        ["Propostas recebidas", metricResults.proposalsReceived],
+        ["Publicações", metricResults.posts],
+        ["Oportunidades salvas", metricResults.opportunitySaves],
+        ["Visitas no site", metricResults.trafficEvents],
+      ] as Array<[string, ActivityMetricResults[keyof ActivityMetricResults]]>)
     : [];
-  const hasData = tableMetrics.some(([, value]) => value > 0);
+  const hasData = tableMetrics.some(([, result]) => result.error || result.value > 0);
 
   return (
     <WorkspaceLayout
@@ -197,10 +197,10 @@ function ReportsPage() {
               </thead>
               <tbody>
                 {hasData ? (
-                  tableMetrics.map(([label, value]) => (
+                  tableMetrics.map(([label, result]) => (
                     <tr key={label}>
                       <td>{label}</td>
-                      <td>{value}</td>
+                      <td>{result.error ? "Indisponível" : result.value}</td>
                     </tr>
                   ))
                 ) : (

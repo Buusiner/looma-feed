@@ -1,3 +1,4 @@
+import { audioManager } from "@/lib/audio-manager";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Check, Search, UserRound, X } from "lucide-react";
@@ -133,9 +134,15 @@ function ConnectionsPage() {
                   .eq("requester_id", user.id)
                   .eq("status", "pending")
               : await supabase.from("connections").delete().eq("id", id).eq("status", "accepted");
-      if (result.error) setError(result.error.message);
-      else await load();
+      if (result.error) {
+        audioManager.play("error");
+        setError(result.error.message);
+      } else {
+        audioManager.play(action === "accept" ? "follow" : "remove");
+        await load();
+      }
     } catch (caught) {
+      audioManager.play("error");
       setError(caught instanceof Error ? caught.message : "Não foi possível atualizar a conexão.");
     } finally {
       setUpdatingConnectionId(null);

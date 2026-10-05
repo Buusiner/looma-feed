@@ -1,15 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import {
-  BadgeCheck,
-  FileText,
-  LifeBuoy,
-  Search,
-  Send,
-  ShieldCheck,
-  UserRound,
-  Users,
-} from "lucide-react";
+import { BadgeCheck, LifeBuoy, Search, ShieldCheck, UserRound } from "lucide-react";
 import {
   WorkspaceEmpty,
   WorkspaceError,
@@ -47,13 +38,9 @@ type AdminDashboardMetrics = {
 };
 
 const ADMIN_NAV = [
-  { label: "Visão geral", icon: BadgeCheck },
-  { label: "Usuários", icon: UserRound },
-  { label: "Publicações", icon: FileText },
-  { label: "Conexões", icon: Users },
-  { label: "Propostas", icon: Send },
-  { label: "Suporte", icon: LifeBuoy },
-  { label: "Planos e assinaturas", icon: BadgeCheck },
+  { label: "Visão geral", icon: BadgeCheck, href: "#top" },
+  { label: "Usuários", icon: UserRound, href: "#admin-profiles-title" },
+  { label: "Suporte", icon: LifeBuoy, href: "#admin-support-title" },
 ];
 
 export const Route = createFileRoute("/admin")({ component: AdminPage });
@@ -268,7 +255,6 @@ function AdminPage() {
                   <th>Assunto</th>
                   <th>Usuário</th>
                   <th>Data</th>
-                  <th>Status</th>
                   <th>Ação</th>
                 </tr>
               </thead>
@@ -286,9 +272,6 @@ function AdminPage() {
                       </small>
                     </td>
                     <td>{formatDate(ticket.created_at)}</td>
-                    <td>
-                      <span className="admin-status-badge">Aberto</span>
-                    </td>
                     <td>
                       <a href={`mailto:${ticket.email ?? ""}`}>Responder</a>
                     </td>
@@ -399,12 +382,8 @@ function AdminLayout({ children, profileName }: { children: ReactNode; profileNa
           <span className="looma-logo-mark" aria-hidden="true" /> Looma Admin
         </Link>
         <nav aria-label="Administração">
-          {ADMIN_NAV.map(({ label, icon: Icon }, index) => (
-            <a
-              href={index === 0 ? "#top" : "#"}
-              className={index === 0 ? "active" : ""}
-              key={label}
-            >
+          {ADMIN_NAV.map(({ label, icon: Icon, href }, index) => (
+            <a href={href} className={index === 0 ? "active" : ""} key={label}>
               <Icon size={15} aria-hidden="true" />
               {label}
             </a>
@@ -413,10 +392,6 @@ function AdminLayout({ children, profileName }: { children: ReactNode; profileNa
       </aside>
       <section className="admin-main" id="top">
         <header className="admin-topbar">
-          <label className="admin-global-search">
-            <Search size={15} aria-hidden="true" />
-            <input placeholder="Buscar no admin" aria-label="Buscar no admin" />
-          </label>
           <Link to="/">Voltar ao app</Link>
           <span>{profileName}</span>
         </header>

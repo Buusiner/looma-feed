@@ -1,3 +1,5 @@
+import { audioManager } from "./audio-manager";
+
 export type LoomaTheme = "light" | "dark" | "system";
 export type ResolvedLoomaTheme = "light" | "dark";
 
@@ -40,9 +42,14 @@ export function applyTheme(theme: LoomaTheme) {
 }
 
 export function saveTheme(theme: LoomaTheme) {
+  const previous =
+    typeof document === "undefined" ? null : document.documentElement.dataset["resolvedTheme"];
   if (typeof window !== "undefined") {
     window.localStorage.setItem(THEME_STORAGE_KEY, theme);
   }
 
   applyTheme(theme);
+  const next = resolveTheme(theme);
+  if (previous && previous !== next)
+    audioManager.play(next === "dark" ? "themeDark" : "themeLight");
 }

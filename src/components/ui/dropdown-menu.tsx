@@ -60,6 +60,7 @@ const DropdownMenuContent = React.forwardRef<
 >(({ className, sideOffset = 4, ...props }, ref) => (
   <DropdownMenuPrimitive.Portal>
     <DropdownMenuPrimitive.Content
+      data-ui-audio-surface="menu"
       ref={ref}
       sideOffset={sideOffset}
       className={cn(

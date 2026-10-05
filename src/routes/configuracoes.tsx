@@ -1,3 +1,4 @@
+import { audioManager } from "@/lib/audio-manager";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Bell, Laptop, Lock, Moon, Settings, Sun, UserRound } from "lucide-react";
@@ -10,6 +11,7 @@ import { WorkspaceLayout } from "@/components/looma/WorkspaceLayout";
 import { useCurrentProfile } from "@/lib/profile";
 import { createSupabaseCredentialClient, getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { getStoredTheme, saveTheme, type LoomaTheme } from "@/lib/theme";
+import { AudioSettings } from "@/components/looma/AudioSettings";
 
 type SettingsRow = {
   email_connection_notifications: boolean;
@@ -102,12 +104,14 @@ function SettingsPage() {
         .upsert({ user_id: user.id, ...next, updated_at: new Date().toISOString() });
 
       if (upsertError) {
+        audioManager.play("error");
         setError(upsertError.message);
         await load();
       } else {
         setNotice("Configuração salva.");
       }
     } catch (caught) {
+      audioManager.play("error");
       setError(
         caught instanceof Error ? caught.message : "Não foi possível salvar a configuração.",
       );
@@ -143,18 +147,22 @@ function SettingsPage() {
     const confirmedEmail = passwordFields.email.trim().toLowerCase();
     const accountEmail = user.email.toLowerCase();
     if (confirmedEmail !== accountEmail) {
+      audioManager.play("error");
       setPasswordError("Digite o mesmo e-mail usado nesta conta para confirmar a alteração.");
       return;
     }
     if (!passwordFields.currentPassword) {
+      audioManager.play("error");
       setPasswordError("Informe a sua senha atual.");
       return;
     }
     if (passwordFields.newPassword.length < 8) {
+      audioManager.play("error");
       setPasswordError("A nova senha precisa ter pelo menos 8 caracteres.");
       return;
     }
     if (passwordFields.newPassword !== passwordFields.repeatNewPassword) {
+      audioManager.play("error");
       setPasswordError("As novas senhas não coincidem.");
       return;
     }
@@ -172,6 +180,7 @@ function SettingsPage() {
       await credentialClient.auth.signOut({ scope: "local" });
 
       if (verificationError) {
+        audioManager.play("error");
         setPasswordError("O e-mail ou a senha atual estão incorretos.");
         return;
       }
@@ -183,16 +192,19 @@ function SettingsPage() {
 
       if (updateError) {
         console.error("Não foi possível alterar a senha da conta:", updateError.message);
+        audioManager.play("error");
         setPasswordError(`Não foi possível alterar a senha: ${updateError.message}`);
         return;
       }
 
       setNotice("Senha alterada com sucesso.");
+      audioManager.play("success");
       setIsPasswordFormOpen(false);
       setPasswordError(null);
       setPasswordFields({ email: "", currentPassword: "", newPassword: "", repeatNewPassword: "" });
     } catch (caught) {
       console.error("[Looma] Erro inesperado ao alterar a senha.", caught);
+      audioManager.play("error");
       setPasswordError(
         caught instanceof Error ? caught.message : "Não foi possível alterar a senha agora.",
       );
@@ -212,6 +224,7 @@ function SettingsPage() {
       title="Configurações"
       description="Controle as preferências da sua conta Looma."
     >
+      <AudioSettings />
       <div className="settings-layout">
         <nav className="settings-nav" aria-label="Seções de configurações">
           {tabs.map(([value, label, Icon]) => (
@@ -359,6 +372,7 @@ function SettingsPage() {
                     </div>
                     <div
                       className="settings-theme-options"
+                      data-ui-sound="none"
                       role="radiogroup"
                       aria-label="Tema visual"
                     >

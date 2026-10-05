@@ -5,8 +5,12 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { useUIOverlaySound } from "@/hooks/use-ui-overlay-sound";
 
-const Dialog = DialogPrimitive.Root;
+function Dialog(props: React.ComponentProps<typeof DialogPrimitive.Root>) {
+  const controls = useUIOverlaySound(props);
+  return <DialogPrimitive.Root {...props} {...controls} />;
+}
 
 const DialogTrigger = DialogPrimitive.Trigger;
 
@@ -40,6 +44,7 @@ const DialogContent = React.forwardRef<
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
+      data-ui-audio-surface="modal"
       ref={ref}
       className={cn(
         "looma-dialog-content fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg",

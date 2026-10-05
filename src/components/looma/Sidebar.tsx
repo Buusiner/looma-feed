@@ -11,10 +11,8 @@ import {
   Send,
   Settings,
   ShieldCheck,
-  MessageCircle,
   Search,
   Sun,
-  TrendingUp,
   UserRound,
   BriefcaseBusiness,
   Menu,
@@ -44,7 +42,7 @@ const NAV_GROUPS = [
       { icon: Home, label: "Início", path: "/" },
       { icon: Search, label: "Explorar", path: "/explorar" },
       { icon: Bell, label: "Notificações", path: "/notificacoes", showsUnreadDot: true },
-      { icon: MessageCircle, label: "Chat", path: "/conexoes" },
+      { icon: UserRound, label: "Conexões", path: "/conexoes" },
       { icon: FileText, label: "Publicações", path: "/publicacoes" },
       { icon: BriefcaseBusiness, label: "Portfólio", path: "/perfil" },
     ],
@@ -52,19 +50,17 @@ const NAV_GROUPS = [
   {
     id: "work",
     items: [
-      { icon: TrendingUp, label: "Em alta", path: "/oportunidades" },
+      { icon: BriefcaseBusiness, label: "Oportunidades", path: "/oportunidades" },
       { icon: BarChart3, label: "Relatórios", path: "/relatorios" },
       { icon: Send, label: "Propostas", path: "/propostas" },
     ],
   },
   {
     id: "account",
-    items: [{ icon: BadgeCheck, label: "Planos", path: "/planos" }],
+    items: [{ icon: BadgeCheck, label: "Recursos", path: "/planos" }],
   },
 ];
 
-// Keep the Premium card ready to be restored without removing its markup.
-const SHOW_PREMIUM_UPSELL = false;
 const PROFILE_ROUTE_FADE_MS = 1000;
 
 export function LoomaSidebar() {
@@ -196,15 +192,6 @@ export function LoomaSidebar() {
         ))}
       </nav>
 
-      <section
-        className={SHOW_PREMIUM_UPSELL ? "sidebar-upgrade" : "sidebar-upgrade hidden"}
-        aria-label="Plano Premium"
-      >
-        <strong>Upgrade para o Premium!</strong>
-        <p>Apareça mais nas buscas</p>
-        <button type="button">Fazer upgrade</button>
-      </section>
-
       <AuthButton variant="sidebar" />
 
       <div className="sidebar-profile-wrap">
@@ -249,6 +236,7 @@ export function LoomaSidebar() {
         <button
           type="button"
           className="sidebar-theme-item"
+          data-ui-sound="none"
           aria-label={isDarkTheme ? "Ativar modo claro" : "Ativar modo escuro"}
           onClick={toggleTheme}
         >

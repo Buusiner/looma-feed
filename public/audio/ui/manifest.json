@@ -1,0 +1,88 @@
+{
+  "generator": "ElevenLabs eleven_text_to_sound_v2",
+  "sample_rate": 44100,
+  "channels": 1,
+  "sounds": [
+    {
+      "file": "click.mp3",
+      "duration_ms": 70,
+      "container_duration_ms": 70,
+      "peak_dbfs": -12,
+      "sha256": "9e172879e01be5623b8b96ee85670fd439b554ea90b4a08674c6aa054f3572ce",
+      "prompt": "Looma premium OS UI. Isolated event starts at zero, then silence. Soft synthetic, warm rounded, delicate glass palette. Dry, quiet. No speech, music, background, arcade, ringtone, reverb or echo. One tiny soft synthetic fingertip tick, rounded dry transient, quiet felt-like tap with a trace of digital texture. Total event 60 milliseconds."
+    },
+    {
+      "file": "primary-click.mp3",
+      "duration_ms": 115,
+      "container_duration_ms": 115,
+      "peak_dbfs": -12,
+      "sha256": "2427f55d00f96e7ce89bca90720b257510b5559b57820232598aeb33f6f1cd2b",
+      "prompt": "Looma premium OS UI. Isolated event starts at zero, then silence. Soft synthetic, warm rounded, delicate glass palette. Dry, quiet. No speech, music, background, arcade, ringtone, reverb or echo. One rounded warm soft low-mid pop impact, satisfying restrained tactile confirmation, gently deeper than a fingertip tick. Total event 100 milliseconds."
+    },
+    {
+      "file": "pop.mp3",
+      "duration_ms": 95,
+      "container_duration_ms": 95,
+      "peak_dbfs": -12,
+      "sha256": "4b9671927845213492f72c852fb458db122c4d2e9562ba8057a8cd6b6d0cbe8c",
+      "prompt": "Looma premium OS UI. Isolated event starts at zero, then silence. Soft synthetic, warm rounded, delicate glass palette. Dry, quiet. No speech, music, background, arcade, ringtone, reverb or echo. One light rounded delicate high-pitched synthetic bubble pop, warm clean digital pluck, subtle and friendly. Total event 80 milliseconds."
+    },
+    {
+      "file": "navigation-swoosh.mp3",
+      "duration_ms": 145,
+      "container_duration_ms": 145,
+      "peak_dbfs": -12,
+      "sha256": "404ccb116a3f734a6c2796981b31e46abb5950a3abd6bb993d014bcbcae3ec04",
+      "prompt": "Looma premium OS UI. Isolated event starts at zero, then silence. Soft synthetic, warm rounded, delicate glass palette. Dry, quiet. No speech, music, background, arcade, ringtone, reverb or echo. One very short silky airy directional swish, soft filtered breath of movement, no dramatic wind or bass. Total event 130 milliseconds."
+    },
+    {
+      "file": "message-sent.mp3",
+      "duration_ms": 135,
+      "container_duration_ms": 135,
+      "peak_dbfs": -12,
+      "sha256": "e5e3a7cc6dde9b952eb11e5c9a3d752a71e6d03e2b5070dc5edfbf846c13fd01",
+      "prompt": "Looma premium OS UI. Isolated event starts at zero, then silence. Soft synthetic, warm rounded, delicate glass palette. Dry, quiet. No speech, music, background, arcade, ringtone, reverb or echo. One short soft outgoing airy swoosh, gently rising filtered air with a tiny rounded start, restrained forward movement. Total event 120 milliseconds."
+    },
+    {
+      "file": "notification.mp3",
+      "duration_ms": 150,
+      "container_duration_ms": 150,
+      "peak_dbfs": -12,
+      "sha256": "e7640d6792d7b0c6a88838c3bc50ca5b9c69f95419289a9ac78481907256c13f",
+      "prompt": "Looma premium OS UI. Isolated event starts at zero, then silence. Soft synthetic, warm rounded, delicate glass palette. Dry, quiet. No speech, music, background, arcade, ringtone, reverb or echo. One quiet clean rounded glass pling, soft single digital pluck, gentle brightness with a very fast decay. Total event 140 milliseconds."
+    },
+    {
+      "file": "success.mp3",
+      "duration_ms": 280,
+      "container_duration_ms": 280,
+      "peak_dbfs": -12,
+      "sha256": "d1c8264ea4c6940014baa0fcd4db8ed80a1bad65acdf4d0c2ad06bd899b94dfd",
+      "prompt": "Looma premium OS UI. Isolated event starts at zero, then silence. Soft synthetic, warm rounded, delicate glass palette. Dry, quiet. No speech, music, background, arcade, ringtone, reverb or echo. Exactly two small soft rounded glass-pluck notes ascending a gentle musical interval, first note immediately then second after 90 milliseconds, warm positive confirmation. Complete within 250 milliseconds."
+    },
+    {
+      "file": "error.mp3",
+      "duration_ms": 85,
+      "container_duration_ms": 85,
+      "peak_dbfs": -12,
+      "sha256": "e713165bd1addf33d625dada76be1724265ef97d444388c7a5dc47b636f45c7d",
+      "prompt": "Looma premium OS UI. Isolated event starts at zero, then silence. Soft synthetic, warm rounded, delicate glass palette. Dry, quiet. No speech, music, background, arcade, ringtone, reverb or echo. One muted low soft warm impact, rounded felt-like thump with gentle low frequency body, calm discreet negative feedback. Total event 70 milliseconds. No buzzer, alarm, distortion or harshness."
+    },
+    {
+      "file": "premium-pro-chime.mp3",
+      "duration_ms": 340,
+      "container_duration_ms": 341,
+      "peak_dbfs": -12,
+      "sha256": "fb0b02fdd4d3e5a3a1a93a42fbfd229dd507cd88a6d322b693938290ba582426",
+      "prompt": "Looma premium OS UI. Isolated event starts at zero, then silence. Soft synthetic, warm rounded, delicate glass palette. Dry, quiet. No speech, music, background, arcade, ringtone, reverb or echo. One restrained crystalline two-note shimmer, tiny soft glass plucks with a gentle upward sparkle, polished expensive product confirmation, quiet and delicate. Complete within 300 milliseconds."
+    },
+    {
+      "file": "modal-close.mp3",
+      "duration_ms": 100,
+      "container_duration_ms": 100,
+      "peak_dbfs": -12,
+      "sha256": "6e23a13a8a198ce434df295781b23eeac859b34cd8c490faeaefb1a0e08e7c90",
+      "derived_from": "navigation-swoosh",
+      "edit": "reversed shortened movement"
+    }
+  ]
+}

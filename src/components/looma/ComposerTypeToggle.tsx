@@ -1,4 +1,5 @@
 import { type KeyboardEvent, useRef } from "react";
+import { audioManager } from "@/lib/audio-manager";
 
 type ComposerType = "post" | "work";
 
@@ -58,6 +59,8 @@ export function ComposerTypeToggle({ disabled = false, value, onChange }: Compos
   const selectOption = (index: number) => {
     const option = COMPOSER_TYPES[index];
     if (!option || disabled) return;
+    if (option.value === value) return;
+    audioManager.play("navigation", { direction: index < safeSelectedIndex ? -1 : 1 });
     onChange(option.value);
     window.requestAnimationFrame(() => buttonRefs.current[index]?.focus());
   };
@@ -103,6 +106,7 @@ export function ComposerTypeToggle({ disabled = false, value, onChange }: Compos
 
         return (
           <button
+            data-ui-sound="none"
             key={option.value}
             ref={(element) => {
               buttonRefs.current[index] = element;

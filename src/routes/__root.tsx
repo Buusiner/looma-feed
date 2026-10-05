@@ -12,13 +12,14 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 
 import appCss from "../styles.css?url";
 import responsiveCss from "../responsive.css?url";
-import { recordUserTrafficEvent } from "../lib/activity-metrics";
+import { isMissingUserTrafficTable, recordUserTrafficEvent } from "../lib/activity-metrics";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SplashProvider } from "../lib/splash-state";
 import { getSupabaseBrowserClient } from "../lib/supabase/browser";
 import { useCurrentProfile } from "../lib/profile";
 import { OnboardingGate } from "../components/looma/OnboardingGate";
 import { applyTheme, getStoredTheme } from "../lib/theme";
+import { UIAudio } from "../components/looma/UIAudio";
 
 const themeBootstrapScript = `
   (function () {
@@ -268,7 +269,7 @@ function RootComponent() {
       referrer: document.referrer || null,
       userAgent: navigator.userAgent || null,
     }).then(({ error }) => {
-      if (error) {
+      if (error && !isMissingUserTrafficTable(error)) {
         console.error("Não foi possível registrar o tráfego real do usuário:", error.message);
       }
     });
@@ -276,6 +277,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <UIAudio userId={user?.id ?? null} />
       <SplashProvider value={{ shouldPlaySplash: isSplashActive, completeSplash, startSplash }}>
         <Outlet />
         {shouldShowOnboarding && profile ? (

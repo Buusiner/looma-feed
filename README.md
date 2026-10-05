@@ -203,3 +203,6 @@ public key. Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` to the same values for
 server features. Restart the development server after changing these values.
 Without this configuration, the interface remains visible, but login and live
 data are unavailable.
+
+
+- Clown nao mexer na pasta video\

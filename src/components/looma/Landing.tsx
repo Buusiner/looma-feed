@@ -1,3 +1,4 @@
+import { audioManager } from "@/lib/audio-manager";
 import {
   type KeyboardEvent as ReactKeyboardEvent,
   useCallback,
@@ -40,6 +41,7 @@ import {
   withEmptyMediaData,
 } from "@/lib/media";
 import { createWorkProposal, MAX_PROPOSAL_MESSAGE_LENGTH } from "@/lib/proposals";
+import { DEMO_OPPORTUNITY_FILTER } from "@/lib/opportunities";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import {
   Dialog,
@@ -794,6 +796,7 @@ export function LoomaLanding({
         supabase
           .from("opportunities")
           .select("id, title, description, category, type, work_mode")
+          .not("id", "in", DEMO_OPPORTUNITY_FILTER)
           .order("created_at", { ascending: false })
           .limit(3),
         supabase.from("skill_tags").select("id, name").order("name").limit(8),
@@ -846,6 +849,7 @@ export function LoomaLanding({
     const content = message.trim();
     if ((!content && !media) || publishing || mediaBusy) return;
     if (!user) {
+      audioManager.play("error");
       setComposerError("Entre com sua conta para publicar.");
       return;
     }
@@ -891,6 +895,7 @@ export function LoomaLanding({
             (post) => !isPendingFeedPost(post) || post.client_id !== pendingPost.client_id,
           ),
         );
+        audioManager.play("error");
         setComposerError(result.error?.message ?? "Não foi possível publicar agora.");
         return;
       }
@@ -908,6 +913,7 @@ export function LoomaLanding({
         ),
       );
       setRecentlyAddedPostId(newPost.id);
+      audioManager.play("success");
       setFeedTab("for-you");
     } catch (caught) {
       await removePostMedia(uploadedMediaPath);
@@ -916,6 +922,7 @@ export function LoomaLanding({
           (post) => !isPendingFeedPost(post) || post.client_id !== pendingPost.client_id,
         ),
       );
+      audioManager.play("error");
       setComposerError(
         caught instanceof Error ? caught.message : "Não foi possível publicar agora.",
       );
@@ -955,6 +962,7 @@ export function LoomaLanding({
     const content = editingPostContent.trim();
     if (!user || user.id !== post.author_id || savingPostId) return;
     if (!content && !post.media_path) {
+      audioManager.play("error");
       setPostActionError("A publicação não pode ficar vazia.");
       return;
     }
@@ -973,11 +981,13 @@ export function LoomaLanding({
         .single();
 
       if (result.error || !result.data) {
+        audioManager.play("error");
         setPostActionError(result.error?.message ?? "Não foi possível salvar a edição.");
         return;
       }
 
       const updatedPost = result.data as FeedPost;
+      audioManager.play("save");
       setPosts((current) =>
         current.map((item) =>
           !isPendingFeedPost(item) && item.id === updatedPost.id ? updatedPost : item,
@@ -986,6 +996,7 @@ export function LoomaLanding({
       setEditingPostId(null);
       setEditingPostContent("");
     } catch (caught) {
+      audioManager.play("error");
       setPostActionError(
         caught instanceof Error ? caught.message : "Não foi possível salvar a edição.",
       );
@@ -1007,12 +1018,14 @@ export function LoomaLanding({
         .eq("author_id", user.id);
 
       if (result.error) {
+        audioManager.play("error");
         setPostActionError(result.error.message);
         setDeletingPostId(null);
         return;
       }
 
       setRemovingPostId(post.id);
+      audioManager.play("remove");
       void removePostMedia(post.media_path);
       setPostPendingDeletion(null);
       postRemovalTimerRef.current = window.setTimeout(() => {
@@ -1024,6 +1037,7 @@ export function LoomaLanding({
         postRemovalTimerRef.current = null;
       }, POST_EXIT_ANIMATION_MS);
     } catch (caught) {
+      audioManager.play("error");
       setPostActionError(
         caught instanceof Error ? caught.message : "Não foi possível excluir a publicação.",
       );
@@ -1039,9 +1053,15 @@ export function LoomaLanding({
       const result = await getSupabaseBrowserClient()
         .from("connections")
         .insert({ requester_id: user.id, addressee_id: addresseeId, status: "pending" });
-      if (result.error) setSuggestionsError(result.error.message);
-      else setSuggestions((current) => current.filter((item) => item.id !== addresseeId));
+      if (result.error) {
+        audioManager.play("error");
+        setSuggestionsError(result.error.message);
+      } else {
+        audioManager.play("follow");
+        setSuggestions((current) => current.filter((item) => item.id !== addresseeId));
+      }
     } catch (caught) {
+      audioManager.play("error");
       setSuggestionsError(
         caught instanceof Error ? caught.message : "Não foi possível enviar a solicitação.",
       );
@@ -1070,6 +1090,7 @@ export function LoomaLanding({
 
     const message = proposalMessage.trim();
     if (!message) {
+      audioManager.play("error");
       setProposalError("Escreva uma mensagem para enviar sua proposta.");
       return;
     }
@@ -1086,13 +1107,16 @@ export function LoomaLanding({
       });
 
       if (proposalRequestError) {
+        audioManager.play("error");
         setProposalError(proposalRequestError.message);
       } else {
         setProposalPost(null);
         setProposalMessage("");
         setPostActionError(null);
+        audioManager.play("messageSent");
       }
     } catch (caught) {
+      audioManager.play("error");
       setProposalError(
         caught instanceof Error ? caught.message : "Não foi possível enviar a proposta.",
       );
@@ -1367,6 +1391,7 @@ export function LoomaLanding({
                                         role="menuitem"
                                         className="post-menu-delete"
                                         onClick={() => requestPostDeletion(post)}
+                                        data-ui-sound="none"
                                         disabled={deletingPostId === post.id}
                                       >
                                         <Trash2 size={15} aria-hidden="true" />{" "}
@@ -1457,6 +1482,7 @@ export function LoomaLanding({
                                   <button
                                     type="button"
                                     className="feed-work-proposal"
+                                    data-ui-sound="none"
                                     onClick={() => openProposalDialog(post)}
                                   >
                                     Enviar proposta
@@ -1658,7 +1684,7 @@ export function LoomaLanding({
               <section className="home-trending-card" aria-labelledby="home-trending-title">
                 <header>
                   <div>
-                    <p className="home-section-kicker">Em alta na Looma</p>
+                    <p className="home-section-kicker">Áreas profissionais</p>
                     <h2 id="home-trending-title">Áreas para explorar</h2>
                   </div>
                   <Compass size={18} aria-hidden="true" />

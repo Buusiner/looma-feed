@@ -1,3 +1,4 @@
+import { audioManager } from "@/lib/audio-manager";
 import { type ChangeEvent, type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { Camera, Check, LoaderCircle, Plus, Search, X } from "lucide-react";
@@ -256,6 +257,7 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
       return;
     if (selectedSkills.length >= MAX_SELECTED_SKILLS) {
       setLimitNotice("Você já selecionou 3 áreas. Remova uma para trocar.");
+      audioManager.play("warning");
       return;
     }
     setSelectedSkills((current) => [...current, skill]);
@@ -264,6 +266,7 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
   }
 
   function removeSkill(skill: SelectedSkill) {
+    audioManager.play("remove");
     setSelectedSkills((current) => current.filter((selected) => selected.id !== skill.id));
     setLimitNotice(null);
   }
@@ -281,6 +284,7 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
     }
     if (selectedSkills.length >= MAX_SELECTED_SKILLS) {
       setLimitNotice("Você já selecionou 3 áreas. Remova uma para trocar.");
+      audioManager.play("warning");
       return;
     }
 
@@ -341,6 +345,7 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
       setAvatarPreviewUrl(null);
       setCurrentStep(2);
       setNotice("Informações salvas com sucesso.");
+      audioManager.play("success");
       void refreshProfile(user).catch((refreshError) => {
         console.error(
           "[Looma] Não foi possível atualizar o perfil após salvar o onboarding.",
@@ -387,6 +392,7 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
       if (insertError) throw insertError;
       setCurrentStep(3);
       setNotice("Áreas de atuação salvas com sucesso.");
+      audioManager.play("success");
     } catch (caught) {
       console.error("[Looma] Não foi possível salvar as áreas de atuação.", caught);
       setError("Não foi possível salvar suas áreas de atuação. Tente novamente.");
@@ -417,6 +423,7 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
 
       setCurrentStep(4);
       setNotice("Nível de experiência salvo com sucesso.");
+      audioManager.play("success");
       void refreshProfile(user).catch((refreshError) => {
         console.error(
           "[Looma] Não foi possível atualizar o perfil após salvar a experiência.",

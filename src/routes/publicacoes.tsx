@@ -1,3 +1,4 @@
+import { audioManager } from "@/lib/audio-manager";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { FileText, MoreHorizontal, Plus, Trash2 } from "lucide-react";
@@ -112,16 +113,19 @@ function PostsPage() {
         });
       if (insertError) {
         await removePostMedia(uploadedMediaPath);
+        audioManager.play("error");
         setActionError(insertError.message);
         return;
       }
       setContent("");
+      audioManager.play("success");
       setMedia(null);
       setMediaPickerKey((current) => current + 1);
       setComposerOpen(false);
       await load();
     } catch (caught) {
       await removePostMedia(uploadedMediaPath);
+      audioManager.play("error");
       setActionError(caught instanceof Error ? caught.message : "Não foi possível publicar.");
     } finally {
       setSaving(false);
@@ -145,6 +149,7 @@ function PostsPage() {
     if (!user || !editingPost || savingEdit) return;
     const content = editingContent.trim();
     if (!content && !editingPost.media_path) {
+      audioManager.play("error");
       setActionError("A publicação não pode ficar vazia.");
       return;
     }
@@ -157,10 +162,12 @@ function PostsPage() {
       .eq("id", editingPost.id)
       .eq("author_id", user.id);
     if (updateError) {
+      audioManager.play("error");
       setActionError(updateError.message);
     } else {
       setEditingPost(null);
       setEditingContent("");
+      audioManager.play("save");
       await load();
     }
     setSavingEdit(false);
@@ -180,10 +187,12 @@ function PostsPage() {
       .eq("id", postPendingDeletion.id)
       .eq("author_id", user.id);
     if (deleteError) {
+      audioManager.play("error");
       setActionError(deleteError.message);
     } else {
       await removePostMedia(postPendingDeletion.media_path);
       setPostPendingDeletion(null);
+      audioManager.play("remove");
       await load();
     }
     setDeletingPost(false);
@@ -288,7 +297,11 @@ function PostsPage() {
                   </time>
                 </div>
                 <div className="workspace-inline-actions">
-                  <button onClick={() => openPostEditor(post)} aria-label="Editar publicação">
+                  <button
+                    data-ui-sound="none"
+                    onClick={() => openPostEditor(post)}
+                    aria-label="Editar publicação"
+                  >
                     <MoreHorizontal size={17} />
                   </button>
                   <button
@@ -297,6 +310,7 @@ function PostsPage() {
                       setActionError(null);
                     }}
                     aria-label="Excluir publicação"
+                    data-ui-sound="none"
                   >
                     <Trash2 size={17} />
                   </button>

@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, createFileRoute, useLocation } from "@tanstack/react-router";
-import {
-  BriefcaseBusiness,
-  ExternalLink,
-  Gauge,
-  MessageSquareText,
-  Pencil,
-  Tag,
-} from "lucide-react";
+import { BriefcaseBusiness, ExternalLink, Pencil, Tag } from "lucide-react";
 import { AuthButton } from "@/components/looma/AuthButton";
 import { ProfileAvatar } from "@/components/looma/ProfileAvatar";
 import { WorkspaceEmpty } from "@/components/looma/WorkspaceStates";
@@ -180,42 +173,6 @@ function PortfolioPage() {
             </Link>
           </div>
         )}
-      </section>
-      <section
-        className="workspace-section portfolio-section"
-        aria-labelledby="portfolio-reviews-title"
-      >
-        <header>
-          <div>
-            <p className="portfolio-section-label">Reputação</p>
-            <h2 id="portfolio-reviews-title">Avaliações</h2>
-            <p>Feedback de pessoas que já trabalharam com você aparecerá aqui.</p>
-          </div>
-          <MessageSquareText size={19} aria-hidden="true" />
-        </header>
-        <div className="portfolio-empty-state portfolio-empty-state-muted">
-          <p>Ainda sem avaliações</p>
-        </div>
-      </section>
-      <section
-        className="workspace-section portfolio-section"
-        aria-labelledby="portfolio-performance-title"
-      >
-        <header>
-          <div>
-            <p className="portfolio-section-label">Evolução</p>
-            <h2 id="portfolio-performance-title">Desempenho profissional</h2>
-            <p>Um indicador construído a partir da sua atividade na Looma.</p>
-          </div>
-          <Gauge size={19} aria-hidden="true" />
-        </header>
-        <div className="portfolio-performance-empty">
-          <span className="portfolio-performance-ring" aria-hidden="true" />
-          <div>
-            <h3>Desempenho ainda não calculado</h3>
-            <p>Esse indicador será exibido quando houver dados suficientes.</p>
-          </div>
-        </div>
       </section>
       {links.length ? (
         <section

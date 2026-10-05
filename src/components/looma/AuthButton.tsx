@@ -438,6 +438,7 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
           <button
             type="button"
             className={variant === "sidebar" ? "sidebar-email-login" : "auth-email-login"}
+            data-ui-sound="none"
             onClick={openEmailModal}
             disabled={isWorking}
           >

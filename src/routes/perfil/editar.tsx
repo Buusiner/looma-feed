@@ -1,3 +1,4 @@
+import { audioManager } from "@/lib/audio-manager";
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { Link, createFileRoute, useBlocker, useRouter } from "@tanstack/react-router";
 import {
@@ -453,8 +454,10 @@ function EditProfilePage() {
         }),
       );
       setNotice("Perfil salvo com sucesso.");
+      audioManager.play("success");
     } catch (caught) {
       console.error("[Looma] Erro ao salvar perfil.", caught);
+      audioManager.play("error");
       setError(caught instanceof Error ? caught.message : "Não foi possível salvar seu perfil.");
     } finally {
       setIsSaving(false);

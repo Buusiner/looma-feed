@@ -1,3 +1,4 @@
+import { audioManager } from "@/lib/audio-manager";
 import { useEffect, useState } from "react";
 import {
   BriefcaseBusiness,
@@ -183,11 +184,14 @@ function PublicProfilePage() {
         .single();
 
       if (requestError) {
+        audioManager.play("error");
         setConnectionError(requestError.message);
       } else {
         setConnection(data as ConnectionRow);
+        audioManager.play("follow");
       }
     } catch (caught) {
+      audioManager.play("error");
       setConnectionError(
         caught instanceof Error ? caught.message : "Não foi possível enviar a solicitação.",
       );
@@ -218,11 +222,14 @@ function PublicProfilePage() {
         .eq("status", "pending");
 
       if (cancelError) {
+        audioManager.play("error");
         setConnectionError(cancelError.message);
       } else {
         setConnection(null);
+        audioManager.play("remove");
       }
     } catch (caught) {
+      audioManager.play("error");
       setConnectionError(
         caught instanceof Error ? caught.message : "Não foi possível cancelar a solicitação.",
       );
@@ -251,6 +258,7 @@ function PublicProfilePage() {
 
     const message = proposalMessage.trim();
     if (!message) {
+      audioManager.play("error");
       setProposalError("Escreva uma mensagem para enviar sua proposta.");
       return;
     }
@@ -267,12 +275,15 @@ function PublicProfilePage() {
       });
 
       if (proposalRequestError) {
+        audioManager.play("error");
         setProposalError(proposalRequestError.message);
       } else {
         setProposalPost(null);
         setProposalMessage("");
+        audioManager.play("messageSent");
       }
     } catch (caught) {
+      audioManager.play("error");
       setProposalError(
         caught instanceof Error ? caught.message : "Não foi possível enviar a proposta.",
       );
@@ -426,6 +437,7 @@ function PublicProfilePage() {
                       <button
                         type="button"
                         className="feed-work-proposal"
+                        data-ui-sound="none"
                         onClick={() => openProposalDialog(post)}
                       >
                         Enviar proposta

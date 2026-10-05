@@ -9,6 +9,7 @@ import {
 } from "@/components/looma/WorkspaceStates";
 import { WorkspaceLayout } from "@/components/looma/WorkspaceLayout";
 import { recordOpportunityView } from "@/lib/activity-metrics";
+import { DEMO_OPPORTUNITY_FILTER } from "@/lib/opportunities";
 import { useCurrentProfile } from "@/lib/profile";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
@@ -45,6 +46,7 @@ function OpportunitiesPage() {
     const { data, error: opportunitiesError } = await supabase
       .from("opportunities")
       .select("id, title, description, type, category, work_mode, created_at")
+      .not("id", "in", DEMO_OPPORTUNITY_FILTER)
       .order("created_at", { ascending: false });
 
     if (opportunitiesError) {
@@ -156,7 +158,7 @@ function OpportunitiesPage() {
 
   return (
     <WorkspaceLayout
-      title="Oportunidades em alta"
+      title="Oportunidades"
       description="Encontre oportunidades publicadas pela comunidade Looma."
     >
       <div className="workspace-toolbar">

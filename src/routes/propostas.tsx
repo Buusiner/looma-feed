@@ -1,3 +1,4 @@
+import { audioManager } from "@/lib/audio-manager";
 import { useCallback, useEffect, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Check, FileSignature, X } from "lucide-react";
@@ -105,9 +106,15 @@ function ProposalsPage() {
         .eq("id", id)
         .eq("recipient_id", user.id)
         .eq("status", "pending");
-      if (updateError) setError(updateError.message);
-      else await load();
+      if (updateError) {
+        audioManager.play("error");
+        setError(updateError.message);
+      } else {
+        audioManager.play(status === "accepted" ? "success" : "remove");
+        await load();
+      }
     } catch (caught) {
+      audioManager.play("error");
       setError(caught instanceof Error ? caught.message : "Não foi possível atualizar a proposta.");
     } finally {
       setProcessingProposalId(null);
@@ -125,9 +132,15 @@ function ProposalsPage() {
         .eq("id", id)
         .eq("sender_id", user.id)
         .eq("status", "pending");
-      if (deleteError) setError(deleteError.message);
-      else await load();
+      if (deleteError) {
+        audioManager.play("error");
+        setError(deleteError.message);
+      } else {
+        audioManager.play("remove");
+        await load();
+      }
     } catch (caught) {
+      audioManager.play("error");
       setError(caught instanceof Error ? caught.message : "Não foi possível cancelar a proposta.");
     } finally {
       setProcessingProposalId(null);
