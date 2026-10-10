@@ -86,6 +86,7 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
   const [isSavingExperience, setIsSavingExperience] = useState(false);
   const [isLoadingLinks, setIsLoadingLinks] = useState(false);
   const [isCompletingOnboarding, setIsCompletingOnboarding] = useState(false);
+  const [isCancellingOnboarding, setIsCancellingOnboarding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [limitNotice, setLimitNotice] = useState<string | null>(null);
@@ -250,6 +251,7 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
     setAvatarFile(croppedFile);
     setAvatarPreviewUrl(URL.createObjectURL(croppedFile));
     setCropSource(null);
+    setNotice("Imagem selecionada. Clique em Próximo para salvar.");
   }
 
   function addSkill(skill: SelectedSkill) {
@@ -508,6 +510,31 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
     }
   }
 
+  async function cancelOnboarding() {
+    if (
+      isCancellingOnboarding ||
+      isSaving ||
+      isSavingSkills ||
+      isSavingExperience ||
+      isCompletingOnboarding
+    )
+      return;
+
+    setIsCancellingOnboarding(true);
+    setError(null);
+    try {
+      const { error: signOutError } = await getSupabaseBrowserClient().auth.signOut();
+      if (signOutError) throw signOutError;
+
+      // A full reload clears the account-level gate together with the Supabase session.
+      window.location.assign("/");
+    } catch (caught) {
+      console.error("[Looma] Não foi possível cancelar o onboarding.", caught);
+      setError("Não foi possível sair da conta. Tente novamente.");
+      setIsCancellingOnboarding(false);
+    }
+  }
+
   return (
     <section
       className="onboarding-gate"
@@ -516,6 +543,22 @@ export function OnboardingGate({ user, profile, refreshProfile }: OnboardingGate
       aria-labelledby="onboarding-title"
     >
       <div className="onboarding-card">
+        <button
+          type="button"
+          className="onboarding-cancel"
+          onClick={() => void cancelOnboarding()}
+          disabled={
+            isCancellingOnboarding ||
+            isSaving ||
+            isSavingSkills ||
+            isSavingExperience ||
+            isCompletingOnboarding
+          }
+          aria-label="Cancelar cadastro e sair"
+          title="Cancelar cadastro e sair"
+        >
+          <X size={18} aria-hidden="true" />
+        </button>
         <span className="looma-logo-mark onboarding-logo" role="img" aria-label="Looma" />
         <div
           className="onboarding-progress"

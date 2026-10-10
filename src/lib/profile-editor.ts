@@ -63,23 +63,9 @@ export async function saveProfileDetails({
   let avatarUrl = profile?.avatar_url ?? null;
 
   if (avatarFile) {
-    const bucketResponse = await fetch("/api/storage/ensure-avatars", { method: "POST" });
-    if (!bucketResponse.ok) {
-      const body = (await bucketResponse.json().catch(() => null)) as { error?: string } | null;
-      console.error("[Looma] Falha ao preparar o bucket de avatar.", {
-        status: bucketResponse.status,
-        serverError: body?.error ?? null,
-      });
-      if (body?.error === "storage_admin_not_configured") {
-        throw new Error("O upload de avatar ainda não está configurado no servidor.");
-      }
-      throw new Error("Não foi possível preparar o armazenamento de avatar.");
-    }
-
-    const extension = avatarFile.name.split(".").pop()?.toLowerCase() || "jpg";
-    const filePath = `${user.id}/avatar-${Date.now()}.${extension}`;
+    const filePath = `${user.id}/avatar-${crypto.randomUUID()}.webp`;
     const { error: uploadError } = await supabase.storage
-      .from("avatars")
+      .from("profile-media")
       .upload(filePath, avatarFile, {
         cacheControl: "3600",
         contentType: avatarFile.type,
@@ -87,11 +73,10 @@ export async function saveProfileDetails({
       });
     if (uploadError) {
       console.error("[Looma] Falha no upload do avatar.", uploadError);
-      throw new Error("Não foi possível enviar a sua foto. Tente novamente.");
+      throw new Error(`Não foi possível enviar a sua foto: ${uploadError.message}`);
     }
 
-    const { data: publicUrl } = supabase.storage.from("avatars").getPublicUrl(filePath);
-    avatarUrl = publicUrl.publicUrl;
+    avatarUrl = `storage:profile-media/${filePath}`;
   }
 
   const update = {

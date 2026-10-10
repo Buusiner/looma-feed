@@ -10,6 +10,7 @@ import {
   WorkspaceSkeleton,
 } from "@/components/looma/WorkspaceStates";
 import { WorkspaceLayout } from "@/components/looma/WorkspaceLayout";
+import { AuthButton } from "@/components/looma/AuthButton";
 import {
   MEDIA_COLUMNS,
   isMissingPostMediaColumns,
@@ -43,7 +44,7 @@ type Post = PostMediaData & {
 export const Route = createFileRoute("/publicacoes")({ component: PostsPage });
 
 function PostsPage() {
-  const { user } = useCurrentProfile();
+  const { user, isLoading: isProfileLoading } = useCurrentProfile();
   const [posts, setPosts] = useState<Post[]>([]);
   const [content, setContent] = useState("");
   const [media, setMedia] = useState<PreparedMedia | null>(null);
@@ -198,9 +199,26 @@ function PostsPage() {
     setDeletingPost(false);
   }
 
-  const emptyDescription = !user
-    ? "Entre com sua conta para gerenciar suas publicações."
-    : "Você ainda não publicou nada.";
+  if (isProfileLoading) {
+    return (
+      <WorkspaceLayout title="Publicações" description="Gerencie as publicações criadas por você.">
+        <WorkspaceSkeleton cards={3} />
+      </WorkspaceLayout>
+    );
+  }
+
+  if (!user) {
+    return (
+      <WorkspaceLayout title="Publicações" description="Gerencie as publicações criadas por você.">
+        <WorkspaceEmpty
+          icon={FileText}
+          title="Entre para gerenciar suas publicações"
+          description="Faça login para criar, editar e acompanhar suas publicações."
+          action={<AuthButton />}
+        />
+      </WorkspaceLayout>
+    );
+  }
 
   return (
     <WorkspaceLayout
@@ -259,26 +277,16 @@ function PostsPage() {
       ) : posts.length === 0 ? (
         <WorkspaceEmpty
           icon={FileText}
-          title={emptyDescription}
-          description={
-            user
-              ? "Use “Nova publicação” para compartilhar algo com a comunidade."
-              : "Enquanto isso, explore oportunidades e descubra quem está criando na Looma."
-          }
+          title="Você ainda não publicou nada."
+          description="Use “Nova publicação” para compartilhar algo com a comunidade."
           action={
-            user ? (
-              <button
-                type="button"
-                className="workspace-empty-action"
-                onClick={() => setComposerOpen(true)}
-              >
-                Criar publicação
-              </button>
-            ) : (
-              <Link className="workspace-empty-action" to="/oportunidades">
-                Explorar oportunidades
-              </Link>
-            )
+            <button
+              type="button"
+              className="workspace-empty-action"
+              onClick={() => setComposerOpen(true)}
+            >
+              Criar publicação
+            </button>
           }
         />
       ) : (

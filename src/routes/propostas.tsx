@@ -8,6 +8,7 @@ import {
   WorkspaceSkeleton,
 } from "@/components/looma/WorkspaceStates";
 import { WorkspaceLayout } from "@/components/looma/WorkspaceLayout";
+import { AuthButton } from "@/components/looma/AuthButton";
 import { AdminVerifiedBadge } from "@/components/looma/AdminVerifiedBadge";
 import { type Profile, useCurrentProfile } from "@/lib/profile";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
@@ -26,7 +27,7 @@ type Tab = "sent" | "received";
 export const Route = createFileRoute("/propostas")({ component: ProposalsPage });
 
 function ProposalsPage() {
-  const { user } = useCurrentProfile();
+  const { user, isLoading: isProfileLoading } = useCurrentProfile();
   const [tab, setTab] = useState<Tab>("sent");
   const [items, setItems] = useState<Proposal[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
@@ -147,6 +148,34 @@ function ProposalsPage() {
     }
   }
   const statusLabel = { pending: "Pendente", accepted: "Aceita", declined: "Recusada" } as const;
+
+  if (isProfileLoading) {
+    return (
+      <WorkspaceLayout
+        title="Propostas"
+        description="Acompanhe as propostas enviadas e recebidas pela sua conta."
+      >
+        <WorkspaceSkeleton cards={3} />
+      </WorkspaceLayout>
+    );
+  }
+
+  if (!user) {
+    return (
+      <WorkspaceLayout
+        title="Propostas"
+        description="Acompanhe as propostas enviadas e recebidas pela sua conta."
+      >
+        <WorkspaceEmpty
+          icon={FileSignature}
+          title="Entre para consultar propostas"
+          description="Faça login para acompanhar as propostas enviadas e recebidas."
+          action={<AuthButton />}
+        />
+      </WorkspaceLayout>
+    );
+  }
+
   return (
     <WorkspaceLayout
       title="Propostas"
@@ -172,28 +201,12 @@ function ProposalsPage() {
       ) : items.length === 0 ? (
         <WorkspaceEmpty
           icon={FileSignature}
-          title={
-            user
-              ? tab === "sent"
-                ? "Nenhuma proposta enviada"
-                : "Nenhuma proposta recebida"
-              : "Entre com sua conta"
-          }
-          description={
-            user
-              ? "Quando houver propostas, elas aparecerão aqui."
-              : "Entre com sua conta para consultar propostas."
-          }
+          title={tab === "sent" ? "Nenhuma proposta enviada" : "Nenhuma proposta recebida"}
+          description="Quando houver propostas, elas aparecerão aqui."
           action={
-            user ? (
-              <Link to="/conexoes" className="workspace-empty-action">
-                Explorar conexões
-              </Link>
-            ) : (
-              <Link to="/oportunidades" className="workspace-empty-action">
-                Explorar oportunidades
-              </Link>
-            )
+            <Link to="/conexoes" className="workspace-empty-action">
+              Explorar conexões
+            </Link>
           }
         />
       ) : (

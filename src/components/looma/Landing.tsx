@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { LoomaSidebar } from "./Sidebar";
+import { AuthButton } from "./AuthButton";
 import { AdminVerifiedBadge } from "./AdminVerifiedBadge";
 import { MediaPicker } from "./MediaPicker";
 import { PostMedia } from "./PostMedia";
@@ -462,6 +463,7 @@ export function LoomaLanding({
   const [connectingId, setConnectingId] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
   const [composerError, setComposerError] = useState<string | null>(null);
+  const [authPromptSignal, setAuthPromptSignal] = useState(0);
   const [activePostMenuId, setActivePostMenuId] = useState<string | null>(null);
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
   const [editingPostContent, setEditingPostContent] = useState("");
@@ -851,6 +853,7 @@ export function LoomaLanding({
     if (!user) {
       audioManager.play("error");
       setComposerError("Entre com sua conta para publicar.");
+      setAuthPromptSignal((current) => current + 1);
       return;
     }
 
@@ -1129,6 +1132,16 @@ export function LoomaLanding({
     const post = document.querySelector<HTMLElement>(`[data-feed-post-id="${postId}"]`);
     post?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
+  const publishButton = (
+    <button
+      type="button"
+      className="publish-button"
+      disabled={(!message.trim() && !media) || publishing || mediaBusy}
+      onClick={() => void publish()}
+    >
+      {publishing ? "Publicando…" : "Publicar"} <Send size={15} />
+    </button>
+  );
   const composerPanel = (
     <section className="home-composer-panel">
       <header className="home-panel-heading">
@@ -1161,17 +1174,11 @@ export function LoomaLanding({
                 onChange={setMedia}
                 disabled={publishing}
                 onBusyChange={setMediaBusy}
+                mediaAction={media ? publishButton : undefined}
               />
               <ComposerTypeToggle disabled={publishing} value={postKind} onChange={setPostKind} />
             </div>
-            <button
-              type="button"
-              className="publish-button"
-              disabled={(!message.trim() && !media) || publishing || mediaBusy}
-              onClick={() => void publish()}
-            >
-              {publishing ? "Publicando…" : "Publicar"} <Send size={15} />
-            </button>
+            {!media ? publishButton : null}
           </div>
           {composerError ? (
             <p className="home-inline-error" role="alert">
@@ -1184,637 +1191,644 @@ export function LoomaLanding({
   );
 
   return (
-    <main
-      className={`looma-transition ${introVisible ? "intro-visible" : ""} intro-stage-${introStage} ${feedReady ? "feed-ready" : ""}`}
-    >
-      <section className="brand-intro" aria-label={`Looma, ${INTRO_TAGLINE}`}>
-        <div className="intro-lockup">
-          <span className="looma-logo-mark intro-logo" role="img" aria-label="Looma" />
-          <span className="intro-brand-copy">
-            <span className="intro-brand-name" aria-hidden="true">
-              <span className="intro-brand-reserve">{INTRO_BRAND_TEXT}</span>
-              <span className="intro-brand-typed">{INTRO_BRAND_TEXT}</span>
-              <span className="intro-brand-fallback">{INTRO_BRAND_TEXT}</span>
+    <>
+      <AuthButton launcher="modal" openSignal={authPromptSignal} />
+      <main
+        className={`looma-transition ${introVisible ? "intro-visible" : ""} intro-stage-${introStage} ${feedReady ? "feed-ready" : ""}`}
+      >
+        <section className="brand-intro" aria-label={`Looma, ${INTRO_TAGLINE}`}>
+          <div className="intro-lockup">
+            <span className="looma-logo-mark intro-logo" role="img" aria-label="Looma" />
+            <span className="intro-brand-copy">
+              <span className="intro-brand-name" aria-hidden="true">
+                <span className="intro-brand-reserve">{INTRO_BRAND_TEXT}</span>
+                <span className="intro-brand-typed">{INTRO_BRAND_TEXT}</span>
+                <span className="intro-brand-fallback">{INTRO_BRAND_TEXT}</span>
+              </span>
+              <span className="intro-underline" />
             </span>
-            <span className="intro-underline" />
-          </span>
-          <span className="intro-tagline-clip">
-            <span className="intro-tagline">{INTRO_TAGLINE}</span>
-          </span>
-        </div>
-      </section>
+            <span className="intro-tagline-clip">
+              <span className="intro-tagline">{INTRO_TAGLINE}</span>
+            </span>
+          </div>
+        </section>
 
-      <section className="feed-stage" aria-hidden={!feedReady}>
-        <LoomaSidebar />
-        <div className="home-shell">
-          <div className="home-main-scroll">
-            <header className="home-command-header home-topbar">
-              <div className="home-welcome">
-                <p className="home-welcome-label">Seu espaço na Looma</p>
-                <h1>Bom dia, {firstName}</h1>
-                <p>O que você quer construir hoje?</p>
-              </div>
-            </header>
+        <section className="feed-stage" aria-hidden={!feedReady}>
+          <LoomaSidebar />
+          <div className="home-shell">
+            <div className="home-main-scroll">
+              <header className="home-command-header home-topbar">
+                <div className="home-welcome">
+                  <p className="home-welcome-label">Seu espaço na Looma</p>
+                  <h1>Bom dia, {firstName}</h1>
+                  <p>O que você quer construir hoje?</p>
+                </div>
+              </header>
 
-            <section className="home-feed-stream" aria-label="Atualizações">
-              <section className="feed-column home-feed-panel" aria-label="Feed da Looma">
-                <header className="home-panel-heading home-feed-heading">
-                  <div className="feed-tabs" role="tablist" aria-label="Tipo de feed">
-                    <button
-                      type="button"
-                      className={feedTab === "for-you" ? "active" : ""}
-                      onClick={() => setFeedTab("for-you")}
-                      role="tab"
-                      aria-selected={feedTab === "for-you"}
-                    >
-                      Para você
-                    </button>
-                    <button
-                      type="button"
-                      className={feedTab === "following" ? "active" : ""}
-                      onClick={() => setFeedTab("following")}
-                      role="tab"
-                      aria-selected={feedTab === "following"}
-                    >
-                      Seguindo
-                    </button>
-                  </div>
-                </header>
-                {composerPanel}
-                <section className="post-list" aria-label="Publicações recentes">
-                  {postActionError ? (
-                    <p className="home-inline-error post-action-error" role="alert">
-                      {postActionError}
-                    </p>
-                  ) : null}
-                  {postsLoading ? (
-                    <div className="home-feed-skeleton" aria-label="Carregando publicações">
-                      <i />
-                      <i />
-                      <i />
+              <section className="home-feed-stream" aria-label="Atualizações">
+                <section className="feed-column home-feed-panel" aria-label="Feed da Looma">
+                  <header className="home-panel-heading home-feed-heading">
+                    <div className="feed-tabs" role="tablist" aria-label="Tipo de feed">
+                      <button
+                        type="button"
+                        className={feedTab === "for-you" ? "active" : ""}
+                        onClick={() => setFeedTab("for-you")}
+                        role="tab"
+                        aria-selected={feedTab === "for-you"}
+                      >
+                        Para você
+                      </button>
+                      <button
+                        type="button"
+                        className={feedTab === "following" ? "active" : ""}
+                        onClick={() => setFeedTab("following")}
+                        role="tab"
+                        aria-selected={feedTab === "following"}
+                      >
+                        Seguindo
+                      </button>
                     </div>
-                  ) : postsError ? (
-                    <p className="home-feed-state" role="alert">
-                      Não foi possível carregar as publicações: {postsError}
-                    </p>
-                  ) : posts.length === 0 ? (
-                    <section className="home-feed-empty">
-                      <div>
-                        <p className="home-feed-empty-eyebrow">
-                          {feedTab === "following" ? "" : "Seu feed"}
-                        </p>
-                        <h2>
-                          {feedTab === "following"
-                            ? "Nenhuma publicação ainda"
-                            : "Nenhuma publicação ainda"}
-                        </h2>
-                        <p>
-                          {feedTab === "following"
-                            ? "Conecte-se com pessoas da sua área para acompanhar projetos, ideias e oportunidades por aqui."
-                            : "Escreva uma nova publicação acima para iniciar o movimento."}
-                        </p>
-                        <Link className="home-empty-secondary" to="/conexoes">
-                          Explorar conexões
-                        </Link>
+                  </header>
+                  {composerPanel}
+                  <section className="post-list" aria-label="Publicações recentes">
+                    {postActionError ? (
+                      <p className="home-inline-error post-action-error" role="alert">
+                        {postActionError}
+                      </p>
+                    ) : null}
+                    {postsLoading ? (
+                      <div className="home-feed-skeleton" aria-label="Carregando publicações">
+                        <i />
+                        <i />
+                        <i />
                       </div>
-                    </section>
-                  ) : (
-                    posts.map((post) => {
-                      const isPending = isPendingFeedPost(post);
-                      const author = postProfiles[post.author_id];
-                      const isAuthor = !isPending && user?.id === post.author_id;
-                      const isEditing = !isPending && editingPostId === post.id;
-                      const isEntering = !isPending && recentlyAddedPostId === post.id;
-                      const isRemoving = !isPending && removingPostId === post.id;
-                      const authorName =
-                        author?.full_name?.trim() ||
-                        (isAuthor || isPending ? displayName : "Usuário");
-                      const authorUsername = author?.username
-                        ? `@${author.username.replace(/^@/, "")}`
-                        : (isAuthor || isPending) && username.startsWith("@")
-                          ? username
-                          : "";
-                      const isAdminAuthor =
-                        author?.is_admin === true ||
-                        ((isAuthor || isPending) && (profile?.is_admin === true || isAdmin));
-                      const postKey = isPending ? `pending-${post.client_id}` : post.id;
-                      const isLongPost =
-                        post.content.length > 520 || post.content.split(/\r?\n/).length > 8;
-                      const isExpanded =
-                        !isPending && isLongPost ? expandedPostIds.has(post.id) : true;
-                      const visibleContent =
-                        isLongPost && !isExpanded
-                          ? `${post.content.slice(0, 520).trimEnd()}…`
-                          : post.content;
-                      return (
-                        <article
-                          className={`feed-post ${isPending ? "is-pending" : ""} ${isEntering ? "is-entering" : ""} ${isRemoving ? "is-removing" : ""}`}
-                          key={postKey}
-                          data-feed-post-id={isPending ? undefined : post.id}
-                          onAnimationEnd={(event) => {
-                            if (event.animationName === "feed-post-enter" && isEntering)
-                              setRecentlyAddedPostId(null);
-                          }}
-                        >
-                          <ProfileAvatar
-                            className="avatar"
-                            fullName={authorName}
-                            avatarUrl={
-                              author?.avatar_url ??
-                              (isAuthor || isPending ? (profile?.avatar_url ?? null) : null)
-                            }
-                          />
-                          <div className="post-body">
-                            <div className="post-meta">
-                              {author?.username ? (
-                                <Link
-                                  className="post-author-link"
-                                  to="/perfil/$username"
-                                  params={{ username: author.username.replace(/^@/, "") }}
-                                >
-                                  {authorName}
-                                  {isAdminAuthor ? <AdminVerifiedBadge /> : null}
-                                </Link>
-                              ) : (
-                                <strong>
-                                  {authorName}
-                                  {isAdminAuthor ? <AdminVerifiedBadge /> : null}
-                                </strong>
-                              )}
-                              <span>
-                                {isPending ? (
-                                  "Enviando…"
-                                ) : (
-                                  <>
-                                    {authorUsername ? `${authorUsername} · ` : ""}
-                                    <time
-                                      dateTime={post.created_at}
-                                      title={formatPostDateTitle(post.created_at)}
+                    ) : postsError ? (
+                      <p className="home-feed-state" role="alert">
+                        Não foi possível carregar as publicações: {postsError}
+                      </p>
+                    ) : posts.length === 0 ? (
+                      <section className="home-feed-empty">
+                        <div>
+                          <p className="home-feed-empty-eyebrow">
+                            {feedTab === "following" ? "" : "Seu feed"}
+                          </p>
+                          <h2>
+                            {feedTab === "following"
+                              ? "Nenhuma publicação ainda"
+                              : "Nenhuma publicação ainda"}
+                          </h2>
+                          <p>
+                            {feedTab === "following"
+                              ? "Conecte-se com pessoas da sua área para acompanhar projetos, ideias e oportunidades por aqui."
+                              : "Escreva uma nova publicação acima para iniciar o movimento."}
+                          </p>
+                          <Link className="home-empty-secondary" to="/conexoes">
+                            Explorar conexões
+                          </Link>
+                        </div>
+                      </section>
+                    ) : (
+                      posts.map((post) => {
+                        const isPending = isPendingFeedPost(post);
+                        const author = postProfiles[post.author_id];
+                        const isAuthor = !isPending && user?.id === post.author_id;
+                        const isEditing = !isPending && editingPostId === post.id;
+                        const isEntering = !isPending && recentlyAddedPostId === post.id;
+                        const isRemoving = !isPending && removingPostId === post.id;
+                        const authorName =
+                          author?.full_name?.trim() ||
+                          (isAuthor || isPending ? displayName : "Usuário");
+                        const authorUsername = author?.username
+                          ? `@${author.username.replace(/^@/, "")}`
+                          : (isAuthor || isPending) && username.startsWith("@")
+                            ? username
+                            : "";
+                        const isAdminAuthor =
+                          author?.is_admin === true ||
+                          ((isAuthor || isPending) && (profile?.is_admin === true || isAdmin));
+                        const postKey = isPending ? `pending-${post.client_id}` : post.id;
+                        const isLongPost =
+                          post.content.length > 520 || post.content.split(/\r?\n/).length > 8;
+                        const isExpanded =
+                          !isPending && isLongPost ? expandedPostIds.has(post.id) : true;
+                        const visibleContent =
+                          isLongPost && !isExpanded
+                            ? `${post.content.slice(0, 520).trimEnd()}…`
+                            : post.content;
+                        return (
+                          <article
+                            className={`feed-post ${isPending ? "is-pending" : ""} ${isEntering ? "is-entering" : ""} ${isRemoving ? "is-removing" : ""}`}
+                            key={postKey}
+                            data-feed-post-id={isPending ? undefined : post.id}
+                            onAnimationEnd={(event) => {
+                              if (event.animationName === "feed-post-enter" && isEntering)
+                                setRecentlyAddedPostId(null);
+                            }}
+                          >
+                            <ProfileAvatar
+                              className="avatar"
+                              fullName={authorName}
+                              avatarUrl={
+                                author?.avatar_url ??
+                                (isAuthor || isPending ? (profile?.avatar_url ?? null) : null)
+                              }
+                            />
+                            <div className="post-body">
+                              <div className="post-meta">
+                                {isAuthor ? (
+                                  <div className="post-menu-wrap">
+                                    <button
+                                      type="button"
+                                      className="post-menu-trigger"
+                                      aria-label="Opções da publicação"
+                                      aria-expanded={activePostMenuId === post.id}
+                                      aria-controls={`post-menu-${post.id}`}
+                                      onClick={() =>
+                                        setActivePostMenuId((current) =>
+                                          current === post.id ? null : post.id,
+                                        )
+                                      }
                                     >
-                                      {formatPostDate(post.created_at)}
-                                    </time>
-                                  </>
-                                )}
-                              </span>
-                              {isAuthor ? (
-                                <div className="post-menu-wrap">
-                                  <button
-                                    type="button"
-                                    className="post-menu-trigger"
-                                    aria-label="Opções da publicação"
-                                    aria-expanded={activePostMenuId === post.id}
-                                    aria-controls={`post-menu-${post.id}`}
-                                    onClick={() =>
-                                      setActivePostMenuId((current) =>
-                                        current === post.id ? null : post.id,
-                                      )
-                                    }
+                                      <MoreHorizontal size={18} aria-hidden="true" />
+                                    </button>
+                                    {activePostMenuId === post.id ? (
+                                      <div
+                                        id={`post-menu-${post.id}`}
+                                        className="post-menu"
+                                        role="menu"
+                                      >
+                                        <button
+                                          type="button"
+                                          role="menuitem"
+                                          onClick={() => startPostEdit(post)}
+                                          disabled={deletingPostId === post.id}
+                                        >
+                                          <Pencil size={15} aria-hidden="true" /> Editar
+                                        </button>
+                                        <button
+                                          type="button"
+                                          role="menuitem"
+                                          className="post-menu-delete"
+                                          onClick={() => requestPostDeletion(post)}
+                                          data-ui-sound="none"
+                                          disabled={deletingPostId === post.id}
+                                        >
+                                          <Trash2 size={15} aria-hidden="true" />{" "}
+                                          {deletingPostId === post.id ? "Excluindo…" : "Excluir"}
+                                        </button>
+                                      </div>
+                                    ) : null}
+                                  </div>
+                                ) : null}
+                                {author?.username ? (
+                                  <Link
+                                    className="post-author-link"
+                                    to="/perfil/$username"
+                                    params={{ username: author.username.replace(/^@/, "") }}
                                   >
-                                    <MoreHorizontal size={18} aria-hidden="true" />
-                                  </button>
-                                  {activePostMenuId === post.id ? (
-                                    <div
-                                      id={`post-menu-${post.id}`}
-                                      className="post-menu"
-                                      role="menu"
+                                    {authorName}
+                                    {isAdminAuthor ? <AdminVerifiedBadge /> : null}
+                                  </Link>
+                                ) : (
+                                  <strong>
+                                    {authorName}
+                                    {isAdminAuthor ? <AdminVerifiedBadge /> : null}
+                                  </strong>
+                                )}
+                                <span>
+                                  {isPending ? (
+                                    "Enviando…"
+                                  ) : (
+                                    <>
+                                      {authorUsername ? `${authorUsername} · ` : ""}
+                                      <time
+                                        dateTime={post.created_at}
+                                        title={formatPostDateTitle(post.created_at)}
+                                      >
+                                        {formatPostDate(post.created_at)}
+                                      </time>
+                                    </>
+                                  )}
+                                </span>
+                              </div>
+                              {isEditing ? (
+                                <div className="post-edit-form">
+                                  <textarea
+                                    value={editingPostContent}
+                                    onChange={(event) => setEditingPostContent(event.target.value)}
+                                    maxLength={1000}
+                                    aria-label="Editar publicação"
+                                    autoFocus
+                                  />
+                                  <div className="post-edit-actions">
+                                    <button
+                                      type="button"
+                                      className="post-edit-cancel"
+                                      onClick={cancelPostEdit}
+                                      disabled={savingPostId === post.id}
                                     >
-                                      <button
-                                        type="button"
-                                        role="menuitem"
-                                        onClick={() => startPostEdit(post)}
-                                        disabled={deletingPostId === post.id}
-                                      >
-                                        <Pencil size={15} aria-hidden="true" /> Editar
-                                      </button>
-                                      <button
-                                        type="button"
-                                        role="menuitem"
-                                        className="post-menu-delete"
-                                        onClick={() => requestPostDeletion(post)}
-                                        data-ui-sound="none"
-                                        disabled={deletingPostId === post.id}
-                                      >
-                                        <Trash2 size={15} aria-hidden="true" />{" "}
-                                        {deletingPostId === post.id ? "Excluindo…" : "Excluir"}
-                                      </button>
-                                    </div>
+                                      Cancelar
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="post-edit-save"
+                                      onClick={() => void savePostEdit(post)}
+                                      disabled={
+                                        savingPostId === post.id ||
+                                        (!editingPostContent.trim() && !post.media_path)
+                                      }
+                                    >
+                                      {savingPostId === post.id ? "Salvando…" : "Salvar"}
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <>
+                                  {visibleContent ? <p>{visibleContent}</p> : null}
+                                  {isPending && post.mediaPreviewUrl ? (
+                                    post.media_type?.startsWith("video/") ? (
+                                      <video
+                                        className="post-media"
+                                        src={post.mediaPreviewUrl}
+                                        controls
+                                        playsInline
+                                        preload="metadata"
+                                      />
+                                    ) : (
+                                      <img
+                                        className="post-media"
+                                        src={post.mediaPreviewUrl}
+                                        alt="Prévia da mídia da publicação"
+                                      />
+                                    )
+                                  ) : !isPending ? (
+                                    <PostMedia path={post.media_path} type={post.media_type} />
+                                  ) : null}
+                                  {!isPending && isLongPost ? (
+                                    <button
+                                      type="button"
+                                      className="post-see-more"
+                                      onClick={() =>
+                                        setExpandedPostIds((current) => {
+                                          const next = new Set(current);
+                                          if (next.has(post.id)) next.delete(post.id);
+                                          else next.add(post.id);
+                                          return next;
+                                        })
+                                      }
+                                    >
+                                      {isExpanded ? "Ver menos" : "Ver mais"}
+                                    </button>
+                                  ) : null}
+                                </>
+                              )}
+                              {!isPending && post.kind === "work" ? (
+                                <div className="feed-work-actions">
+                                  <span className="feed-work-badge">
+                                    <BriefcaseBusiness size={14} aria-hidden="true" /> Trabalho
+                                    aberto
+                                  </span>
+                                  {!isAuthor ? (
+                                    <button
+                                      type="button"
+                                      className="feed-work-proposal"
+                                      data-ui-sound="none"
+                                      onClick={() => openProposalDialog(post)}
+                                    >
+                                      Enviar proposta
+                                    </button>
                                   ) : null}
                                 </div>
                               ) : null}
                             </div>
-                            {isEditing ? (
-                              <div className="post-edit-form">
-                                <textarea
-                                  value={editingPostContent}
-                                  onChange={(event) => setEditingPostContent(event.target.value)}
-                                  maxLength={1000}
-                                  aria-label="Editar publicação"
-                                  autoFocus
-                                />
-                                <div className="post-edit-actions">
-                                  <button
-                                    type="button"
-                                    className="post-edit-cancel"
-                                    onClick={cancelPostEdit}
-                                    disabled={savingPostId === post.id}
-                                  >
-                                    Cancelar
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="post-edit-save"
-                                    onClick={() => void savePostEdit(post)}
-                                    disabled={
-                                      savingPostId === post.id ||
-                                      (!editingPostContent.trim() && !post.media_path)
-                                    }
-                                  >
-                                    {savingPostId === post.id ? "Salvando…" : "Salvar"}
-                                  </button>
-                                </div>
-                              </div>
-                            ) : (
-                              <>
-                                {visibleContent ? <p>{visibleContent}</p> : null}
-                                {isPending && post.mediaPreviewUrl ? (
-                                  post.media_type?.startsWith("video/") ? (
-                                    <video
-                                      className="post-media"
-                                      src={post.mediaPreviewUrl}
-                                      controls
-                                      playsInline
-                                      preload="metadata"
-                                    />
-                                  ) : (
-                                    <img
-                                      className="post-media"
-                                      src={post.mediaPreviewUrl}
-                                      alt="Prévia da mídia da publicação"
-                                    />
-                                  )
-                                ) : !isPending ? (
-                                  <PostMedia path={post.media_path} type={post.media_type} />
-                                ) : null}
-                                {!isPending && isLongPost ? (
-                                  <button
-                                    type="button"
-                                    className="post-see-more"
-                                    onClick={() =>
-                                      setExpandedPostIds((current) => {
-                                        const next = new Set(current);
-                                        if (next.has(post.id)) next.delete(post.id);
-                                        else next.add(post.id);
-                                        return next;
-                                      })
-                                    }
-                                  >
-                                    {isExpanded ? "Ver menos" : "Ver mais"}
-                                  </button>
-                                ) : null}
-                              </>
-                            )}
-                            {!isPending && post.kind === "work" ? (
-                              <div className="feed-work-actions">
-                                <span className="feed-work-badge">
-                                  <BriefcaseBusiness size={14} aria-hidden="true" /> Trabalho aberto
-                                </span>
-                                {!isAuthor ? (
-                                  <button
-                                    type="button"
-                                    className="feed-work-proposal"
-                                    data-ui-sound="none"
-                                    onClick={() => openProposalDialog(post)}
-                                  >
-                                    Enviar proposta
-                                  </button>
-                                ) : null}
-                              </div>
-                            ) : null}
-                          </div>
-                        </article>
-                      );
-                    })
-                  )}
+                          </article>
+                        );
+                      })
+                    )}
+                  </section>
                 </section>
               </section>
-            </section>
-          </div>
-
-          <aside className="home-context-rail" aria-label="Atalhos e descobertas">
-            <div className="home-search-area">
-              <SearchBox
-                query={searchQuery}
-                results={searchResults}
-                isLoading={isSearchSettling || profilesSearchLoading}
-                onQueryChange={setSearchQuery}
-                onPostSelect={focusPostFromSearch}
-              />
             </div>
-            <button
-              type="button"
-              className="home-discovery-toggle"
-              aria-expanded={isDiscoveryOpen}
-              aria-controls="home-discovery-content"
-              onClick={() => setIsDiscoveryOpen((open) => !open)}
-            >
-              <Compass size={18} aria-hidden="true" />
-              <span>Descubra na Looma</span>
-              <ChevronDown size={18} aria-hidden="true" />
-            </button>
-            <div
-              id="home-discovery-content"
-              className={`home-discovery-content ${isDiscoveryOpen ? "is-expanded" : ""}`}
-            >
-              <div className="home-discovery-board">
-                <section
-                  className="home-discovery-section home-opportunities-section"
-                  aria-labelledby="home-opportunities-title"
-                >
-                  <header className="home-section-header">
-                    <div>
-                      <p className="home-section-kicker">Descubra possibilidades</p>
-                      <h2 id="home-opportunities-title">Oportunidades</h2>
-                      <p>Vagas, projetos e pedidos publicados pela comunidade.</p>
-                    </div>
-                    <Link to="/oportunidades">Ver todas</Link>
-                  </header>
-                  {opportunitiesLoading ? (
-                    <div className="home-discovery-skeleton" aria-label="Carregando oportunidades">
-                      <i />
-                      <i />
-                      <i />
-                    </div>
-                  ) : opportunitiesError ? (
-                    <section className="home-discovery-empty" role="alert">
-                      <p>Não foi possível carregar oportunidades: {opportunitiesError}</p>
-                      <Link to="/oportunidades">Tentar na página de oportunidades</Link>
-                    </section>
-                  ) : opportunities.length ? (
-                    <div className="home-opportunity-grid">
-                      {opportunities.map((opportunity) => (
-                        <Link
-                          className="home-opportunity-card"
-                          key={opportunity.id}
-                          to="/oportunidades"
-                        >
-                          <div className="home-opportunity-card-top">
-                            <BriefcaseBusiness size={18} aria-hidden="true" />
-                            {opportunity.category ? <span>{opportunity.category}</span> : null}
-                          </div>
-                          <h3>{opportunity.title}</h3>
+
+            <aside className="home-context-rail" aria-label="Atalhos e descobertas">
+              <div className="home-search-area">
+                <SearchBox
+                  query={searchQuery}
+                  results={searchResults}
+                  isLoading={isSearchSettling || profilesSearchLoading}
+                  onQueryChange={setSearchQuery}
+                  onPostSelect={focusPostFromSearch}
+                />
+              </div>
+              <button
+                type="button"
+                className="home-discovery-toggle"
+                aria-expanded={isDiscoveryOpen}
+                aria-controls="home-discovery-content"
+                onClick={() => setIsDiscoveryOpen((open) => !open)}
+              >
+                <Compass size={18} aria-hidden="true" />
+                <span>Descubra na Looma</span>
+                <ChevronDown size={18} aria-hidden="true" />
+              </button>
+              <div
+                id="home-discovery-content"
+                className={`home-discovery-content ${isDiscoveryOpen ? "is-expanded" : ""}`}
+              >
+                <div className="home-discovery-board">
+                  <section
+                    className="home-discovery-section home-opportunities-section"
+                    aria-labelledby="home-opportunities-title"
+                  >
+                    <header className="home-section-header">
+                      <div>
+                        <p className="home-section-kicker">Descubra possibilidades</p>
+                        <h2 id="home-opportunities-title">Oportunidades</h2>
+                        <p>Vagas, projetos e pedidos publicados pela comunidade.</p>
+                      </div>
+                      <Link to="/oportunidades">Ver todas</Link>
+                    </header>
+                    {opportunitiesLoading ? (
+                      <div
+                        className="home-discovery-skeleton"
+                        aria-label="Carregando oportunidades"
+                      >
+                        <i />
+                        <i />
+                        <i />
+                      </div>
+                    ) : opportunitiesError ? (
+                      <section className="home-discovery-empty" role="alert">
+                        <p>Não foi possível carregar oportunidades: {opportunitiesError}</p>
+                        <Link to="/oportunidades">Tentar na página de oportunidades</Link>
+                      </section>
+                    ) : opportunities.length ? (
+                      <div className="home-opportunity-grid">
+                        {opportunities.map((opportunity) => (
+                          <Link
+                            className="home-opportunity-card"
+                            key={opportunity.id}
+                            to="/oportunidades"
+                          >
+                            <div className="home-opportunity-card-top">
+                              <BriefcaseBusiness size={18} aria-hidden="true" />
+                              {opportunity.category ? <span>{opportunity.category}</span> : null}
+                            </div>
+                            <h3>{opportunity.title}</h3>
+                            <p>
+                              {opportunity.description.length > 150
+                                ? `${opportunity.description.slice(0, 150)}…`
+                                : opportunity.description}
+                            </p>
+                            <div className="home-opportunity-meta">
+                              {opportunity.type ? <span>{opportunity.type}</span> : null}
+                              {opportunity.work_mode ? <span>{opportunity.work_mode}</span> : null}
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <section className="home-discovery-empty">
+                        <div>
+                          <h3>As próximas oportunidades começam por aqui.</h3>
+                          <p>Quando a comunidade publicar algo novo, você verá nesta área.</p>
+                        </div>
+                        <Link to="/conexoes">Conhecer pessoas para se conectar</Link>
+                      </section>
+                    )}
+                  </section>
+
+                  <section className="home-discovery-section" aria-labelledby="home-people-title">
+                    <header className="home-section-header">
+                      <div>
+                        <p className="home-section-kicker">Sua rede</p>
+                        <h2 id="home-people-title">Pessoas para conhecer</h2>
+                        <p>Profissionais que podem somar ao que você está construindo.</p>
+                      </div>
+                      <Link to="/conexoes">Ver todas</Link>
+                    </header>
+                    {suggestionsLoading ? (
+                      <div
+                        className="home-discovery-skeleton"
+                        aria-label="Carregando pessoas recomendadas"
+                      >
+                        <i />
+                        <i />
+                        <i />
+                      </div>
+                    ) : suggestionsError ? (
+                      <section className="home-discovery-empty" role="alert">
+                        <p>Não foi possível carregar pessoas recomendadas: {suggestionsError}</p>
+                        <Link to="/conexoes">Ver conexões</Link>
+                      </section>
+                    ) : suggestions.length ? (
+                      <div className="home-people-grid">
+                        {suggestions.map((suggestion) => (
+                          <article className="home-person-card" key={suggestion.id}>
+                            <ProfileAvatar
+                              className="avatar"
+                              fullName={suggestion.full_name || "Usuário"}
+                              avatarUrl={suggestion.avatar_url}
+                            />
+                            <div>
+                              {suggestion.username ? (
+                                <Link
+                                  className="home-person-profile-link"
+                                  to="/perfil/$username"
+                                  params={{ username: suggestion.username.replace(/^@/, "") }}
+                                >
+                                  <h3>{suggestion.full_name?.trim() || "Usuário"}</h3>
+                                </Link>
+                              ) : (
+                                <h3>{suggestion.full_name?.trim() || "Usuário"}</h3>
+                              )}
+                              {suggestion.username ? (
+                                <p>@{suggestion.username.replace(/^@/, "")}</p>
+                              ) : null}
+                              <small>{suggestion.recommendation_reason}</small>
+                            </div>
+                            <button
+                              type="button"
+                              disabled={connectingId === suggestion.id}
+                              onClick={() => void requestConnection(suggestion.id)}
+                            >
+                              {connectingId === suggestion.id ? "Enviando…" : "Conectar"}
+                            </button>
+                          </article>
+                        ))}
+                      </div>
+                    ) : (
+                      <section className="home-discovery-empty">
+                        <div>
+                          <h3>Sem sugestões por enquanto</h3>
                           <p>
-                            {opportunity.description.length > 150
-                              ? `${opportunity.description.slice(0, 150)}…`
-                              : opportunity.description}
+                            Conexões recomendadas aparecerão aqui quando a sua conta estiver pronta.
                           </p>
-                          <div className="home-opportunity-meta">
-                            {opportunity.type ? <span>{opportunity.type}</span> : null}
-                            {opportunity.work_mode ? <span>{opportunity.work_mode}</span> : null}
-                          </div>
+                        </div>
+                        <Link to="/conexoes">Explorar conexões</Link>
+                      </section>
+                    )}
+                  </section>
+                </div>
+
+                <section className="home-next-steps">
+                  <div className="home-context-heading">
+                    <span className="home-context-icon" aria-hidden="true">
+                      <BadgeCheck size={17} />
+                    </span>
+                    <div>
+                      <p className="home-section-kicker">Próximo passo</p>
+                      <h2>Construa sua presença.</h2>
+                    </div>
+                  </div>
+                  <p>Pequenas ações deixam seu perfil pronto para as oportunidades certas.</p>
+                  <div className="home-next-step-actions">
+                    <Link to="/perfil">
+                      <Pencil size={16} aria-hidden="true" /> Completar portfólio
+                      <ArrowRight size={15} aria-hidden="true" />
+                    </Link>
+                    <Link to="/oportunidades">
+                      <BriefcaseBusiness size={16} aria-hidden="true" /> Explorar oportunidades
+                      <ArrowRight size={15} aria-hidden="true" />
+                    </Link>
+                  </div>
+                </section>
+
+                <section className="home-trending-card" aria-labelledby="home-trending-title">
+                  <header>
+                    <div>
+                      <p className="home-section-kicker">Áreas profissionais</p>
+                      <h2 id="home-trending-title">Áreas para explorar</h2>
+                    </div>
+                    <Compass size={18} aria-hidden="true" />
+                  </header>
+                  {interestsLoading ? (
+                    <div className="home-trending-skeleton" aria-label="Carregando áreas">
+                      <i />
+                      <i />
+                      <i />
+                    </div>
+                  ) : interestsError ? (
+                    <p className="home-trending-state" role="alert">
+                      Não foi possível carregar as áreas agora.
+                    </p>
+                  ) : interests.length ? (
+                    <div className="home-trending-list">
+                      {interests.slice(0, 6).map((interest) => (
+                        <Link key={interest.id} to="/oportunidades">
+                          {interest.name}
                         </Link>
                       ))}
                     </div>
                   ) : (
-                    <section className="home-discovery-empty">
-                      <div>
-                        <h3>As próximas oportunidades começam por aqui.</h3>
-                        <p>Quando a comunidade publicar algo novo, você verá nesta área.</p>
-                      </div>
-                      <Link to="/conexoes">Conhecer pessoas para se conectar</Link>
-                    </section>
+                    <p className="home-trending-state">
+                      As áreas profissionais aparecerão aqui assim que estiverem disponíveis.
+                    </p>
                   )}
                 </section>
 
-                <section className="home-discovery-section" aria-labelledby="home-people-title">
-                  <header className="home-section-header">
-                    <div>
-                      <p className="home-section-kicker">Sua rede</p>
-                      <h2 id="home-people-title">Pessoas para conhecer</h2>
-                      <p>Profissionais que podem somar ao que você está construindo.</p>
-                    </div>
-                    <Link to="/conexoes">Ver todas</Link>
-                  </header>
-                  {suggestionsLoading ? (
-                    <div
-                      className="home-discovery-skeleton"
-                      aria-label="Carregando pessoas recomendadas"
-                    >
-                      <i />
-                      <i />
-                      <i />
-                    </div>
-                  ) : suggestionsError ? (
-                    <section className="home-discovery-empty" role="alert">
-                      <p>Não foi possível carregar pessoas recomendadas: {suggestionsError}</p>
-                      <Link to="/conexoes">Ver conexões</Link>
-                    </section>
-                  ) : suggestions.length ? (
-                    <div className="home-people-grid">
-                      {suggestions.map((suggestion) => (
-                        <article className="home-person-card" key={suggestion.id}>
-                          <ProfileAvatar
-                            className="avatar"
-                            fullName={suggestion.full_name || "Usuário"}
-                            avatarUrl={suggestion.avatar_url}
-                          />
-                          <div>
-                            {suggestion.username ? (
-                              <Link
-                                className="home-person-profile-link"
-                                to="/perfil/$username"
-                                params={{ username: suggestion.username.replace(/^@/, "") }}
-                              >
-                                <h3>{suggestion.full_name?.trim() || "Usuário"}</h3>
-                              </Link>
-                            ) : (
-                              <h3>{suggestion.full_name?.trim() || "Usuário"}</h3>
-                            )}
-                            {suggestion.username ? (
-                              <p>@{suggestion.username.replace(/^@/, "")}</p>
-                            ) : null}
-                            <small>{suggestion.recommendation_reason}</small>
-                          </div>
-                          <button
-                            type="button"
-                            disabled={connectingId === suggestion.id}
-                            onClick={() => void requestConnection(suggestion.id)}
-                          >
-                            {connectingId === suggestion.id ? "Enviando…" : "Conectar"}
-                          </button>
-                        </article>
-                      ))}
-                    </div>
-                  ) : (
-                    <section className="home-discovery-empty">
-                      <div>
-                        <h3>Sem sugestões por enquanto</h3>
-                        <p>
-                          Conexões recomendadas aparecerão aqui quando a sua conta estiver pronta.
-                        </p>
-                      </div>
-                      <Link to="/conexoes">Explorar conexões</Link>
-                    </section>
-                  )}
+                <section className="home-feed-companion">
+                  <p className="home-section-kicker">Sua rede</p>
+                  <h2>Boas conversas viram oportunidades.</h2>
+                  <p>Conheça profissionais, acompanhe ideias e dê o próximo passo no seu ritmo.</p>
+                  <Link to="/conexoes" className="home-companion-link">
+                    <UsersRound size={16} aria-hidden="true" /> Conhecer pessoas
+                    <ArrowRight size={15} aria-hidden="true" />
+                  </Link>
                 </section>
               </div>
-
-              <section className="home-next-steps">
-                <div className="home-context-heading">
-                  <span className="home-context-icon" aria-hidden="true">
-                    <BadgeCheck size={17} />
-                  </span>
-                  <div>
-                    <p className="home-section-kicker">Próximo passo</p>
-                    <h2>Construa sua presença.</h2>
-                  </div>
-                </div>
-                <p>Pequenas ações deixam seu perfil pronto para as oportunidades certas.</p>
-                <div className="home-next-step-actions">
-                  <Link to="/perfil">
-                    <Pencil size={16} aria-hidden="true" /> Completar portfólio
-                    <ArrowRight size={15} aria-hidden="true" />
-                  </Link>
-                  <Link to="/oportunidades">
-                    <BriefcaseBusiness size={16} aria-hidden="true" /> Explorar oportunidades
-                    <ArrowRight size={15} aria-hidden="true" />
-                  </Link>
-                </div>
-              </section>
-
-              <section className="home-trending-card" aria-labelledby="home-trending-title">
-                <header>
-                  <div>
-                    <p className="home-section-kicker">Áreas profissionais</p>
-                    <h2 id="home-trending-title">Áreas para explorar</h2>
-                  </div>
-                  <Compass size={18} aria-hidden="true" />
-                </header>
-                {interestsLoading ? (
-                  <div className="home-trending-skeleton" aria-label="Carregando áreas">
-                    <i />
-                    <i />
-                    <i />
-                  </div>
-                ) : interestsError ? (
-                  <p className="home-trending-state" role="alert">
-                    Não foi possível carregar as áreas agora.
-                  </p>
-                ) : interests.length ? (
-                  <div className="home-trending-list">
-                    {interests.slice(0, 6).map((interest) => (
-                      <Link key={interest.id} to="/oportunidades">
-                        {interest.name}
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="home-trending-state">
-                    As áreas profissionais aparecerão aqui assim que estiverem disponíveis.
-                  </p>
-                )}
-              </section>
-
-              <section className="home-feed-companion">
-                <p className="home-section-kicker">Sua rede</p>
-                <h2>Boas conversas viram oportunidades.</h2>
-                <p>Conheça profissionais, acompanhe ideias e dê o próximo passo no seu ritmo.</p>
-                <Link to="/conexoes" className="home-companion-link">
-                  <UsersRound size={16} aria-hidden="true" /> Conhecer pessoas
-                  <ArrowRight size={15} aria-hidden="true" />
-                </Link>
-              </section>
-            </div>
-          </aside>
-        </div>
-      </section>
-      <Dialog open={postPendingDeletion !== null} onOpenChange={handlePostDeletionDialogChange}>
-        <DialogContent
-          showClose={false}
-          className="post-delete-dialog"
-          onEscapeKeyDown={(event) => {
-            if (deletingPostId) event.preventDefault();
-          }}
-          onPointerDownOutside={(event) => {
-            if (deletingPostId) event.preventDefault();
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle className="post-delete-title">Excluir esta publicação?</DialogTitle>
-            <DialogDescription className="post-delete-description">
-              Esta ação não pode ser desfeita.
-            </DialogDescription>
-          </DialogHeader>
-          {postActionError ? (
-            <p className="post-delete-error" role="alert">
-              {postActionError}
-            </p>
-          ) : null}
-          <DialogFooter className="post-delete-actions">
-            <DialogClose asChild>
+            </aside>
+          </div>
+        </section>
+        <Dialog open={postPendingDeletion !== null} onOpenChange={handlePostDeletionDialogChange}>
+          <DialogContent
+            showClose={false}
+            className="post-delete-dialog"
+            onEscapeKeyDown={(event) => {
+              if (deletingPostId) event.preventDefault();
+            }}
+            onPointerDownOutside={(event) => {
+              if (deletingPostId) event.preventDefault();
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle className="post-delete-title">Excluir esta publicação?</DialogTitle>
+              <DialogDescription className="post-delete-description">
+                Esta ação não pode ser desfeita.
+              </DialogDescription>
+            </DialogHeader>
+            {postActionError ? (
+              <p className="post-delete-error" role="alert">
+                {postActionError}
+              </p>
+            ) : null}
+            <DialogFooter className="post-delete-actions">
+              <DialogClose asChild>
+                <button
+                  type="button"
+                  className="post-delete-cancel"
+                  disabled={deletingPostId !== null}
+                >
+                  Cancelar
+                </button>
+              </DialogClose>
               <button
                 type="button"
-                className="post-delete-cancel"
+                className="post-delete-confirm"
+                onClick={() => {
+                  if (postPendingDeletion) void deletePost(postPendingDeletion);
+                }}
                 disabled={deletingPostId !== null}
               >
-                Cancelar
+                {deletingPostId ? "Excluindo…" : "Excluir"}
               </button>
-            </DialogClose>
-            <button
-              type="button"
-              className="post-delete-confirm"
-              onClick={() => {
-                if (postPendingDeletion) void deletePost(postPendingDeletion);
-              }}
-              disabled={deletingPostId !== null}
-            >
-              {deletingPostId ? "Excluindo…" : "Excluir"}
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={proposalPost !== null} onOpenChange={handleProposalDialogChange}>
-        <DialogContent showClose={!sendingProposal} className="post-proposal-dialog">
-          <DialogHeader>
-            <DialogTitle>Enviar proposta</DialogTitle>
-            <DialogDescription>
-              Escreva uma mensagem de até {MAX_PROPOSAL_MESSAGE_LENGTH.toLocaleString("pt-BR")}{" "}
-              caracteres para esta oportunidade de trabalho.
-            </DialogDescription>
-          </DialogHeader>
-          <textarea
-            className="post-proposal-message"
-            value={proposalMessage}
-            onChange={(event) => setProposalMessage(event.target.value)}
-            maxLength={MAX_PROPOSAL_MESSAGE_LENGTH}
-            disabled={sendingProposal}
-            placeholder="Conte como você pode ajudar neste trabalho"
-            autoFocus
-          />
-          <p className="post-proposal-count">
-            {proposalMessage.length}/{MAX_PROPOSAL_MESSAGE_LENGTH}
-          </p>
-          {proposalError ? (
-            <p className="post-delete-error" role="alert">
-              {proposalError}
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        <Dialog open={proposalPost !== null} onOpenChange={handleProposalDialogChange}>
+          <DialogContent showClose={!sendingProposal} className="post-proposal-dialog">
+            <DialogHeader>
+              <DialogTitle>Enviar proposta</DialogTitle>
+              <DialogDescription>
+                Escreva uma mensagem de até {MAX_PROPOSAL_MESSAGE_LENGTH.toLocaleString("pt-BR")}{" "}
+                caracteres para esta oportunidade de trabalho.
+              </DialogDescription>
+            </DialogHeader>
+            <textarea
+              className="post-proposal-message"
+              value={proposalMessage}
+              onChange={(event) => setProposalMessage(event.target.value)}
+              maxLength={MAX_PROPOSAL_MESSAGE_LENGTH}
+              disabled={sendingProposal}
+              placeholder="Conte como você pode ajudar neste trabalho"
+              autoFocus
+            />
+            <p className="post-proposal-count">
+              {proposalMessage.length}/{MAX_PROPOSAL_MESSAGE_LENGTH}
             </p>
-          ) : null}
-          <DialogFooter className="post-delete-actions">
-            <DialogClose asChild>
-              <button type="button" className="post-delete-cancel" disabled={sendingProposal}>
-                Cancelar
+            {proposalError ? (
+              <p className="post-delete-error" role="alert">
+                {proposalError}
+              </p>
+            ) : null}
+            <DialogFooter className="post-delete-actions">
+              <DialogClose asChild>
+                <button type="button" className="post-delete-cancel" disabled={sendingProposal}>
+                  Cancelar
+                </button>
+              </DialogClose>
+              <button
+                type="button"
+                className="post-delete-confirm"
+                onClick={() => void sendProposal()}
+                disabled={sendingProposal || !proposalMessage.trim()}
+              >
+                {sendingProposal ? "Enviando…" : "Enviar proposta"}
               </button>
-            </DialogClose>
-            <button
-              type="button"
-              className="post-delete-confirm"
-              onClick={() => void sendProposal()}
-              disabled={sendingProposal || !proposalMessage.trim()}
-            >
-              {sendingProposal ? "Enviando…" : "Enviar proposta"}
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </main>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </main>
+    </>
   );
 }

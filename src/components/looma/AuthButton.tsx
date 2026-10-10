@@ -1,4 +1,4 @@
-import { useEffect, useId, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type FormEvent } from "react";
 import type { User } from "@supabase/supabase-js";
 import { Mail, X } from "lucide-react";
 import { createSupabaseCredentialClient, getSupabaseBrowserClient } from "@/lib/supabase/browser";
@@ -6,6 +6,8 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 type AuthButtonProps = {
   variant?: "header" | "sidebar";
+  launcher?: "default" | "modal";
+  openSignal?: number;
 };
 
 type EmailStep = "credentials" | "code";
@@ -24,7 +26,11 @@ function translateAuthError(message: string) {
   return message;
 }
 
-export function AuthButton({ variant = "header" }: AuthButtonProps) {
+export function AuthButton({
+  variant = "header",
+  launcher = "default",
+  openSignal = 0,
+}: AuthButtonProps) {
   const formId = useId();
   const [user, setUser] = useState<User | null>(null);
   const [isWorking, setIsWorking] = useState(false);
@@ -36,6 +42,7 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [code, setCode] = useState("");
+  const lastOpenSignalRef = useRef(openSignal);
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
@@ -215,22 +222,28 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
     }
   }
 
-  function openEmailModal() {
+  const openEmailModal = useCallback(() => {
     setEmailStep("credentials");
     setAuthMode("login");
     setError(null);
     setCode("");
     setIsEmailModalOpen(true);
-  }
+  }, []);
 
-  function closeEmailModal() {
+  const closeEmailModal = useCallback(() => {
     setIsEmailModalOpen(false);
     setEmailStep("credentials");
     setPassword("");
     setRepeatPassword("");
     setCode("");
     setError(null);
-  }
+  }, []);
+
+  useEffect(() => {
+    if (openSignal === lastOpenSignalRef.current) return;
+    lastOpenSignalRef.current = openSignal;
+    if (!user) openEmailModal();
+  }, [openEmailModal, openSignal, user]);
 
   const emailModal = (
     <Dialog
@@ -265,14 +278,31 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
           <>
             <header className="email-auth-heading">
               <DialogTitle asChild>
-                <h1>{authMode === "login" ? "Entrar na Looma" : "Criar conta"}</h1>
+                <h1>{authMode === "login" ? "Logar com e-mail ou Google" : "Criar conta"}</h1>
               </DialogTitle>
               <p>
                 {authMode === "login"
-                  ? "Use o seu e-mail e senha para continuar."
+                  ? "Escolha uma opção para continuar na Looma."
                   : "Crie a sua conta e confirme o e-mail com um código."}
               </p>
             </header>
+            {authMode === "login" ? (
+              <>
+                <button
+                  type="button"
+                  className="email-auth-google"
+                  onClick={signInWithGoogle}
+                  disabled={isWorking}
+                >
+                  <img
+                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                    alt=""
+                    aria-hidden="true"
+                  />
+                  <span>{isWorking ? "Conectando…" : "Google login"}</span>
+                </button>
+              </>
+            ) : null}
             <form className="email-auth-form" onSubmit={submitCredentials}>
               <label htmlFor={`modal-auth-email-${formId}`}>E-mail</label>
               <input
@@ -398,6 +428,8 @@ export function AuthButton({ variant = "header" }: AuthButtonProps) {
       </DialogContent>
     </Dialog>
   );
+
+  if (launcher === "modal") return <>{emailModal}</>;
 
   if (user && !isEmailModalOpen) {
     if (variant === "sidebar") return null;

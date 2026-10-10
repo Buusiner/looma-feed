@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 import {
   convertPhoto,
   loadVideo,
@@ -13,11 +13,13 @@ export function MediaPicker({
   onChange,
   disabled,
   onBusyChange,
+  mediaAction,
 }: {
   value: PreparedMedia | null;
   onChange: (value: PreparedMedia | null) => void;
   disabled: boolean;
   onBusyChange: (busy: boolean) => void;
+  mediaAction?: ReactNode;
 }) {
   const [source, setSource] = useState<File | null>(null);
   const [duration, setDuration] = useState(0);
@@ -104,12 +106,30 @@ export function MediaPicker({
           }}
         />
       </label>
-      {preview &&
-        (file?.type.startsWith("video/") ? (
-          <video ref={previewVideo} src={preview} controls playsInline className="post-media" />
-        ) : (
-          <img src={preview} alt="Pré-visualização da foto" className="post-media" />
-        ))}
+      {preview ? (
+        <div className="media-picker-preview">
+          {file?.type.startsWith("video/") ? (
+            <video ref={previewVideo} src={preview} controls playsInline className="post-media" />
+          ) : (
+            <img src={preview} alt="Pré-visualização da foto" className="post-media" />
+          )}
+          {(source || value) && (
+            <button
+              type="button"
+              className="media-picker-remove"
+              aria-label="Remover mídia"
+              title="Remover mídia"
+              onClick={() => {
+                setSource(null);
+                onChange(null);
+                setError(null);
+              }}
+            >
+              ×
+            </button>
+          )}
+        </div>
+      ) : null}
       {source && (
         <div className="media-trim">
           <p>
@@ -156,18 +176,7 @@ export function MediaPicker({
           </button>
         </div>
       )}
-      {(source || value) && (
-        <button
-          type="button"
-          onClick={() => {
-            setSource(null);
-            onChange(null);
-            setError(null);
-          }}
-        >
-          Remover mídia
-        </button>
-      )}
+      {mediaAction}
       {busy && <p role="status">Preparando mídia… Mantenha esta página aberta.</p>}
       {error && <p role="alert">{error}</p>}
       {source && !value && !busy && <p role="status">Aplique o corte antes de publicar.</p>}

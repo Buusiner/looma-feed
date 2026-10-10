@@ -276,10 +276,12 @@ export function AvatarCropDialog({ file, previewUrl, onCancel, onConfirm }: Avat
         outputSize,
       );
 
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, "image/webp", 0.9),
+      );
       if (!blob) throw new Error("Não foi possível gerar o recorte da imagem.");
 
-      onConfirm(new File([blob], "avatar-recortado.png", { type: "image/png" }));
+      onConfirm(new File([blob], "avatar-recortado.webp", { type: "image/webp" }));
     } catch (caught) {
       console.error("[Looma] Falha ao recortar avatar.", caught);
       setError(caught instanceof Error ? caught.message : "Não foi possível recortar a imagem.");

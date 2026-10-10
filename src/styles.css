@@ -3666,10 +3666,48 @@ body {
   white-space: nowrap;
 }
 
+.email-auth-google {
+  display: inline-flex;
+  width: 100%;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.45rem;
+  border: 1px solid #e2e2e2;
+  border-radius: 11px;
+  background: #fff;
+  color: #1a1a1a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 800;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    transform 180ms ease;
+}
+
+.email-auth-google:hover:not(:disabled) {
+  border-color: rgba(255, 107, 74, 0.45);
+  background: #fff8f4;
+  transform: translateY(-1px);
+}
+
+.email-auth-google:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.email-auth-google img {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
 .email-auth-form {
   display: grid;
   gap: 0.55rem;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
 }
 
 .email-auth-form label {
@@ -5930,7 +5968,7 @@ body {
 
 .post-menu-wrap {
   position: relative;
-  margin-left: auto;
+  margin-left: 0;
 }
 
 .post-menu-trigger {
@@ -5953,7 +5991,7 @@ body {
   position: absolute;
   z-index: 4;
   top: calc(100% + 0.35rem);
-  right: 0;
+  left: 0;
   display: grid;
   min-width: 8.5rem;
   padding: 0.35rem;
@@ -10403,6 +10441,17 @@ body {
   color: var(--looma-text);
 }
 
+.dark .email-auth-google {
+  border-color: var(--looma-rim);
+  background: #09090d;
+  color: var(--looma-text);
+}
+
+.dark .email-auth-google:hover:not(:disabled) {
+  border-color: rgba(var(--yellow-rgb), 0.42);
+  background: #111119;
+}
+
 .dark :where(input, textarea)::placeholder {
   color: #9694a6;
 }
@@ -10447,6 +10496,56 @@ body {
 
 .settings-appearance .workspace-helper {
   margin-top: 0.35rem;
+}
+
+.settings-session-section {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.75rem;
+  border-top: 1px solid var(--looma-rim);
+  padding-top: 1.5rem;
+}
+
+.settings-session-section h2 {
+  margin: 0;
+}
+
+.settings-session-section .workspace-helper {
+  margin-top: 0.35rem;
+}
+
+.settings-sign-out {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #bd4637;
+  border-radius: var(--looma-radius-sm);
+  padding: 0.55rem 0.9rem;
+  background: transparent;
+  color: #a83c2f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.settings-sign-out:hover:not(:disabled),
+.settings-sign-out:focus-visible {
+  background: rgba(189, 70, 55, 0.1);
+  outline: 0;
+}
+
+.settings-sign-out:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.settings-sign-out-error {
+  margin: 0;
+  color: #a83c2f;
+  font-size: 0.84rem;
 }
 
 .settings-password-section {
@@ -12686,7 +12785,7 @@ select:focus,
 }
 
 .home-feed-stream .post-menu-wrap {
-  justify-self: end !important;
+  justify-self: start !important;
 }
 
 .home-feed-stream .post-body > p {
@@ -13873,6 +13972,26 @@ body,
   line-height: 1 !important;
 }
 
+html:not(.dark) .auth-control-sidebar .sidebar-email-login {
+  border-color: rgba(26, 26, 26, 0.18) !important;
+  background: #fff8f1 !important;
+  color: #1a1a1a !important;
+}
+
+html:not(.dark) .auth-control-sidebar .sidebar-email-login:hover:not(:disabled) {
+  border-color: rgba(26, 26, 26, 0.32) !important;
+  background: #ffffff !important;
+}
+
+html:not(.dark) .auth-control-sidebar .auth-login-divider {
+  color: #695d54 !important;
+}
+
+html:not(.dark) .auth-control-sidebar .auth-login-divider::before,
+html:not(.dark) .auth-control-sidebar .auth-login-divider::after {
+  background: rgba(26, 26, 26, 0.14) !important;
+}
+
 .looma-sidebar .sidebar-profile {
   min-height: 54px !important;
 }
@@ -13992,6 +14111,44 @@ body,
   --muted: var(--surface);
   --muted-foreground: var(--text-muted);
   --input: var(--border);
+}
+
+/* Account flows share the active theme surface instead of keeping a fixed white card. */
+.onboarding-card,
+.email-auth-modal {
+  background: var(--surface) !important;
+  color: var(--text);
+}
+
+.onboarding-card {
+  position: relative;
+}
+
+.onboarding-cancel {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.onboarding-cancel:hover:not(:disabled),
+.onboarding-cancel:focus-visible {
+  border-color: var(--border-strong);
+  background: var(--hover);
+  color: var(--text);
+}
+
+.onboarding-cancel:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 html:not(.dark),
@@ -15972,6 +16129,44 @@ html:not(.dark) .home-feed-stream .feed-post:hover {
   cursor: pointer;
 }
 
+.media-picker-preview {
+  position: relative;
+  width: min(100%, 28rem);
+}
+
+.media-picker-preview .post-media {
+  margin-block: 0;
+}
+
+.media-picker-remove {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  display: grid;
+  width: 1.75rem !important;
+  min-height: 1.75rem !important;
+  height: 1.75rem !important;
+  place-items: center;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: #fff !important;
+  font-size: 1.35rem !important;
+  font-weight: 700 !important;
+  line-height: 1;
+  -webkit-text-stroke: 1px #000;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.55);
+}
+
+.media-picker-remove:hover:not(:disabled),
+.media-picker-remove:focus-visible {
+  color: #fff !important;
+  background: transparent !important;
+  outline: 0;
+  transform: scale(1.08);
+}
+
 .media-picker-icon {
   display: grid;
   box-sizing: border-box;
@@ -16207,4 +16402,18 @@ html:not(.dark) .home-feed-stream .feed-post:hover {
 .ui-audio-preview:disabled {
   opacity: 0.5;
   cursor: default;
+}
+
+/* Reports belong to the page canvas, not separate white cards. */
+.workspace-report-summary article,
+.workspace-report-table,
+.workspace-chart,
+.workspace-report-control .looma-dropdown-trigger {
+  background: var(--bg) !important;
+  box-shadow: none !important;
+}
+
+.workspace-report-table th,
+.workspace-report-table td {
+  background: transparent !important;
 }

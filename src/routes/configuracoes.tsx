@@ -1,7 +1,7 @@
 import { audioManager } from "@/lib/audio-manager";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Bell, Laptop, Lock, Moon, Settings, Sun, UserRound } from "lucide-react";
+import { Bell, Laptop, Lock, LogOut, Moon, Settings, Sun, UserRound } from "lucide-react";
 import {
   WorkspaceEmpty,
   WorkspaceError,
@@ -12,6 +12,7 @@ import { useCurrentProfile } from "@/lib/profile";
 import { createSupabaseCredentialClient, getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { getStoredTheme, saveTheme, type LoomaTheme } from "@/lib/theme";
 import { AudioSettings } from "@/components/looma/AudioSettings";
+import { AuthButton } from "@/components/looma/AuthButton";
 
 type SettingsRow = {
   email_connection_notifications: boolean;
@@ -32,7 +33,7 @@ function maskEmailAddress(email: string) {
 export const Route = createFileRoute("/configuracoes")({ component: SettingsPage });
 
 function SettingsPage() {
-  const { user } = useCurrentProfile();
+  const { user, isLoading: isProfileLoading } = useCurrentProfile();
   const [tab, setTab] = useState<Tab>("account");
   const [settings, setSettings] = useState<SettingsRow | null>(null);
   const [loading, setLoading] = useState(true);
@@ -42,6 +43,8 @@ function SettingsPage() {
   const [theme, setTheme] = useState<LoomaTheme>(getStoredTheme);
   const [isPasswordFormOpen, setIsPasswordFormOpen] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordFields, setPasswordFields] = useState({
     email: "",
@@ -213,18 +216,62 @@ function SettingsPage() {
     }
   }
 
+  async function signOut() {
+    if (isSigningOut) return;
+
+    setIsSigningOut(true);
+    setSignOutError(null);
+    try {
+      const { error: signOutRequestError } = await getSupabaseBrowserClient().auth.signOut();
+      if (signOutRequestError) throw signOutRequestError;
+
+      window.location.assign("/");
+    } catch (caught) {
+      console.error("[Looma] Falha ao encerrar sessão.", caught);
+      audioManager.play("error");
+      setSignOutError("Não foi possível encerrar a sessão. Tente novamente.");
+      setIsSigningOut(false);
+    }
+  }
+
   const tabs: Array<[Tab, string, typeof UserRound]> = [
     ["account", "Conta", UserRound],
     ["notifications", "Notificações", Bell],
     ["privacy", "Privacidade", Lock],
   ];
 
+  if (isProfileLoading) {
+    return (
+      <WorkspaceLayout
+        title="Configurações"
+        description="Controle as preferências da sua conta Looma."
+      >
+        <WorkspaceSkeleton cards={2} />
+      </WorkspaceLayout>
+    );
+  }
+
+  if (!user) {
+    return (
+      <WorkspaceLayout
+        title="Configurações"
+        description="Controle as preferências da sua conta Looma."
+      >
+        <WorkspaceEmpty
+          icon={UserRound}
+          title="Entre para acessar suas configurações"
+          description="Faça login para ajustar as preferências da sua conta."
+          action={<AuthButton />}
+        />
+      </WorkspaceLayout>
+    );
+  }
+
   return (
     <WorkspaceLayout
       title="Configurações"
       description="Controle as preferências da sua conta Looma."
     >
-      <AudioSettings />
       <div className="settings-layout">
         <nav className="settings-nav" aria-label="Seções de configurações">
           {tabs.map(([value, label, Icon]) => (
@@ -247,14 +294,7 @@ function SettingsPage() {
               onRetry={() => void load()}
             />
           ) : null}
-          {!loading && !error && !user ? (
-            <WorkspaceEmpty
-              icon={UserRound}
-              title="Entre com sua conta"
-              description="As configurações ficam disponíveis após o login."
-            />
-          ) : null}
-          {!loading && !error && user ? (
+          {!loading && !error ? (
             <>
               {notice ? <p className="workspace-notice">{notice}</p> : null}
               {tab === "account" ? (
@@ -405,6 +445,28 @@ function SettingsPage() {
                       </button>
                     </div>
                   </div>
+                  <div className="settings-session-section">
+                    <div>
+                      <h2>Sessão</h2>
+                      <p className="workspace-helper">
+                        Encerre o acesso desta conta neste dispositivo.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className="settings-sign-out"
+                      onClick={() => void signOut()}
+                      disabled={isSigningOut}
+                    >
+                      <LogOut size={16} aria-hidden="true" />{" "}
+                      {isSigningOut ? "Saindo…" : "Sair da conta"}
+                    </button>
+                    {signOutError ? (
+                      <p className="settings-sign-out-error" role="alert">
+                        {signOutError}
+                      </p>
+                    ) : null}
+                  </div>
                 </section>
               ) : null}
               {tab === "notifications" && settings ? (
@@ -441,6 +503,7 @@ function SettingsPage() {
           ) : null}
         </section>
       </div>
+      <AudioSettings />
     </WorkspaceLayout>
   );
 }

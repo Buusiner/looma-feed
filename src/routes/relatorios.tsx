@@ -9,6 +9,7 @@ import {
   WorkspaceSkeleton,
 } from "@/components/looma/WorkspaceStates";
 import { WorkspaceLayout } from "@/components/looma/WorkspaceLayout";
+import { AuthButton } from "@/components/looma/AuthButton";
 import { type ActivityMetricResults, getActivityMetricResults } from "@/lib/activity-metrics";
 import { useCurrentProfile } from "@/lib/profile";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
@@ -59,7 +60,7 @@ function emptyMetricResults(): ActivityMetricResults {
 }
 
 function ReportsPage() {
-  const { user } = useCurrentProfile();
+  const { user, isLoading: isProfileLoading } = useCurrentProfile();
   const [period, setPeriod] = useState<Period>("1d");
   const [metricResults, setMetricResults] = useState<ActivityMetricResults | null>(null);
   const [cardsLoading, setCardsLoading] = useState(true);
@@ -141,6 +142,33 @@ function ReportsPage() {
       ] as Array<[string, ActivityMetricResults[keyof ActivityMetricResults]]>)
     : [];
   const hasData = tableMetrics.some(([, result]) => result.error || result.value > 0);
+
+  if (isProfileLoading) {
+    return (
+      <WorkspaceLayout
+        title="Relatórios"
+        description="Uma visão dos dados reais da sua atividade na Looma."
+      >
+        <WorkspaceSkeleton cards={3} />
+      </WorkspaceLayout>
+    );
+  }
+
+  if (!user) {
+    return (
+      <WorkspaceLayout
+        title="Relatórios"
+        description="Uma visão dos dados reais da sua atividade na Looma."
+      >
+        <WorkspaceEmpty
+          icon={BarChart3}
+          title="Entre para ver seus relatórios"
+          description="Faça login para acompanhar os dados da sua atividade na Looma."
+          action={<AuthButton />}
+        />
+      </WorkspaceLayout>
+    );
+  }
 
   return (
     <WorkspaceLayout

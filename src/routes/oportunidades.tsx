@@ -8,6 +8,7 @@ import {
   WorkspaceSkeleton,
 } from "@/components/looma/WorkspaceStates";
 import { WorkspaceLayout } from "@/components/looma/WorkspaceLayout";
+import { AuthButton } from "@/components/looma/AuthButton";
 import { recordOpportunityView } from "@/lib/activity-metrics";
 import { DEMO_OPPORTUNITY_FILTER } from "@/lib/opportunities";
 import { useCurrentProfile } from "@/lib/profile";
@@ -26,7 +27,7 @@ type Opportunity = {
 export const Route = createFileRoute("/oportunidades")({ component: OpportunitiesPage });
 
 function OpportunitiesPage() {
-  const { user } = useCurrentProfile();
+  const { user, isLoading: isProfileLoading } = useCurrentProfile();
   const [items, setItems] = useState<Opportunity[]>([]);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const [query, setQuery] = useState("");
@@ -40,6 +41,15 @@ function OpportunitiesPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
+    const userId = user?.id;
+    if (!userId) {
+      setItems([]);
+      setSavedIds(new Set());
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     const supabase = getSupabaseBrowserClient();
@@ -56,18 +66,15 @@ function OpportunitiesPage() {
     }
 
     setItems((data ?? []) as Opportunity[]);
-    const userId = user?.id;
-    if (userId) {
-      const { data: saves, error: savesError } = await supabase
-        .from("opportunity_saves")
-        .select("opportunity_id")
-        .eq("user_id", userId);
-      if (savesError) setError(savesError.message);
-      else
-        setSavedIds(
-          new Set((saves ?? []).map((save: { opportunity_id: string }) => save.opportunity_id)),
-        );
-    }
+    const { data: saves, error: savesError } = await supabase
+      .from("opportunity_saves")
+      .select("opportunity_id")
+      .eq("user_id", userId);
+    if (savesError) setError(savesError.message);
+    else
+      setSavedIds(
+        new Set((saves ?? []).map((save: { opportunity_id: string }) => save.opportunity_id)),
+      );
     setLoading(false);
   }, [user?.id]);
 
@@ -154,6 +161,33 @@ function OpportunitiesPage() {
     setType(null);
     setMode(null);
     setSort("recent");
+  }
+
+  if (isProfileLoading) {
+    return (
+      <WorkspaceLayout
+        title="Oportunidades"
+        description="Encontre oportunidades publicadas pela comunidade Looma."
+      >
+        <WorkspaceSkeleton cards={4} />
+      </WorkspaceLayout>
+    );
+  }
+
+  if (!user) {
+    return (
+      <WorkspaceLayout
+        title="Oportunidades"
+        description="Encontre oportunidades publicadas pela comunidade Looma."
+      >
+        <WorkspaceEmpty
+          icon={BriefcaseBusiness}
+          title="Entre para ver oportunidades"
+          description="Faça login para explorar oportunidades publicadas pela comunidade."
+          action={<AuthButton />}
+        />
+      </WorkspaceLayout>
+    );
   }
 
   return (

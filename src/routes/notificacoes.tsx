@@ -7,6 +7,7 @@ import {
   WorkspaceSkeleton,
 } from "@/components/looma/WorkspaceStates";
 import { WorkspaceLayout } from "@/components/looma/WorkspaceLayout";
+import { AuthButton } from "@/components/looma/AuthButton";
 import { AdminVerifiedBadge } from "@/components/looma/AdminVerifiedBadge";
 import { ProfileAvatar } from "@/components/looma/ProfileAvatar";
 import { type Profile, useCurrentProfile } from "@/lib/profile";
@@ -84,7 +85,7 @@ function formatNotificationDate(value: string) {
 }
 
 function NotificationsPage() {
-  const { user } = useCurrentProfile();
+  const { user, isLoading: isProfileLoading } = useCurrentProfile();
   const [events, setEvents] = useState<NotificationEvent[]>([]);
   const [connections, setConnections] = useState<ConnectionNotification[]>([]);
   const [proposals, setProposals] = useState<ProposalNotification[]>([]);
@@ -236,6 +237,33 @@ function NotificationsPage() {
     );
   }, [connections, events, profiles, proposals]);
 
+  if (isProfileLoading) {
+    return (
+      <WorkspaceLayout
+        title="Notificações"
+        description="Acompanhe curtidas, comentários, reposts, solicitações e propostas."
+      >
+        <WorkspaceSkeleton cards={4} />
+      </WorkspaceLayout>
+    );
+  }
+
+  if (!user) {
+    return (
+      <WorkspaceLayout
+        title="Notificações"
+        description="Acompanhe curtidas, comentários, reposts, solicitações e propostas."
+      >
+        <WorkspaceEmpty
+          icon={Bell}
+          title="Entre para ver suas notificações"
+          description="Faça login para acompanhar as atividades da sua conta."
+          action={<AuthButton />}
+        />
+      </WorkspaceLayout>
+    );
+  }
+
   return (
     <WorkspaceLayout
       title="Notificações"
@@ -253,18 +281,12 @@ function NotificationsPage() {
       ) : items.length === 0 ? (
         <WorkspaceEmpty
           icon={Bell}
-          title={user ? "Nenhuma notificação por enquanto" : "Entre com sua conta"}
-          description={
-            user
-              ? "Quando alguém curtir, comentar, repostar, enviar proposta ou solicitar conexão, aparecerá aqui."
-              : "Entre com sua conta para ver suas notificações."
-          }
+          title="Nenhuma notificação por enquanto"
+          description="Quando alguém curtir, comentar, repostar, enviar proposta ou solicitar conexão, aparecerá aqui."
           action={
-            user ? (
-              <Link to="/" className="workspace-empty-action">
-                Voltar ao início
-              </Link>
-            ) : null
+            <Link to="/" className="workspace-empty-action">
+              Voltar ao início
+            </Link>
           }
         />
       ) : (

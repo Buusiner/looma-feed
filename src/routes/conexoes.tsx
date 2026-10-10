@@ -10,6 +10,7 @@ import {
   WorkspaceSkeleton,
 } from "@/components/looma/WorkspaceStates";
 import { WorkspaceLayout } from "@/components/looma/WorkspaceLayout";
+import { AuthButton } from "@/components/looma/AuthButton";
 import { type Profile, useCurrentProfile } from "@/lib/profile";
 import { getConnectionRows, type ConnectionRow } from "@/lib/activity-metrics";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
@@ -20,7 +21,7 @@ type Tab = "accepted" | "received" | "sent";
 export const Route = createFileRoute("/conexoes")({ component: ConnectionsPage });
 
 function ConnectionsPage() {
-  const { user } = useCurrentProfile();
+  const { user, isLoading: isProfileLoading } = useCurrentProfile();
   const [connections, setConnections] = useState<Connection[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [tab, setTab] = useState<Tab>("accepted");
@@ -172,6 +173,33 @@ function ConnectionsPage() {
             hasAction: true,
           };
 
+  if (isProfileLoading) {
+    return (
+      <WorkspaceLayout
+        title="Conexões"
+        description="Acompanhe as relações profissionais da sua conta."
+      >
+        <WorkspaceSkeleton cards={3} />
+      </WorkspaceLayout>
+    );
+  }
+
+  if (!user) {
+    return (
+      <WorkspaceLayout
+        title="Conexões"
+        description="Acompanhe as relações profissionais da sua conta."
+      >
+        <WorkspaceEmpty
+          icon={UserRound}
+          title="Entre para ver suas conexões"
+          description="Faça login para acompanhar e criar conexões profissionais."
+          action={<AuthButton />}
+        />
+      </WorkspaceLayout>
+    );
+  }
+
   return (
     <WorkspaceLayout
       title="Conexões"
@@ -208,16 +236,12 @@ function ConnectionsPage() {
       ) : visible.length === 0 ? (
         <WorkspaceEmpty
           icon={UserRound}
-          title={user ? emptyCopy.title : "Entre com sua conta"}
-          description={user ? emptyCopy.description : "Entre com sua conta para ver suas conexões."}
+          title={emptyCopy.title}
+          description={emptyCopy.description}
           action={
-            user && emptyCopy.hasAction ? (
+            emptyCopy.hasAction ? (
               <Link to="/" className="workspace-empty-action">
                 Conectar-se
-              </Link>
-            ) : !user ? (
-              <Link to="/oportunidades" className="workspace-empty-action">
-                Explorar oportunidades
               </Link>
             ) : null
           }
